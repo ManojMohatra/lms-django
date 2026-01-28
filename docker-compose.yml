@@ -4,9 +4,9 @@ services:
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=lms_db
-      - POSTGRES_USER=manoj
-      - POSTGRES_PASSWORD=strongpassword
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD={DB_PASSWORD}
     ports:
       - "5432:5432"
 
