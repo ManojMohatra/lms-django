@@ -32,7 +32,7 @@ class UserLogoutView(LogoutView):
 
 @login_required
 def dashboard(request):
-    role = request.user.profile.role
-    return render(request,'accounts/dashboard.html',{'profile':request.user.profile})
+    profile = request.user.profile
+    return render(request,'accounts/dashboard.html',{'profile':profile})
 
 
