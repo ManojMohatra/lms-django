@@ -1,0 +1,13 @@
+<h2> Dashboard </h2>
+<p>Welcome back, <strong>{{ user.username }}</strong>!</p>
+
+<div style="padding:10px; border:1px solid #ccc;">
+  <p>Your assigned role is:<strong>{{ user.profile.get_role_display }}</strong></p>
+</div>
+
+<hr>
+
+<form action="{% url 'accounts:logout' %}" method="post">
+  {% csrf_token %}
+  <button type="submit">Logout</button>
+</form>
