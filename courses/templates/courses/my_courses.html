@@ -5,7 +5,10 @@
 <ul>
   {% for course in courses %}
   <li>
-    <strong>{{ course.title }}</strong> --
+    <a href="{% url 'courses:course_detail' course.id %}">
+      <strong>{{ course.title }}</strong>
+      </a>
+      --
     {{ course.description }}
 
     {% if role == "student" %}

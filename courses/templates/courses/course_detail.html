@@ -1,0 +1,23 @@
+<h2>{{ course.title }}</h2>
+<p> {{ course.description }}</p>
+
+<p> Teacher: {{ course.teacher.username }}</p>
+<p> Enrolled students: {{ enrolled_students_count }} </p>
+
+{% if role == "student" %}
+<a href="{% url 'courses:unenroll_course' course.id %}?next={{ request.path }}">
+  Unenroll
+</a>
+{% elif role == "teacher" and course.teacher == request.user %}
+<a href="{% url 'courses:edit_course' course.id %}"> Edit Course</a>
+<!-- Add links to quiz materials chat here -->
+
+{% endif %}
+
+<!--- Placeholder for future features -->
+<h3> Courses feature </h3>
+<ul>
+  <li> Quizzes(coming soon) </li>
+  <li> Materials(coming soon) </li>
+  <li> Chat(coming soon) </li>
+ </ul>

@@ -100,3 +100,27 @@ def edit_course(request,course_id):
         form = CourseForm(instance=course)
     return render(request,"courses/edit_course.html",{"form":form,"course":course})
 
+@login_required
+def course_detail(request,course_id):
+    course = get_object_or_404(Course,id=course_id)
+
+    role = request.user.profile.role
+
+    if role == "student":
+        if not Enrollment.objects.filter(student=request.user,course=course).exists():
+            return HttpResponseForbidden("You are not enrolled in this course.")
+    elif role == "teacher":
+        if course.teacher != request.user:
+            return HttpResponseForbidden("You can only view your own courses.")
+    else:
+        #Maybe something for admin later
+        pass
+    #Basic info for enrollment count
+    enrolled_students_count = course.enrollments.count()
+
+    return render(request,"courses/course_detail.html",{
+        "course":course,
+        "role":role,
+        "enrolled_students_count":enrolled_students_count,
+    })
+
