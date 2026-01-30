@@ -1,0 +1,16 @@
+<h2> All courses </h2>
+
+{% if request.user.profile.role == "teacher" %}
+<a href="{% url 'courses:create_course' %}"> Create Course </a>
+{% endif %}
+
+<ul>
+  {% for course in courses %}
+  <li>
+    <strong>{{ course.title }}</strong> --
+    {{ course.description }}
+  </li>
+  {% empty %}
+  <li> No courses yet </li>
+  {% endfor %}
+</ul>
