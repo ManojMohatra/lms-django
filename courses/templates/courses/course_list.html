@@ -9,6 +9,19 @@
   <li>
     <strong>{{ course.title }}</strong> --
     {{ course.description }}
+
+    {% if request.user.profile.role == "student" %}
+    {% if course.id in enrolled_courses %}
+    <span>Enrolled ✅ </span>
+    <a href="{% url 'courses:unenroll_course' course.id %}">
+      Unenroll
+    </a>
+    {% else %}
+    <a href="{% url 'courses:enroll_course' course.id%}">
+      Enroll
+    </a>
+    {% endif %}
+   {% endif %} 
   </li>
   {% empty %}
   <li> No courses yet </li>
