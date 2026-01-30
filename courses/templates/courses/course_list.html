@@ -11,17 +11,19 @@
     {{ course.description }}
 
     {% if request.user.profile.role == "student" %}
+    
     {% if course.id in enrolled_courses %}
-    <span>Enrolled ✅ </span>
-    <a href="{% url 'courses:unenroll_course' course.id %}">
-      Unenroll
-    </a>
+        <span>Enrolled ✅</span>
+        <a href="{% url 'courses:unenroll_course' course.id %}?next={{ request.path }}">
+            Unenroll
+        </a>
     {% else %}
-    <a href="{% url 'courses:enroll_course' course.id%}">
-      Enroll
-    </a>
-    {% endif %}
-   {% endif %} 
+        <a href="{% url 'courses:enroll_course' course.id %}?next={{ request.path }}">
+            Enroll
+        </a>
+	{% endif %}
+	{% endif %}
+ 
   </li>
   {% empty %}
   <li> No courses yet </li>
