@@ -1,0 +1,9 @@
+<h2> Add module to {{ course.title }} </h2>
+
+<form method = "post">
+  {% csrf_token %}
+  <input type="text" name="title" placeholder="Module Title" required>
+  <input type="number"name="order" placeholder="Order" required>
+  <button type="submit"> Add module </button>
+
+</form>

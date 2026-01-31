@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpResponseForbidden
 from .forms import CourseForm
-from .models import Course, Enrollment
+from .models import Course, Enrollment,Module,Lecture
 from django.contrib.auth.decorators import login_required
 
 def create_course(request):
@@ -105,6 +105,7 @@ def course_detail(request,course_id):
     course = get_object_or_404(Course,id=course_id)
 
     role = request.user.profile.role
+    modules = course.modules.all()
 
     if role == "student":
         if not Enrollment.objects.filter(student=request.user,course=course).exists():
@@ -121,6 +122,57 @@ def course_detail(request,course_id):
     return render(request,"courses/course_detail.html",{
         "course":course,
         "role":role,
+        "modules":modules,
         "enrolled_students_count":enrolled_students_count,
     })
+
+@login_required
+def lecture_detail(request,lecture_id):
+    lecture = get_object_or_404(Lecture,id=lecture_id)
+    course = lecture.module.course
+
+    return render(request,"courses/lecture_detail.html",{
+        "lecture":lecture,
+        "course":course,
+        })
+@login_required
+def add_module(request,course_id):
+    course = get_object_or_404(Course,id=course_id)
+
+    if request.user != course.teacher:
+        return HttpResponseForbidden()
+
+    if request.method == "POST":
+        title = request.POST.get("title")
+        order = request.POST.get("order")
+
+        Module.objects.create(
+            course = course,
+            title = title,
+            order = order
+        )
+
+        return redirect("courses:course_detail",course.id)
+    return render(request,"courses/add_module.html",{"course":course})
+
+@login_required
+def add_lecture(request,module_id):
+    module = get_object_or_404(Module, id=module_id)
+    course = module.course
+
+    if request.user != course.teacher:
+          return HttpResponseForbidden("You are not the teacher of this course.")
+
+    if request.method == "POST":
+        Lecture.objects.create(
+            module=module,
+            title=request.POST.get("title"),
+            notes=request.POST.get("notes"),
+            video_url=request.POST.get("video_url"),
+            order = request.POST.get("order")
+        )
+
+        return redirect("courses:course_detail",course.id)
+
+    return render(request,"courses/add_lecture.html",{"module":module})
 

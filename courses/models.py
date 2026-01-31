@@ -36,3 +36,36 @@ class Enrollment(models.Model):
     def __str__(self):
         return f"{self.student.username} enrolled in {self.course.title}"
 
+class Module(models.Model):
+    course = models.ForeignKey(
+        "Course",
+         on_delete=models.CASCADE,
+         related_name="modules"
+    )
+
+    title = models.CharField(max_length=255)
+    order = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        ordering = ["order"]
+
+    def __str__(self):
+        return f"{self.title} ({self.course.title})"
+
+class Lecture(models.Model):
+    module = models.ForeignKey(
+        Module,
+        on_delete=models.CASCADE,
+        related_name="lectures"
+    )
+
+    title = models.CharField(max_length=255)
+    notes = models.TextField(blank=True)
+    video_url = models.URLField(blank=True)
+    order = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        ordering = ["order"]
+    def __str__(self):
+        return f"{self.title} ({self.module.title})"
+

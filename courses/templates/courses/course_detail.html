@@ -4,11 +4,35 @@
 <p> Teacher: {{ course.teacher.username }}</p>
 <p> Enrolled students: {{ enrolled_students_count }} </p>
 
+{% for module in modules %}
+<h4>{{ module.title }}</h4>
+{% if role == "teacher" and course.teacher == request.user %}
+<a href="{% url 'courses:add_lecture' module.id %}">Add lecture </a>
+{% endif %}
+<ul>
+  {% for lecture in module.lectures.all %}
+  <li>
+    <a href="{% url 'courses:lecture_detail' lecture.id %}">
+      {{ lecture.title }}
+    </a>
+  </li>
+  {% empty %}
+  <li> No lectures yet. </li>
+  {% endfor %}
+</ul>
+
+{% empty %}
+<p> No modules yet </p>
+{% endfor %}
+
+
 {% if role == "student" %}
 <a href="{% url 'courses:unenroll_course' course.id %}?next={{ request.path }}">
   Unenroll
 </a>
 {% elif role == "teacher" and course.teacher == request.user %}
+<a href="{% url 'courses:add_module' course.id %}">Add module</a>
+
 <a href="{% url 'courses:edit_course' course.id %}"> Edit Course</a>
 <!-- Add links to quiz materials chat here -->
 

@@ -11,7 +11,9 @@ urlpatterns = [
     path("my-courses/",views.my_courses,name="my_courses"),
     path("<int:course_id>",views.course_detail,name="course_detail"),
     path("edit/<int:course_id>",views.edit_course,name="edit_course"),
-  
+    path("lecture/<int:lecture_id>",views.lecture_detail,name="lecture_detail"),
+    path("<int:course_id>/add-module/",views.add_module, name="add_module"),
+    path("module/<int:module_id>/add-lecture/",views.add_lecture,name="add_lecture"),
 ]
 
 

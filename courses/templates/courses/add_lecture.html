@@ -1,0 +1,11 @@
+<h2> Add Lecture to {{ module.title }} </h2>
+
+<form method="post">
+  {% csrf_token %}
+    <input type="text" name="title" placeholder="Lecture title" required><br>
+    <textarea name="notes" placeholder="Notes"></textarea><br>
+    <input type="url" name="video_url" placeholder="Video URL"><br>
+    <input type="number" name="order" placeholder="Order" required><br>
+    <button type="submit">Add Lecture</button>
+
+</form>
