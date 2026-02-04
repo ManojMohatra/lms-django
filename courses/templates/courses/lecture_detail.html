@@ -1,6 +1,56 @@
-<h2>{{ lecture.title }} </h2>
-<p> {{ lecture.notes }} </p>
+<h2>{{ lecture.title }}</h2>
+
+{% if lecture.notes %}
+    <p>{{ lecture.notes }}</p>
+{% endif %}
 
 {% if lecture.video_url %}
-<a href="{{ lecture.video_url }}" target="_blank"> Watch Video </a>
+    <p>
+        <a href="{{ lecture.video_url }}" target="_blank">
+            ▶ Watch Lecture Video
+        </a>
+    </p>
 {% endif %}
+
+<hr>
+
+<h3>Supporting Course Materials</h3>
+
+{% if course.materials.all %}
+    <ul>
+    {% for material in course.materials.all %}
+        <li>
+            <strong>{{ material.title }}</strong>
+
+            {% if material.material_type == "pdf" and material.file %}
+                – <a href="{{ material.file.url }}" download>Download</a>
+
+            {% elif material.material_type == "video" %}
+                – <a href="{{ material.video_url }}" target="_blank">Watch</a>
+
+            {% elif material.material_type == "link" %}
+                – <a href="{{ material.external_link }}" target="_blank">Open</a>
+
+            {% elif material.material_type == "text" %}
+                <p>{{ material.text_content }}</p>
+            {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+
+    <p>
+        <a href="{% url 'materials:material_list' course.id %}">
+            📂 View all course materials
+        </a>
+    </p>
+{% else %}
+    <p>No materials available for this course.</p>
+{% endif %}
+
+<hr>
+
+<p>
+    <a href="{% url 'courses:course_detail' course.id %}">
+        ← Back to Course
+    </a>
+</p>

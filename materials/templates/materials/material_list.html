@@ -1,0 +1,45 @@
+<h2>Course Materials</h2>
+<h4>{{ course.title }}</h4>
+
+{% if role == "teacher" %}
+    <p>
+        <a href="{% url 'materials:add_material' course.id %}">
+            ➕ Add New Material
+        </a>
+    </p>
+{% endif %}
+
+<hr>
+
+{% if materials %}
+    <ul>
+    {% for material in materials %}
+        <li>
+            <strong>{{ material.title }}</strong>
+            <small>({{ material.get_material_type_display }})</small>
+
+            {% if material.material_type == "pdf" and material.file %}
+                – <a href="{{ material.file.url }}" download>Download</a>
+
+            {% elif material.material_type == "video" and material.video_url %}
+                – <a href="{{ material.video_url }}" target="_blank">Watch Video</a>
+
+            {% elif material.material_type == "link" and material.external_link %}
+                – <a href="{{ material.external_link }}" target="_blank">Open Link</a>
+
+            {% elif material.material_type == "text" %}
+                <p>{{ material.text_content }}</p>
+            {% endif %}
+        </li>
+        <hr>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No materials have been added yet.</p>
+{% endif %}
+
+<p>
+    <a href="{% url 'courses:course_detail' course.id %}">
+        ← Back to Course
+    </a>
+</p>

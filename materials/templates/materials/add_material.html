@@ -1,0 +1,49 @@
+<h2>Add Material</h2>
+<h4>{{ course.title }}</h4>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <p>
+        <label>Title:</label><br>
+        <input type="text" name="title" required>
+    </p>
+
+    <p>
+        <label>Material Type:</label><br>
+        <select name="material_type" required>
+            <option value="pdf">PDF / Document</option>
+            <option value="video">Video</option>
+            <option value="link">External Link</option>
+            <option value="text">Text Content</option>
+        </select>
+    </p>
+
+    <p>
+        <label>File (PDF, DOC, etc):</label><br>
+        <input type="file" name="file">
+    </p>
+
+    <p>
+        <label>Video URL:</label><br>
+        <input type="url" name="video_url">
+    </p>
+
+    <p>
+        <label>External Link:</label><br>
+        <input type="url" name="external_link">
+    </p>
+
+    <p>
+        <label>Text Content:</label><br>
+        <textarea name="text_content"></textarea>
+    </p>
+
+    <button type="submit">Save Material</button>
+</form>
+
+<p>
+    <a href="{% url 'materials:material_list' course.id %}">
+        ← Back to Materials
+    </a>
+</p>

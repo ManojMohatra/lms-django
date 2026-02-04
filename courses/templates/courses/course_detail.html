@@ -1,6 +1,12 @@
 <h2>{{ course.title }}</h2>
 <p> {{ course.description }}</p>
 
+<p>
+  <a href="{% url 'materials:material_list' course.id %}">
+    📂 View Course Materials
+  </a>
+</p>
+
 <p> Teacher: {{ course.teacher.username }}</p>
 <p> Enrolled students: {{ enrolled_students_count }} </p>
 
@@ -42,6 +48,8 @@
 <h3> Courses feature </h3>
 <ul>
   <li> Quizzes(coming soon) </li>
-  <li> Materials(coming soon) </li>
+  <li><a href="{% url 'materials:material_list' course.id %}">
+    Materials
+  </a></li>
   <li> Chat(coming soon) </li>
  </ul>
