@@ -207,3 +207,14 @@ def delete_module(request,module_id):
 
     return render(request,"courses/delete_module.html",{"module":module})
 
+@login_required
+def teacher_dashboard(request):
+    if request.user.profile.role != "teacher":
+        return HttpResponseForbidden("Only teachers can access this dashboard")
+
+    courses = Course.objects.filter(teacher=request.user)
+
+    return render(request,"courses/teacher_dashboard.html",
+                  {"courses":courses})
+
+
