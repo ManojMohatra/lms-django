@@ -1,0 +1,15 @@
+<h2> Delete Module </h2>
+
+<p> Are you sure you want  to delete module: </p>
+<h3> {{ module.title }} </h3>
+
+<p> This will delete All lectures inside this module. </p>
+
+<form method="POST">
+  {% csrf_token %}
+  <button type="submit"> Yes, Delete</button>
+
+</form>
+
+<a href="{% url 'courses:course_detail' module.course.id %}"> Cancel </a>
+

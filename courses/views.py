@@ -193,3 +193,17 @@ def edit_module(request, module_id):
 
     return render(request,"courses/edit_module.html",{"module":module})
 
+@login_required
+def delete_module(request,module_id):
+    module = get_object_or_404(Module, id=module_id)
+    course = module.course
+
+    if request.user != course.teacher:
+        return HttpResponseForbidden("You are not the teacher of this course.")
+
+    if request.method == "POST":
+        module.delete()
+        return redirect("courses:course_detail",course.id)
+
+    return render(request,"courses/delete_module.html",{"module":module})
+

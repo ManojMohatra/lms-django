@@ -13,9 +13,9 @@
 {% for module in modules %}
 <h4>{{ module.title }}</h4>
 {% if role == "teacher" and course.teacher == request.user %}
-    <a href ="{% url 'courses:edit_module' module.id %}">Edit </a>
-{% endif %}
-{% if role == "teacher" and course.teacher == request.user %}
+
+<a href ="{% url 'courses:edit_module' module.id %}">Edit Module </a>
+<a href="{% url 'courses:delete_module' module.id %}">Delete Module</a>
 <a href="{% url 'courses:add_lecture' module.id %}">Add lecture </a>
 {% endif %}
 <ul>
