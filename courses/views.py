@@ -176,3 +176,20 @@ def add_lecture(request,module_id):
 
     return render(request,"courses/add_lecture.html",{"module":module})
 
+@login_required
+def edit_module(request, module_id):
+    module = get_object_or_404(Module, id=module_id)
+    course = module.course
+
+    if request.user != course.teacher:
+        return HttpResponseForbidden("You are not allowed to edit this module.")
+
+    if request.method == "POST":
+        module.title = request.POST.get("title")
+        module.order = request.POST.get("order")
+        module.save()
+
+        return redirect("courses:course_detail",course.id)
+
+    return render(request,"courses/edit_module.html",{"module":module})
+

@@ -1,0 +1,13 @@
+<h2> Edit Module </h2>
+
+<form method ="post">
+  {% csrf_token %}
+
+  <label> Title </label><br>
+  <input type="text" name="title" value="{{ module.title }}"><br><br>
+
+  <label> Order </label></br>
+  <input type="number" name="order" value="{{ module.order }}"><br><br>
+
+  <button type="Submit"> Save Changes </button>
+</form>
