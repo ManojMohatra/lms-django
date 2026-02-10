@@ -20,11 +20,19 @@
 {% endif %}
 <ul>
   {% for lecture in module.lectures.all %}
+  
   <li>
     <a href="{% url 'courses:lecture_detail' lecture.id %}">
       {{ lecture.title }}
     </a>
+
+     {% if role == "teacher" and course.teacher == request.user %}
+    | <a href="{% url 'courses:edit_lecture' lecture.id %}">Edit</a>
+    | <a href="{% url 'courses:delete_lecture' lecture.id %}">Delete</a>
+  {% endif %}
   </li>
+
+  
   {% empty %}
   <li> No lectures yet. </li>
   {% endfor %}

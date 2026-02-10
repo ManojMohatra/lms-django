@@ -209,4 +209,37 @@ def delete_module(request,module_id):
 
 
 
+@login_required
+def edit_lecture(request,lecture_id):
+    lecture = get_object_or_404(Lecture,id=lecture_id)
+    course = lecture.module.course
+
+    if request.user != course.teacher:
+        return HttpResponseForbidden() #Maybe can add some message later
+
+    if request.method == "POST":
+        lecture.title = request.POST.get("title")
+        lecture.notes = request.POST.get("notes")
+        lecture.video_url = request.POST.get("video_url")
+        lecture.order = request.POST.get("order")
+
+        lecture.save()
+
+        return redirect("courses:course_detail",course.id)
+
+    return render(request,"courses/edit_lecture.html",{"lecture":lecture})
+
+@login_required
+def delete_lecture(request,lecture_id):
+    lecture = get_object_or_404(Lecture,id=lecture_id)
+    course = lecture.module.course
+
+    if request.user != course.teacher:
+        return HttpResponseForbidden()  #Maybe some message later
+
+    if request.method == "POST":
+        lecture.delete()
+        return redirect("courses:course_detail", course.id)
+
+    return render(request, "courses/delete_lecture.html", {"lecture": lecture})
 
