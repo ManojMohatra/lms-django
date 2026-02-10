@@ -16,7 +16,6 @@ urlpatterns = [
     path("module/<int:module_id>/add-lecture/",views.add_lecture,name="add_lecture"),
     path("module/<int:module_id>/edit/",views.edit_module,name="edit_module"),
     path("module/<int:module_id>/delete",views.delete_module,name="delete_module"),
-    path("dashboard/",views.teacher_dashboard,name="teacher_dashboard"),
 ]
 
 

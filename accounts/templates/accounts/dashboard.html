@@ -9,7 +9,7 @@
 
 {% if user.profile.role == 'teacher' %}
     <p>Ready to manage your classes?</p>
-    <a href="{% url 'courses:teacher_dashboard' %}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">
+    <a href="{% url 'courses:my_courses' %}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">
         Let's start your work
     </a>
 {% elif user.profile.role == 'student' %}
