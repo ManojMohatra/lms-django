@@ -1,0 +1,11 @@
+<h2>Unenroll from {{ course.title }}</h2>
+
+<p>Are you sure you want to unenroll?</p>
+
+<form method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}">
+    <button type="submit">Yes, Unenroll</button>
+</form>
+
+<a href="{{ next }}">Cancel</a>

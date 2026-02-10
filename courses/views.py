@@ -53,19 +53,28 @@ def enroll_course(request,course_id):
     next_page = request.GET.get("next") or "courses:course_list"
     return redirect(next_page)
 
-def unenroll_course(request,course_id):
+@login_required
+def unenroll_course(request, course_id):
     if request.user.profile.role != "student":
         return HttpResponseForbidden("Only students can unenroll.")
 
-    Enrollment.objects.filter(
+    enrollment = get_object_or_404(
+        Enrollment,
         student=request.user,
         course_id=course_id
-    ).delete()
+    )
 
-    #This is to make sure that they are redirected to the page that they were previously on instead of just a single hardcoded page
     next_page = request.GET.get("next") or "courses:my_courses"
 
-    return redirect(next_page)
+    if request.method == "POST":
+        enrollment.delete()
+        return redirect(next_page)
+
+    return render(request, "courses/confirm_unenroll.html", {
+        "course": enrollment.course,
+        "next": next_page
+    })
+
 
 @login_required
 def my_courses(request):
