@@ -12,3 +12,5 @@ media/
 
 
 postgres_data/
+
+*.pub
