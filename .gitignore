@@ -5,7 +5,7 @@ db.sqlite3
 .env
 media/
 .env.*
-
+myenv/
 
 *~
 \#*\#
@@ -13,4 +13,3 @@ media/
 
 postgres_data/
 
-*.pub
