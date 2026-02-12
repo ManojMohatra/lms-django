@@ -1,0 +1,27 @@
+<h2>{{ course.title }} - Discussion</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <textarea name="content" required></textarea>
+    <button type="submit">Post</button>
+</form>
+
+<hr>
+
+{% for message in messages %}
+    <div style="margin-bottom:20px;">
+        <strong>{{ message.user.username }}</strong>
+        <p>{{ message.content }}</p>
+        <small>{{ message.created_at }}</small>
+
+        <!-- Replies -->
+        {% for reply in message.replies.all %}
+            <div style="margin-left:30px;">
+                <strong>{{ reply.user.username }}</strong>
+                <p>{{ reply.content }}</p>
+                <small>{{ reply.created_at }}</small>
+            </div>
+        {% endfor %}
+    </div>
+{% endfor %}
+
