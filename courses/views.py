@@ -252,3 +252,17 @@ def delete_lecture(request,lecture_id):
 
     return render(request, "courses/delete_lecture.html", {"lecture": lecture})
 
+@login_required
+def delete_course(request,course_id):
+    course = get_object_or_404(Course,id=course_id)
+
+    if request.user != course.teacher and not request.user_is_staff:
+        return HttpResponseForbidden()
+
+    if request.method == "POST":
+        course.delete()
+        return redirect("courses:my_courses")
+
+    return render(request,"courses/delete_course.html",{
+        "course":course
+        })

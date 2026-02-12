@@ -1,0 +1,19 @@
+<h2>Delete Course</h2>
+
+<p>Are you sure you want to delete "{{ course.title }}"?</p>
+
+<p>This will permanently remove:</p>
+<ul>
+    <li>All modules</li>
+    <li>All lectures</li>
+    <li>All enrollments</li>
+</ul>
+
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit">Yes, Delete Course</button>
+</form>
+
+<a href="{% url 'courses:course_detail' course.id %}">
+    Cancel
+</a>

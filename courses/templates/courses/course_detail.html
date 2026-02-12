@@ -1,5 +1,12 @@
 <h2>{{ course.title }}</h2>
+
 <p> {{ course.description }}</p>
+
+{% if request.user == course.teacher or request.user.is_staff %}
+    <a href="{% url 'courses:delete_course' course.id %}">
+        Delete Course
+    </a>
+{% endif %}
 
 <p>
   <a href="#">
