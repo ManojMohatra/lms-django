@@ -2,8 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from courses.models import Course
 
-class Message(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="messages")
+class Comment(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="comment")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     content = models.TextField()

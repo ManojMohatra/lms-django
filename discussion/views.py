@@ -1,10 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseForbidden
 from courses.models import Course, Enrollment
-from .models import Message
+from .models import Comment
 
 
-def course_chat(request, course_id):
+def course_discussion(request, course_id):
     course = get_object_or_404(Course, id=course_id)
 
     # ---- Permission Check ----
@@ -30,27 +30,27 @@ def course_chat(request, course_id):
 
             if parent_id:
                 # Ensure parent message belongs to same course
-                parent = Message.objects.filter(
+                parent = Comment.objects.filter(
                     id=parent_id,
                     course=course
                 ).first()
 
-            Message.objects.create(
+            Comment.objects.create(
                 course=course,
                 user=request.user,   
                 content=content,
                 parent=parent
             )
 
-        return redirect("chat:course_chat", course_id=course.id)
+        return redirect("discussion:course_discussion", course_id=course.id)
 
     # ---- Fetch Top-Level Messages ----
-    messages = Message.objects.filter(
+    comments = Comment.objects.filter(
         course=course,
         parent__isnull=True
     ).order_by("-created_at")
 
-    return render(request, "chat/course_chat.html", {
+    return render(request, "discussion/course_discussion.html", {
         "course": course,
-        "messages": messages
+        "comments": comments
     })
