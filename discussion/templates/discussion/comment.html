@@ -1,0 +1,27 @@
+<div style="margin-left: {{ level }}px; margin-top:15px; padding:10px; border-left:2px solid #ddd;">
+    <strong>{{ comment.user.username }}</strong>
+    <p>{{ comment.content }}</p>
+    <small>{{ comment.created_at }}</small>
+
+    <!-- Reply Button -->
+    <div>
+        <button onclick="toggleReplyForm({{ comment.id }})">
+            Reply
+        </button>
+    </div>
+
+    <!-- Reply Form -->
+    <form method="post"
+          id="reply-form-{{ comment.id }}"
+          style="display:none; margin-top:10px;">
+        {% csrf_token %}
+        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+        <textarea name="content" required></textarea>
+        <button type="submit">Post Reply</button>
+    </form>
+
+    <!-- Recursive Replies -->
+    {% for reply in comment.replies.all %}
+        {% include "discussion/comment.html" with comment=reply level=level|add:30 %}
+    {% endfor %}
+</div>

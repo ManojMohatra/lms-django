@@ -62,6 +62,19 @@
 
 {% endif %}
 
+<p>
+    Wanna  ask questions ?
+</p>
+
+<a href="{% url 'discussion:course_discussion' course.id %}" 
+   class="btn btn-outline-primary">
+  View Discussion
+</a>
+<p>
+  {{ comment_count }} comments
+</p>
+
+
 <!--- Placeholder for future features -->
 <h3> Courses feature </h3>
 <ul>
@@ -69,5 +82,5 @@
   <li><a href="#">
     Materials
   </a></li>
-  <li> Chat(coming soon) </li>
+ 
  </ul>

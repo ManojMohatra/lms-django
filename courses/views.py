@@ -3,6 +3,7 @@ from django.http import HttpResponseForbidden
 from .forms import CourseForm
 from .models import Course, Enrollment,Module,Lecture
 from django.contrib.auth.decorators import login_required
+from discussion.models import Comment
 
 def create_course(request):
     if request.user.profile.role != "teacher":
@@ -115,6 +116,7 @@ def course_detail(request,course_id):
 
     role = request.user.profile.role
     modules = course.modules.all()
+    comment_count = Comment.objects.filter(course=course).count()
 
     if role == "student":
         if not Enrollment.objects.filter(student=request.user,course=course).exists():
@@ -133,6 +135,7 @@ def course_detail(request,course_id):
         "role":role,
         "modules":modules,
         "enrolled_students_count":enrolled_students_count,
+        "comment_count":comment_count,
     })
 
 @login_required
