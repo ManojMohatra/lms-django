@@ -21,5 +21,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/',include('accounts.urls')),
     path('courses/',include('courses.urls')),
+<<<<<<< HEAD
     path('materials/',include('materials.urls'))
+=======
+    path("discussion/", include("discussion.urls")),
+
+>>>>>>> feature/chat
 ]

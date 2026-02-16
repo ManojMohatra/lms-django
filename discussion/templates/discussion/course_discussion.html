@@ -1,0 +1,26 @@
+<h2>{{ course.title }} - Discussion</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <textarea name="content" placeholder="Write a comment..." required></textarea>
+    <button type="submit">Post</button>
+</form>
+
+<hr>
+
+{% for comment in comments %}
+    {% include "discussion/comment_block.html" with comment=comment level=0 %}
+{% empty %}
+    <p>No comments yet.</p>
+{% endfor %}
+
+<script>
+function toggleReplyForm(id) {
+    var form = document.getElementById("reply-form-" + id);
+    if (form.style.display === "none") {
+        form.style.display = "block";
+    } else {
+        form.style.display = "none";
+    }
+}
+</script>

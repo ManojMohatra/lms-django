@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <h2>Delete Comment</h2>
 
 <p><strong>Are you sure you want to delete this comment?</strong></p>
@@ -5,12 +6,24 @@
 <div style="margin:15px 0; padding:10px; border-left:3px solid #ddd;">
     <strong>{{ comment.user.username }}</strong>
     <small>{{ comment.created_at }}</small>
+=======
+<h2>Confirm Delete</h2>
+
+<p>Are you sure you want to delete this comment?</p>
+
+<div style="padding:10px; border-left:3px solid #ccc;">
+    <strong>{{ comment.user.username }}</strong>
+>>>>>>> feature/chat
     <p>{{ comment.content }}</p>
 </div>
 
 <form method="post">
     {% csrf_token %}
+<<<<<<< HEAD
     <button type="submit" style="color:white; background:red;">
+=======
+    <button type="submit" style="background:red; color:white;">
+>>>>>>> feature/chat
         Yes, Delete
     </button>
     <a href="{% url 'discussion:course_discussion' course.id %}">
