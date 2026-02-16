@@ -136,14 +136,21 @@ def course_detail(request,course_id):
     })
 
 @login_required
-def lecture_detail(request,lecture_id):
-    lecture = get_object_or_404(Lecture,id=lecture_id)
+def lecture_detail(request, lecture_id):
+    # This fetches the lecture AND all its materials in one go
+    lecture = get_object_or_404(
+        Lecture.objects.prefetch_related('materials'), 
+        id=lecture_id
+    )
     course = lecture.module.course
+    is_teacher = (course.teacher == request.user)
+    return render(request, "courses/lecture_detail.html", {
+        "lecture": lecture,
+        "course": course,
+        "is_teacher": is_teacher,
+    })
 
-    return render(request,"courses/lecture_detail.html",{
-        "lecture":lecture,
-        "course":course,
-        })
+
 @login_required
 def add_module(request,course_id):
     course = get_object_or_404(Course,id=course_id)

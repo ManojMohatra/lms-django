@@ -1,21 +1,57 @@
-<h2>{{ lecture.title }}</h2>
+<div class="container">
+    <h2>{{ lecture.title }}</h2>
 
-{% if lecture.notes %}
-    <p>{{ lecture.notes }}</p>
-{% endif %}
+    <div style="margin-top: 20px;">
+        {% if lecture.notes %}
+            <div class="notes-section">
+                <strong>Lecture Notes:</strong>
+                <p>{{ lecture.notes|linebreaks }}</p>
+            </div>
+        {% endif %}
 
-{% if lecture.video_url %}
-    <p>
-        <a href="{{ lecture.video_url }}" target="_blank">
-            ▶ Watch Lecture Video
-        </a>
-    </p>
-{% endif %}
+        {% if lecture.video_url %}
+            <p>
+                <strong>Video:</strong> 
+                <a href="{{ lecture.video_url }}" target="_blank">▶ Watch Lecture Video</a>
+            </p>
+        {% endif %}
+    </div>
 
-<a href="{% url 'lecture_materials' lecture.id %}">View Materials</a>.
+    <hr>
 
-<p>
-    <a href="{% url 'courses:course_detail' course.id %}">
-        ← Back to Course
-    </a>
-</p>
+    <h3>📚 Extra Course Materials</h3>
+    <ul>
+        {% for material in lecture.materials.all %}
+            <li style="margin-bottom: 10px;">
+                {{ material.title }} — 
+                <a href="{{ material.drive_link }}" target="_blank">Open Link ↗</a>
+
+                {% if is_teacher %}
+                    <form action="{% url 'delete_material' material.id %}" method="POST" style="display:inline; margin-left: 10px;">
+                        {% csrf_token %}
+                        <button type="submit" onclick="return confirm('Delete this material?')" style="color:red; background:none; border:none; cursor:pointer;">
+                            (Delete)
+                        </button>
+                    </form>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>No materials available for this lecture.</li>
+        {% endfor %}
+    </ul>
+
+    {% if is_teacher %}
+        <div style="background: #f4f4f4; padding: 15px; border-radius: 5px; margin-top: 20px;">
+            <h4>Add New Material</h4>
+            <form action="{% url 'lecture_materials' lecture.id %}" method="POST">
+                {% csrf_token %}
+                <input type="text" name="title" placeholder="Material Title" required>
+                <input type="url" name="drive_link" placeholder="Drive Link" required>
+                <button type="submit">Add</button>
+            </form>
+        </div>
+    {% endif %}
+
+    <hr>
+    <p><a href="{% url 'courses:course_detail' course.id %}">← Back to Course</a></p>
+</div>

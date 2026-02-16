@@ -26,7 +26,7 @@ def lecture_materials(request, lecture_id):
                 return redirect('all_materials')
             
             
-            return redirect('lecture_materials', lecture_id=lecture.id)
+            return redirect('courses:lecture_detail', lecture_id=lecture.id)
 
     materials = lecture.materials.all()
     return render(request, 'materials/lecture_materials.html', {
@@ -53,9 +53,9 @@ def delete_material(request, material_id):
         referer = request.META.get('HTTP_REFERER', '')
         if 'all' in referer:
             return redirect('all_materials')
-        return redirect('lecture_materials', lecture_id=lecture.id)
+        return redirect('courses:lecture_detail', lecture_id=lecture.id)
     
-    return redirect('lecture_materials', lecture_id=lecture.id)
+    return redirect('courses:lecture_detail', lecture_id=lecture.id)
 
 
 @login_required

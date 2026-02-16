@@ -66,6 +66,8 @@ class Lecture(models.Model):
 
     class Meta:
         ordering = ["order"]
+
+        
     def __str__(self):
         return f"{self.title} ({self.module.title})"
 
