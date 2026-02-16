@@ -11,14 +11,12 @@
 
     <!-- Delete -->
     {% if request.user == comment.user or request.user == course.teacher or request.user.is_staff %}
-        <form method="post"
-              action="{% url 'discussion:delete_comment' comment.id %}"
-              style="display:inline;">
-            {% csrf_token %}
-            <button type="submit" style="color:red;">
-                Delete
-            </button>
-        </form>
+
+    <a href="{% url 'discussion:delete_comment' comment.id %}"
+       style="color:red;">
+      Delete
+    </a>
+
     {% endif %}
 
     <!-- Reply Form -->
