@@ -1,20 +1,47 @@
 <h2>{{ lecture.title }}</h2>
 
-{% if lecture.notes %}
-    <p>{{ lecture.notes }}</p>
+<div class="lecture-content">
+    {% if lecture.notes %}
+        <p>{{ lecture.notes|linebreaks }}</p>
+    {% endif %}
+
+    {% if lecture.video_url %}
+        <p><a href="{{ lecture.video_url }}" target="_blank">▶ Watch Video</a></p>
+    {% endif %}
+</div>
+
+<hr>
+
+<h3>Resources & Materials</h3>
+<ul>
+    {% for material in lecture.materials.all %}
+        <li>
+            <a href="{{ material.link }}" target="_blank">{{ material.title }}</a>
+            
+            {% if is_teacher %}
+                <form action="{% url 'materials:delete_material' material.id %}" method="POST" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" style="color:red; background:none; border:none; cursor:pointer;" onclick="return confirm('Delete?')">
+                        (Delete)
+                    </button>
+                </form>
+            {% endif %}
+        </li>
+    {% empty %}
+        <li>No materials added yet.</li>
+    {% endfor %}
+</ul>
+
+{% if is_teacher %}
+    <div style="margin-top: 20px; padding: 15px; border: 1px solid #ccc;">
+        <h4>Add Resource</h4>
+        <form action="{% url 'materials:lecture_materials' lecture.id %}" method="POST">
+            {% csrf_token %}
+            <input type="text" name="title" placeholder="Title (e.g. GitHub Repo)" required>
+            <input type="url" name="link" placeholder="URL" required>
+            <button type="submit">Add</button>
+        </form>
+    </div>
 {% endif %}
 
-{% if lecture.video_url %}
-    <p>
-        <a href="{{ lecture.video_url }}" target="_blank">
-            ▶ Watch Lecture Video
-        </a>
-    </p>
-{% endif %}
-
-
-<p>
-    <a href="{% url 'courses:course_detail' course.id %}">
-        ← Back to Course
-    </a>
-</p>
+<p><a href="{% url 'courses:course_detail' course.id %}">← Back to Course</a></p>

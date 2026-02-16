@@ -2,6 +2,7 @@
 
 <p> {{ course.description }}</p>
 
+<<<<<<< variant A
 {% if request.user == course.teacher or request.user.is_staff %}
     <a href="{% url 'courses:delete_course' course.id %}">
         Delete Course
@@ -13,6 +14,8 @@
     📂 View Course Materials
   </a>
 </p>
+>>>>>>> variant B
+======= end
 
 <p> Teacher: {{ course.teacher.username }}</p>
 <p> Enrolled students: {{ enrolled_students_count }} </p>
