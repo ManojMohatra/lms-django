@@ -1,14 +1,25 @@
 <div style="margin-left: {{ level }}px; margin-top:15px; padding:10px; border-left:2px solid #ddd;">
+
     <strong>{{ comment.user.username }}</strong>
-    <p>{{ comment.content }}</p>
     <small>{{ comment.created_at }}</small>
+    <p>{{ comment.content }}</p>
 
     <!-- Reply Button -->
-    <div>
-        <button onclick="toggleReplyForm({{ comment.id }})">
-            Reply
-        </button>
-    </div>
+    <button type="button" onclick="toggleReplyForm({{ comment.id }})">
+        Reply
+    </button>
+
+    <!-- Delete -->
+    {% if request.user == comment.user or request.user == course.teacher or request.user.is_staff %}
+        <form method="post"
+              action="{% url 'discussion:delete_comment' comment.id %}"
+              style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" style="color:red;">
+                Delete
+            </button>
+        </form>
+    {% endif %}
 
     <!-- Reply Form -->
     <form method="post"
@@ -22,6 +33,7 @@
 
     <!-- Recursive Replies -->
     {% for reply in comment.replies.all %}
-        {% include "discussion/comment.html" with comment=reply level=level|add:30 %}
+        {% include "discussion/comment_block.html" with comment=reply level=level|add:30 %}
     {% endfor %}
+
 </div>

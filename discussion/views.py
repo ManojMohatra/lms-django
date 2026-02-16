@@ -54,3 +54,21 @@ def course_discussion(request, course_id):
         "course": course,
         "comments": comments
     })
+
+def delete_comment(request,comment_id):
+    comment = get_object_or_404(Comment,id=comment_id)
+    course = comment.course
+
+    is_owner = comment.user == request.user
+    is_teacher = course.teacher == request.user
+    is_admin = request.user.is_staff
+
+    if not(is_owner or is_teacher or is_admin):
+        return HttpResponseForbidden("You don't have permission to delete this comment.")
+
+    if request.method == "POST":
+        comment.delete()
+        return redirect("discussion:course_discussion",course_id=course.id)
+
+    return HttpResponseForbidden("Invalid request.")
+
