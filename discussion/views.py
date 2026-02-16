@@ -79,3 +79,30 @@ def delete_comment(request, comment_id):
         "course": course
     })
 
+def edit_comment(request,comment_id):
+    comment = get_object_or_404(Comment,id=comment_id)
+    course = comment.course
+
+    is_owner = comment.user == request.user
+    is_admin = request.user.is_staff
+
+    if not(is_owner or is_admin):
+        return HttpResponseForbidden("No permission to edit this comment.")
+
+    if request.method == "POST":
+        new_content = request.POST.get("content")
+
+        if new_content:
+            comment.content = new_content
+            comment.is_edited = True
+            comment.save()
+
+        return redirect("discussion:course_discussion",course_id=course.id)
+
+    return render(request,"discussion/edit_comment.html",{
+        "comment":comment,
+        "course":course,
+    })
+
+
+        

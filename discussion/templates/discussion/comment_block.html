@@ -4,6 +4,12 @@
     <small>{{ comment.created_at }}</small>
     <p>{{ comment.content }}</p>
 
+    <!-- If the comment is edited show that it's edited -->
+    {% if comment.is_edited  %}
+    <small>(edited)</small>
+    {% endif %}
+
+
     <!-- Reply Button -->
     <button type="button" onclick="toggleReplyForm({{ comment.id }})">
         Reply
@@ -17,6 +23,12 @@
       Delete
     </a>
 
+    {% endif %}
+
+    {% if request.user == comment.user or request.user == course.teacher or request.user.is_staff %}
+    <a href="{% url 'discussion:edit_comment' comment.id %}">
+        Edit
+    </a>
     {% endif %}
 
     <!-- Reply Form -->
