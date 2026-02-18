@@ -16,6 +16,16 @@
 <p> Teacher: {{ course.teacher.username }}</p>
 <p> Enrolled students: {{ enrolled_students_count }} </p>
 
+<h3> Progress: {{ progress_percent }}% </h3>
+<div style="background:#ddd; height:20px; border-radius:10px;">
+    <div style="
+        width:{{ progress_percent }}%;
+        background:#4caf50;
+        height:100%;
+        border-radius:10px;
+    "></div>
+</div>
+
 {% for module in modules %}
 <h4>{{ module.title }}</h4>
 {% if role == "teacher" and course.teacher == request.user %}

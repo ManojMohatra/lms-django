@@ -4,6 +4,7 @@ from .forms import CourseForm
 from .models import Course, Enrollment,Module,Lecture,LectureProgress
 from django.contrib.auth.decorators import login_required
 from discussion.models import Comment
+from django.utils import timezone
 
 def create_course(request):
     if request.user.profile.role != "teacher":
@@ -118,6 +119,17 @@ def course_detail(request,course_id):
     modules = course.modules.all()
     comment_count = Comment.objects.filter(course=course).count()
 
+    total_lectures = Lecture.objects.filter(module__course=course).count()
+
+    completed_lectures = LectureProgress.objects.filter(
+        student=request.user,
+        lecture__module__course=course,
+        completed=True
+        ).count()
+    progress_percent = 0
+    if total_lectures > 0:
+        progress_percent = int((completed_lectures / total_lectures) * 100)
+        
     if role == "student":
         if not Enrollment.objects.filter(student=request.user,course=course).exists():
             return HttpResponseForbidden("You are not enrolled in this course.")
@@ -136,6 +148,7 @@ def course_detail(request,course_id):
         "modules":modules,
         "enrolled_students_count":enrolled_students_count,
         "comment_count":comment_count,
+        "progress_percent": progress_percent
     })
 
 @login_required
@@ -145,12 +158,30 @@ def lecture_detail(request, lecture_id):
         Lecture.objects.prefetch_related('materials'), 
         id=lecture_id
     )
+
     course = lecture.module.course
     is_teacher = (course.teacher == request.user)
+
+    if request.method == "POST":
+        progress , created = LectureProgress.objects.get_or_create(
+            student=request.user,
+            lecture=lecture
+        )
+        progress.completed = True
+        progress.completed_at = timezone.now()
+        progress.save()
+
+    completed = LectureProgress.objects.filter(
+        student=request.user,
+        lecture=lecture,
+        completed=True
+    ).exists()
+    
     return render(request, "courses/lecture_detail.html", {
         "lecture": lecture,
         "course": course,
         "is_teacher": is_teacher,
+        "completed":completed
     })
 
 

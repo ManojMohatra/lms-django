@@ -75,8 +75,8 @@ class Lecture(models.Model):
 class LectureProgress(models.Model):
     student = models.ForeignKey(User,on_delete=models.CASCADE)
     lecture = models.ForeignKey("Lecture",on_delete=models.CASCADE)
-    compeleted = models.BooleanField(default=False)
-    compeleted_at = models.DateTimeField(null=True,blank=True)
+    completed = models.BooleanField(default=False)
+    completed_at = models.DateTimeField(null=True,blank=True)
 
     class Meta:
         unique_together = ("student","lecture")
