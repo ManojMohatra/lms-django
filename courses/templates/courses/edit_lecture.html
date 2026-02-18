@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+{% block title %} Edit Lecture {% endblock %}
+
+{% block content %}
 <h2> Edit Lecture </h2>
 
 <form method="POST">
@@ -8,3 +12,4 @@
    <input type="number" name="order" value="{{ lecture.order }}"><br>
     <button type="submit">Save</button>
 </form>
+{% endblock %}

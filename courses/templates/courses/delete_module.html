@@ -1,3 +1,6 @@
+{% extends "base.html" %}
+{% block title %} Delete Module {% endblock %}
+{% block content %}
 <h2> Delete Module </h2>
 
 <p> Are you sure you want  to delete module: </p>
@@ -13,3 +16,4 @@
 
 <a href="{% url 'courses:course_detail' module.course.id %}"> Cancel </a>
 
+{% endblock %}

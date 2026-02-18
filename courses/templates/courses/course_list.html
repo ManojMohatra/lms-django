@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+{% block title %} All Courses {% endblock %}
+
+{% block content %}
 <h2> All courses </h2>
 
 {% if request.user.profile.role == "teacher" %}
@@ -31,3 +35,4 @@
   <li> No courses yet </li>
   {% endfor %}
 </ul>
+{% endblock %}

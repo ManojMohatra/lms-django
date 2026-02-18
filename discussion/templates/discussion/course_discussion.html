@@ -1,3 +1,8 @@
+{% extends "base.html" %}
+
+{% block title %} Disussion {% endblock %}
+
+{% block content %}
 <h2>{{ course.title }} - Discussion</h2>
 
 <form method="post">
@@ -24,3 +29,4 @@ function toggleReplyForm(id) {
     }
 }
 </script>
+{% endblock %}

@@ -1,3 +1,8 @@
+{% extends "base.html" %}
+{% block title %} Add Lecture {% endblock %}
+
+{% block content %}
+
 <h2> Add Lecture to {{ module.title }} </h2>
 
 <form method="post">
@@ -9,3 +14,4 @@
     <button type="submit">Add Lecture</button>
 
 </form>
+{% endblock %}
