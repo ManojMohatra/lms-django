@@ -71,3 +71,15 @@ class Lecture(models.Model):
     def __str__(self):
         return f"{self.title} ({self.module.title})"
 
+
+class LectureProgress(models.Model):
+    student = models.ForeignKey(User,on_delete=models.CASCADE)
+    lecture = models.ForeignKey("Lecture",on_delete=models.CASCADE)
+    compeleted = models.BooleanField(default=False)
+    compeleted_at = models.DateTimeField(null=True,blank=True)
+
+    class Meta:
+        unique_together = ("student","lecture")
+
+    def __str__(self):
+        return f"{self.student.username} - {self.lecture.title}"

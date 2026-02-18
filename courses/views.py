@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpResponseForbidden
 from .forms import CourseForm
-from .models import Course, Enrollment,Module,Lecture
+from .models import Course, Enrollment,Module,Lecture,LectureProgress
 from django.contrib.auth.decorators import login_required
 from discussion.models import Comment
 
