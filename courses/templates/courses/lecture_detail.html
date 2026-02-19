@@ -1,21 +1,16 @@
 {% extends "base.html" %}
 {% block title %} Lecture {% endblock %}
-
 {% block content %}
 <h2>{{ lecture.title }}</h2>
-
 <div class="lecture-content">
     {% if lecture.notes %}
         <p>{{ lecture.notes|linebreaks }}</p>
     {% endif %}
-
     {% if lecture.video_url %}
         <p><a href="{{ lecture.video_url }}" target="_blank">▶ Watch Video</a></p>
     {% endif %}
 </div>
-
 <hr>
-
 <h3>Resources & Materials</h3>
 <ul>
     {% for material in lecture.materials.all %}
@@ -35,14 +30,22 @@
         <li>No materials added yet.</li>
     {% endfor %}
 </ul>
+
 {% if not completed %}
 <form method="post">
   {% csrf_token %}
-  <button type="submit"> Mark as Complete </button>
+  <input type="hidden" name="action" value="mark">
+  <button type="submit">Mark as Complete</button>
 </form>
 {% else %}
 <p style="color:green;">✔ Lesson Completed</p>
+<form method="post">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="unmark">
+  <button type="submit" style="color:gray; background:none; border:none; cursor:pointer;">↩ Mark as Incomplete</button>
+</form>
 {% endif %}
+
 {% if is_teacher %}
     <div style="margin-top: 20px; padding: 15px; border: 1px solid #ccc;">
         <h4>Add Resource</h4>
@@ -54,7 +57,5 @@
         </form>
     </div>
 {% endif %}
-
 <p><a href="{% url 'courses:course_detail' course.id %}">← Back to Course</a></p>
-
 {% endblock %}

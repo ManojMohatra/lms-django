@@ -56,10 +56,10 @@ def dashboard(request):
         #First find incomplete lecture (Resume logic)
         next_lecture = Lecture.objects.filter(
             module__course=course
-            ).exclude(
-                lectureprogress__student=request.user,
-                lectureprogress__completed=True
-                ).first()
+               ).exclude(
+                   lectureprogress__student=request.user,
+                   lectureprogress__completed=True
+               ).order_by('module__order', 'order').first()
 
         course_data.append({
             "course":course,

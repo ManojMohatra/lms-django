@@ -40,7 +40,7 @@
         {% if item.progress_percent == 100 %}
             <p style="color:green;">🎉 Course Completed</p>
         {% elif item.next_lecture %}
-            <a href="{% url 'lecture_detail' item.next_lecture.id %}">
+            <a href="{% url 'courses:lecture_detail' item.next_lecture.id %}">
                 <button>Resume Course</button>
             </a>
         {% endif %}

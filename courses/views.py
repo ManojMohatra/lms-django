@@ -153,22 +153,24 @@ def course_detail(request,course_id):
 
 @login_required
 def lecture_detail(request, lecture_id):
-    # This fetches the lecture AND all its materials in one go
     lecture = get_object_or_404(
         Lecture.objects.prefetch_related('materials'), 
         id=lecture_id
     )
-
     course = lecture.module.course
     is_teacher = (course.teacher == request.user)
-
+    
     if request.method == "POST":
-        progress , created = LectureProgress.objects.get_or_create(
+        progress, created = LectureProgress.objects.get_or_create(
             student=request.user,
             lecture=lecture
         )
-        progress.completed = True
-        progress.completed_at = timezone.now()
+        if request.POST.get('action') == 'unmark':
+            progress.completed = False
+            progress.completed_at = None
+        else:
+            progress.completed = True
+            progress.completed_at = timezone.now()
         progress.save()
 
     completed = LectureProgress.objects.filter(
@@ -181,7 +183,7 @@ def lecture_detail(request, lecture_id):
         "lecture": lecture,
         "course": course,
         "is_teacher": is_teacher,
-        "completed":completed
+        "completed": completed
     })
 
 
