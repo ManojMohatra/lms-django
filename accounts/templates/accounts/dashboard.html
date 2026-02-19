@@ -18,15 +18,49 @@
         Let's start your work
     </a>
 {% elif user.profile.role == 'student' %}
-    <p>Ready to jump back into your lessons?</p>
-    <a href="{% url 'courses:my_courses' %}" style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px;">
-        Let's start your work
-    </a>
+<h2>My Courses</h2>
+
+{% for item in course_data %}
+    <div class="card">
+        <h3>{{ item.course.title }}</h3>
+
+        <p>Progress: {{ item.progress_percent }}%</p>
+
+        <div style="background:#ddd; height:15px; border-radius:8px;">
+            <div style="
+                width:{{ item.progress_percent }}%;
+                background:#4caf50;
+                height:100%;
+                border-radius:8px;
+            "></div>
+        </div>
+
+        <br>
+
+        {% if item.progress_percent == 100 %}
+            <p style="color:green;">🎉 Course Completed</p>
+        {% elif item.next_lecture %}
+            <a href="{% url 'lecture_detail' item.next_lecture.id %}">
+                <button>Resume Course</button>
+            </a>
+        {% endif %}
+
+        <a href="{% url 'courses:course_detail' item.course.id %}">
+            <button>View Course</button>
+        </a>
+
+    </div>
+{% empty %}
+    <p>You are not enrolled in any courses yet.</p>
+{% endfor %}
+   
 {% else %}
     <p>Please contact an administrator to assign your permissions.</p>
 {% endif %}
 
-<hr>
+    <hr>
+
+
 
 <form action="{% url 'accounts:logout' %}" method="post">
   {% csrf_token %}

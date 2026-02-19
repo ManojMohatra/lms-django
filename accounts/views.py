@@ -3,6 +3,7 @@ from django.contrib.auth import login
 from .forms import UserRegistrationForm
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
+from courses.models import Course,Enrollment,Lecture,LectureProgress
 
 def register(request):
     if request.method == "POST":
@@ -33,6 +34,43 @@ class UserLogoutView(LogoutView):
 @login_required
 def dashboard(request):
     profile = request.user.profile
-    return render(request,'accounts/dashboard.html',{'profile':profile})
+    enrollments = Enrollment.objects.filter(student=request.user).select_related("course")
+
+    course_data = []
+
+    for enrollment in enrollments:
+        course = enrollment.course
+
+        total_lectures = Lecture.objects.filter(module__course=course).count()
+
+        completed_lectures = LectureProgress.objects.filter(
+            student=request.user,
+            lecture__module__course=course,
+            completed=True
+            ).count()
+        progress_percent = 0
+        
+        if total_lectures > 0:
+            progress_percent = int((completed_lectures / total_lectures) * 100)
+
+        #First find incomplete lecture (Resume logic)
+        next_lecture = Lecture.objects.filter(
+            module__course=course
+            ).exclude(
+                lectureprogress__student=request.user,
+                lectureprogress__completed=True
+                ).first()
+
+        course_data.append({
+            "course":course,
+            "progress_percent":progress_percent,
+            "next_lecture":next_lecture
+            })
+
+    return render(request,"accounts/dashboard.html",{
+        "profile":profile,
+        "course_data":course_data
+    })
+
 
 
