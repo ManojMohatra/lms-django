@@ -16,7 +16,7 @@ def create_course(request):
             course = form.save(commit=False)
             course.teacher = request.user
             course.save()
-            return redirect("courses:course_list")
+            return redirect("accounts:dashboard")
     else:
         form = CourseForm()
 
