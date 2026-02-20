@@ -92,7 +92,7 @@ def edit_course(request,course_id):
         form = CourseForm(request.POST,instance=course)
         if form.is_valid():
             form.save()
-            return redirect("courses:course_detail")
+            return redirect("courses:course_detail",course_id=course.id)
     else:
         form = CourseForm(instance=course)
     return render(request,"courses/edit_course.html",{"form":form,"course":course})
