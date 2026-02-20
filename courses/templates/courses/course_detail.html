@@ -3,132 +3,151 @@
 
 {% block content %}
 <style>
-    /* Blue border-left removed from .course-header */
+    .course-page-container { max-width: 900px; margin: 2rem auto; }
+    
+    /* Header Area */
     .course-header { 
         background: #f8f9fa; 
-        padding: 2rem; 
-        border-radius: 12px; 
-        margin-bottom: 2rem; 
+        padding: 2.5rem; 
+        border-radius: 15px; 
+        margin-bottom: 2rem;
+        border: 1px solid #eee;
     }
-    .module-card { border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 1.5rem; overflow: hidden; }
-    .module-header { background: #f1f3f5; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
-    .lecture-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; border-top: 1px solid #eee; transition: background 0.2s; }
-    .lecture-item:hover { background: #fdfdfd; }
-    .btn-sm { font-size: 0.8rem; padding: 4px 8px; }
-    .progress-container { margin: 20px 0; background: #e9ecef; border-radius: 20px; height: 12px; overflow: hidden; }
-    .management-bar { background: #fff3cd; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; }
+
+    /* Progress Styling */
+    .progress-wrapper { background: #fff; padding: 1.5rem; border-radius: 12px; border: 1px solid #e9ecef; margin-top: 1.5rem; }
+    .progress-track { background-color: #e9ecef; border-radius: 50px; height: 12px; width: 100%; overflow: hidden; }
+    .progress-fill { background-color: #28a745; height: 100%; transition: width 0.8s ease; border-radius: 50px; }
+
+    /* Module & Lecture Styling */
+    .module-card { border: 1px solid #e0e0e0; border-radius: 10px; margin-bottom: 1.2rem; background: #fff; }
+    .module-header { background: #f1f3f5; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0; border-radius: 10px 10px 0 0; }
+    .lecture-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-top: 1px solid #eee; }
+    .lecture-item:first-child { border-top: none; }
+    
+    /* Discussion Section */
+    .discussion-section { 
+        background: #ffffff; 
+        border: 2px dashed #dee2e6; 
+        border-radius: 15px; 
+        padding: 2rem; 
+        margin-top: 3rem;
+        text-align: center;
+    }
+
+    /* Utility */
+    .management-bar { background: #fff3cd; padding: 1rem; border-radius: 10px; margin-bottom: 2rem; border: 1px solid #ffeeba; display: flex; gap: 10px; align-items: center; }
 </style>
 
-<div class="container mt-4">
+<div class="course-page-container">
 
     {% if role == "teacher" and course.teacher == request.user %}
-    <div class="management-bar">
-        <strong>Teacher Tools:</strong>
-        <a href="{% url 'courses:edit_course' course.id %}" class="btn btn-warning btn-sm">Edit Course</a>
-        <a href="{% url 'courses:add_module' course.id %}" class="btn btn-primary btn-sm">+ Add Module</a>
-        <a href="{% url 'courses:delete_course' course.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Delete this entire course?')">Delete Course</a>
+    <div class="management-bar shadow-sm">
+        <span class="badge bg-warning text-dark">Instructor View</span>
+        <a href="{% url 'courses:edit_course' course.id %}" class="btn btn-sm btn-outline-dark">Edit Course</a>
+        <a href="{% url 'courses:add_module' course.id %}" class="btn btn-sm btn-primary">+ Add Module</a>
+        <a href="{% url 'courses:delete_course' course.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete course?')">Delete</a>
     </div>
     {% endif %}
 
-    <div class="course-header">
-        <div class="row">
-            <div class="col-md-8">
-                <h1 class="display-5 fw-bold">{{ course.title }}</h1>
-                <p class="lead text-muted">{{ course.description }}</p>
-                <div class="d-flex gap-2">
-                    <span class="badge bg-secondary p-2">Teacher: {{ course.teacher.username }}</span>
-                    <span class="badge bg-info text-dark p-2">{{ enrolled_students_count }} Students Enrolled</span>
-                </div>
+    <div class="course-header shadow-sm">
+        <h1 class="display-6 fw-bold mb-3">{{ course.title }}</h1>
+        <p class="lead text-muted mb-4">{{ course.description }}</p>
+        
+        <div class="d-flex gap-4 mb-2">
+            <div class="small"><i class="bi bi-person-badge"></i> <strong>Instructor:</strong> {{ course.teacher.username }}</div>
+            <div class="small"><i class="bi bi-people"></i> <strong>Enrolled:</strong> {{ enrolled_students_count }} students</div>
+        </div>
+
+        {% if role == "student" %}
+        <div class="progress-wrapper">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="small fw-bold text-uppercase text-muted">Your Completion Progress</span>
+                <span class="badge bg-success">{{ progress_percent }}%</span>
             </div>
-            
-            <div class="col-md-4 text-end">
-                <div class="card p-3 shadow-sm border-0">
-                    <h6>Discussion</h6>
-                    <p class="small text-muted">{{ comment_count }} questions asked</p>
-                    <a href="{% url 'discussion:course_discussion' course.id %}" class="btn btn-outline-primary w-100">
-                        Join Discussion
-                    </a>
-                </div>
+            <div class="progress-track">
+                <div class="progress-fill" style="width: {{ progress_percent }}%;"></div>
             </div>
         </div>
-	{% if role == "student" %}
-	<div class="mt-4">
-	  <div class="d-flex justify-content-between mb-2">
-            <small class="text-uppercase fw-bold text-muted" style="letter-spacing: 1px; font-size: 0.75rem;">Your Progress</small>
-        <small class="fw-bold">{{ progress_percent }}%</small>
-	  </div>
-    
-	  <div style="background-color: #e9ecef; border-radius: 50px; height: 12px; width: 100%; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);">
-            <div style="
-            width: {{ progress_percent }}%; 
-            height: 100%; 
-            background-color: #28a745; 
-            transition: width 0.6s ease;
-            border-radius: 50px;
-        "></div>
-	  </div>
-	</div>
-	{% endif %}
-       
+        {% endif %}
     </div>
 
-    <h3 class="mb-4">Course Content</h3>
-    {% for module in modules %}
-    <div class="module-card">
-        <div class="module-header">
-            <h5 class="mb-0">{{ forloop.counter }}. {{ module.title }}</h5>
-            {% if role == "teacher" and course.teacher == request.user %}
-            <div class="btn-group">
-                <a href="{% url 'courses:add_lecture' module.id %}" class="btn btn-outline-success btn-sm">+ Lecture</a>
-                <a href="{% url 'courses:edit_module' module.id %}" class="btn btn-outline-primary btn-sm">Edit</a>
-                <a href="{% url 'courses:delete_module' module.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
-            </div>
-            {% endif %}
-        </div>
-
-        <div class="lecture-list">
-            {% for lecture in module.lectures.all %}
-            <div class="lecture-item">
-                <span>
-                    <i class="bi bi-play-circle me-2"></i> 
-                    <a href="{% url 'courses:lecture_detail' lecture.id %}" class="text-decoration-none text-dark">
-                        {{ lecture.title }}
-                    </a>
-                </span>
-                
+    <div class="content-area">
+        <h4 class="mb-4 fw-bold">Course Curriculum</h4>
+        
+        {% for module in modules %}
+        <div class="module-card shadow-sm">
+            <div class="module-header">
+                <h5 class="mb-0" style="font-size: 1.05rem;">
+                    <span class="text-muted small me-2">Module {{ forloop.counter }}</span> {{ module.title }}
+                </h5>
                 {% if role == "teacher" and course.teacher == request.user %}
                 <div class="btn-group">
-                    <a href="{% url 'courses:edit_lecture' lecture.id %}" class="text-primary me-2 small text-decoration-none">Edit</a>
-                    <a href="{% url 'courses:delete_lecture' lecture.id %}" class="text-danger small text-decoration-none">Delete</a>
+                    <a href="{% url 'courses:add_lecture' module.id %}" class="btn btn-sm btn-outline-success">Add Lecture</a>
+                    <a href="{% url 'courses:edit_module' module.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
                 </div>
                 {% endif %}
             </div>
-            {% empty %}
-            <div class="p-3 text-muted small italic">No lectures added to this module yet.</div>
-            {% endfor %}
-        </div>
-    </div>
-    {% empty %}
-    <div class="alert alert-light border">No modules have been created for this course yet.</div>
-    {% endfor %}
 
-    <hr class="my-5">
-    <div class="row align-items-center">
-        <div class="col">
-            <h4 class="text-muted">Coming Soon</h4>
-            <ul class="text-muted small">
-                <li>Interactive Quizzes</li>
-            </ul>
+            <div class="lecture-list">
+                {% for lecture in module.lectures.all %}
+                <div class="lecture-item">
+                    <div>
+                        <i class="bi bi-play-circle text-primary me-2"></i>
+                        <a href="{% url 'courses:lecture_detail' lecture.id %}" class="text-decoration-none text-dark fw-medium">
+                            {{ lecture.title }}
+                        </a>
+                    </div>
+                    
+                    {% if role == "teacher" and course.teacher == request.user %}
+                    <div class="small">
+                        <a href="{% url 'courses:edit_lecture' lecture.id %}" class="text-muted me-2 text-decoration-none">Edit</a>
+                        <a href="{% url 'courses:delete_lecture' lecture.id %}" class="text-danger text-decoration-none">Delete</a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <div class="p-3 text-muted small text-center italic">No lectures found.</div>
+                {% endfor %}
+            </div>
         </div>
-        <div class="col text-end">
-            {% if role == "student" %}
-            <a href="{% url 'courses:unenroll_course' course.id %}?next={{ request.path }}" 
-               class="btn btn-link text-danger text-decoration-none" 
-               onclick="return confirm('Are you sure you want to unenroll?')">
-                Unenroll from Course
-            </a>
-            {% endif %}
+        {% empty %}
+        <div class="text-center py-5 border rounded bg-light">
+            <p class="text-muted">No content has been published for this course yet.</p>
         </div>
+        {% endfor %}
     </div>
+
+    <div class="discussion-section">
+        <h4 class="fw-bold mb-2">Questions & Discussion</h4>
+        <p class="text-muted mb-4">Have a doubt? Join the community and ask your instructor or peers.</p>
+        
+        <div class="d-inline-flex align-items-center gap-3 mb-4">
+            <div class="px-3 py-2 bg-light rounded-pill border">
+                <strong class="text-primary">{{ comment_count }}</strong> <span class="small text-muted">Comments</span>
+            </div>
+        </div>
+        <br>
+        <a href="{% url 'discussion:course_discussion' course.id %}" class="btn btn-primary px-5 py-2 shadow-sm">
+            Open Discussion Board
+        </a>
+    </div>
+
+    <footer class="mt-5 pt-4 border-top">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <span class="text-muted small"><strong>Coming Soon:</strong> Quizzes & Certificates</span>
+            </div>
+            <div class="col-md-6 text-end">
+                {% if role == "student" %}
+                <a href="{% url 'courses:unenroll_course' course.id %}?next={{ request.path }}" 
+                   class="btn btn-sm btn-link text-danger text-decoration-none" 
+                   onclick="return confirm('Unenroll from {{ course.title }}?')">
+                    Unenroll from Course
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </footer>
 </div>
 {% endblock %}
