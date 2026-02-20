@@ -33,44 +33,49 @@ class UserLogoutView(LogoutView):
 
 @login_required
 def dashboard(request):
-    profile = request.user.profile
-    enrollments = Enrollment.objects.filter(student=request.user).select_related("course")
+    # Using request.user consistently to avoid NameErrors
+    user = request.user
+    role = user.profile.role
+    context = {}
 
-    course_data = []
+    if role == 'student':
+        enrollments = Enrollment.objects.filter(student=user).select_related("course")
+        course_data = []
 
-    for enrollment in enrollments:
-        course = enrollment.course
-
-        total_lectures = Lecture.objects.filter(module__course=course).count()
-
-        completed_lectures = LectureProgress.objects.filter(
-            student=request.user,
-            lecture__module__course=course,
-            completed=True
+        for enrollment in enrollments:
+            course = enrollment.course
+            
+            # Calculate total and completed lectures
+            total_lectures = Lecture.objects.filter(module__course=course).count()
+            completed_lectures = LectureProgress.objects.filter(
+                student=user,
+                lecture__module__course=course,
+                completed=True
             ).count()
-        progress_percent = 0
-        
-        if total_lectures > 0:
-            progress_percent = int((completed_lectures / total_lectures) * 100)
 
-        #First find incomplete lecture (Resume logic)
-        next_lecture = Lecture.objects.filter(
-            module__course=course
-               ).exclude(
-                   lectureprogress__student=request.user,
-                   lectureprogress__completed=True
-               ).order_by('module__order', 'order').first()
+            progress_percent = 0
+            if total_lectures > 0:
+                progress_percent = int((completed_lectures / total_lectures) * 100)
 
-        course_data.append({
-            "course":course,
-            "progress_percent":progress_percent,
-            "next_lecture":next_lecture
+            # Find the next incomplete lecture (Resume logic)
+            # Moved outside the 'if total_lectures > 0' to ensure it's always defined
+            next_lecture = Lecture.objects.filter(
+                module__course=course
+            ).exclude(
+                lectureprogress__student=user,
+                lectureprogress__completed=True
+            ).order_by('module__order', 'order').first()
+
+            course_data.append({
+                "course": course,
+                "progress_percent": progress_percent,
+                "next_lecture": next_lecture
             })
+        
+        context['course_data'] = course_data
 
-    return render(request,"accounts/dashboard.html",{
-        "profile":profile,
-        "course_data":course_data
-    })
+    elif role == 'teacher':
+        # Fetch courses where this user is the author
+        context['teacher_courses'] = Course.objects.filter(teacher=user)
 
-
-
+    return render(request, "accounts/dashboard.html", context)

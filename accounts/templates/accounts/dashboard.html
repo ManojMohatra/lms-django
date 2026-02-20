@@ -13,10 +13,31 @@
 <hr>
 
 {% if user.profile.role == 'teacher' %}
-    <p>Ready to manage your classes?</p>
-    <a href="{% url 'courses:my_courses' %}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">
-        Let's start your work
-    </a>
+   <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>My Created Courses</h2>
+        <a href="{% url 'courses:create_course' %}" style="padding: 8px 15px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px;">
+            + Create New Course
+        </a>
+    </div>
+
+    {% for course in teacher_courses %}
+        <div class="card" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 8px;">
+            <h3>{{ course.title }}</h3>
+            <p>Students Enrolled: {{ course.students.count }}</p>
+            
+            <div style="display: flex; gap: 10px;">
+                <a href="{% url 'courses:course_detail' course.id %}">
+                    <button>View Course</button>
+                </a>
+                <a href="{% url 'courses:edit_course' course.id %}">
+                    <button style="background-color: #ffc107;">Edit Content</button>
+                </a>
+            </div>
+        </div>
+    {% empty %}
+        <p>You haven't created any courses yet.</p>
+        <a href="{% url 'courses:create_course' %}" style="color: #007bff;">Start by creating your first course.</a>
+    {% endfor %}
 {% elif user.profile.role == 'student' %}
 <h2>My Courses</h2>
 
