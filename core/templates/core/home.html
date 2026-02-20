@@ -3,34 +3,151 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
+<style>
+    .home-wrapper { max-width: 1000px; margin: 3rem auto; font-family: sans-serif; }
 
-<div class="card" style="text-align:center;">
-    <h1>Welcome to Our LMS</h1>
-    <p>Learn. Grow. Succeed.</p>
+    /* Hero Section matching your Header styles */
+    .hero-section {
+        padding-bottom: 3rem;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 3rem;
+    }
 
-    {% if not request.user.is_authenticated %}
-        <a href="{% url 'accounts:register' %}">
-            <button>Get Started</button>
-        </a>
-    {% else %}
-        <a href="{% url 'courses:course_list' %}">
-            <button>Browse Courses</button>
-        </a>
-    {% endif %}
-</div>
+    .hero-section h1 { 
+        font-weight: 800; 
+        color: #1e293b; 
+        font-size: 3rem; 
+        margin-bottom: 1rem; 
+        letter-spacing: -0.02em;
+    }
 
-<h2>Featured Courses</h2>
+    .hero-subtext { 
+        color: #64748b; 
+        font-size: 1.2rem; 
+        font-weight: 500; 
+        margin-bottom: 2rem; 
+        max-width: 600px;
+    }
 
-{% for course in courses %}
-    <div class="card">
-        <h3>{{ course.title }}</h3>
-        <p>{{ course.description|truncatewords:20 }}</p>
-        <a href="{% url 'courses:course_detail' course.id %}">
-            <button>View Course</button>
-        </a>
+    /* Section Labels matching Lecture page */
+    .section-label { 
+        font-size: 0.75rem; 
+        font-weight: 800; 
+        color: #94a3b8; 
+        text-transform: uppercase; 
+        letter-spacing: 0.05em;
+        margin-bottom: 1.5rem;
+        display: block;
+    }
+
+    /* Featured Courses Grid */
+    .course-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .course-card-minimal {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .course-card-minimal:hover {
+        border-color: #cbd5e1;
+        background: #f8fafc;
+    }
+
+    .course-card-minimal h3 {
+        font-weight: 700;
+        color: #1e293b;
+        font-size: 1.25rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .course-card-minimal p {
+        color: #64748b;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Standardized Buttons from previous pages */
+    .btn-minimal {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: 0.2s;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .btn-dark { background: #1e293b; color: white; border: none; }
+    .btn-dark:hover { background: #0f172a; }
+
+    .btn-blue-outline { 
+        background: transparent; 
+        color: #1e40af; 
+        border: 1px solid #bfdbfe; 
+    }
+    .btn-blue-outline:hover { background: #eff6ff; }
+
+    .empty-state {
+        padding: 3rem;
+        text-align: center;
+        background: #f8fafc;
+        border-radius: 12px;
+        color: #94a3b8;
+        font-weight: 500;
+    }
+</style>
+
+<div class="home-wrapper">
+    <div class="hero-section">
+        <span class="section-label">Education Platform</span>
+        <h1>Learn. Grow. Succeed.</h1>
+        <p class="hero-subtext">
+            Access high-quality modules, track your progress, and master new skills with our unified Learning Management System.
+        </p>
+
+        {% if not request.user.is_authenticated %}
+            <a href="{% url 'accounts:register' %}" class="btn-minimal btn-dark">
+                Create Account
+            </a>
+            <a href="{% url 'accounts:login' %}" class="btn-minimal btn-blue-outline" style="margin-left: 10px;">
+                Sign In
+            </a>
+        {% else %}
+            <a href="{% url 'courses:course_list' %}" class="btn-minimal btn-dark">
+                Courses Catalog
+            </a>
+        {% endif %}
     </div>
-{% empty %}
-    <p>No courses available yet.</p>
-{% endfor %}
 
+    <span class="section-label">Featured Modules</span>
+    <div class="course-grid">
+        {% for course in courses %}
+            <div class="course-card-minimal">
+                <div>
+                    <h3>{{ course.title }}</h3>
+                    <p>{{ course.description|truncatewords:20 }}</p>
+                </div>
+                <a href="{% url 'courses:course_detail' course.id %}" class="btn-minimal btn-blue-outline w-100">
+                    View Course
+                </a>
+            </div>
+        {% empty %}
+            <div class="empty-state w-100">
+                <p>No featured courses available yet.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}

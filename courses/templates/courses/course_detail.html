@@ -3,88 +3,143 @@
 
 {% block content %}
 <style>
-    .course-page-container { max-width: 900px; margin: 2rem auto; }
+    .course-page-container { max-width: 900px; margin: 2rem auto; font-family: sans-serif; }
     
-    /* Header Area */
-    .course-header { 
-        background: #f8f9fa; 
-        padding: 2.5rem; 
-        border-radius: 15px; 
+    /* Subtle Instructor Toolbar */
+    .management-bar { 
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #f1f5f9;
         margin-bottom: 2rem;
-        border: 1px solid #eee;
     }
 
-    /* Progress Styling */
-    .progress-wrapper { background: #fff; padding: 1.5rem; border-radius: 12px; border: 1px solid #e9ecef; margin-top: 1.5rem; }
-    .progress-track { background-color: #e9ecef; border-radius: 50px; height: 12px; width: 100%; overflow: hidden; }
-    .progress-fill { background-color: #28a745; height: 100%; transition: width 0.8s ease; border-radius: 50px; }
-
-    /* Module & Lecture Styling */
-    .module-card { border: 1px solid #e0e0e0; border-radius: 10px; margin-bottom: 1.2rem; background: #fff; }
-    .module-header { background: #f1f3f5; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0; border-radius: 10px 10px 0 0; }
-    .lecture-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-top: 1px solid #eee; }
-    .lecture-item:first-child { border-top: none; }
+    /* Course Header: Minimal & Typography-focused */
+    .course-header { margin-bottom: 3rem; }
+    .course-header h1 { font-weight: 800; color: #1e293b; font-size: 2.25rem; margin-bottom: 0.5rem; }
+    .course-desc { color: #64748b; font-size: 1.1rem; line-height: 1.6; margin-bottom: 1.5rem; }
     
-    /* Discussion Section */
-    .discussion-section { 
-        background: #ffffff; 
-        border: 2px dashed #dee2e6; 
-        border-radius: 15px; 
-        padding: 2rem; 
-        margin-top: 3rem;
+    .course-meta { display: flex; gap: 20px; font-size: 0.85rem; color: #94a3b8; font-weight: 500; }
+    .course-meta strong { color: #475569; }
+
+    /* Progress: Integrated Line */
+    .progress-section { margin-top: 2rem; max-width: 300px; }
+    .progress-text { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: #64748b; margin-bottom: 6px; text-transform: uppercase; }
+    .progress-track { background: #e2e8f0; height: 6px; border-radius: 10px; overflow: hidden; }
+    .progress-fill { background: #10b981; height: 100%; border-radius: 10px; }
+
+    /* Curriculum: List Style */
+    .curriculum-title { font-size: 1.25rem; font-weight: 700; color: #1e293b; margin-bottom: 1.5rem; }
+    
+    .module-group { margin-bottom: 2.5rem; }
+    .module-label { 
+        font-size: 0.8rem; 
+        font-weight: 800; 
+        color: #94a3b8; 
+        text-transform: uppercase; 
+        letter-spacing: 0.05em;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+    }
+
+    .lecture-list { border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; }
+    .lecture-item { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        padding: 12px 20px; 
+        background: #fff;
+        border-bottom: 1px solid #f1f5f9;
+        transition: background 0.2s;
+    }
+    .lecture-item:last-child { border-bottom: none; }
+    .lecture-item:hover { background: #f8fafc; }
+
+    .lecture-link { text-decoration: none; color: #334155; font-weight: 500; font-size: 0.95rem; display: flex; align-items: center; gap: 10px; }
+    .lecture-link i { color: #cbd5e1; }
+    .lecture-link:hover { color: #0d6efd; }
+
+    /* Discussion: Simple Footer Box */
+    .discussion-box {
+        margin-top: 4rem;
+        padding: 2rem;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
         text-align: center;
     }
 
-    /* Utility */
-    .management-bar { background: #fff3cd; padding: 1rem; border-radius: 10px; margin-bottom: 2rem; border: 1px solid #ffeeba; display: flex; gap: 10px; align-items: center; }
+    /* Buttons & Actions */
+    .btn-minimal {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-decoration: none;
+        border-radius: 6px;
+        transition: 0.2s;
+    }
+    .btn-blue { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+    .btn-blue:hover { background: #dbeafe; }
+    
+    .btn-dark { background: #1e293b; color: white; border: none; }
+    
+    .action-text { font-size: 0.75rem; font-weight: 700; text-decoration: none; margin-left: 12px; }
+    .edit-text { color: #94a3b8; }
+    .edit-text:hover { color: #0d6efd; }
+    .delete-text { color: #fca5a5; }
+    .delete-text:hover { color: #dc2626; }
 </style>
 
 <div class="course-page-container">
 
     {% if role == "teacher" and course.teacher == request.user %}
-    <div class="management-bar shadow-sm">
-        <span class="badge bg-warning text-dark">Instructor View</span>
-        <a href="{% url 'courses:edit_course' course.id %}" class="btn btn-sm btn-outline-dark">Edit Course</a>
-        <a href="{% url 'courses:add_module' course.id %}" class="btn btn-sm btn-primary">+ Add Module</a>
-        <a href="{% url 'courses:delete_course' course.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete course?')">Delete</a>
+    <div class="management-bar">
+        <span class="role-text" style="color: #f59e0b; font-weight: 700; font-size: 0.8rem; text-transform: uppercase;">Instructor Mode</span>
+        <div class="d-flex gap-2">
+            <a href="{% url 'courses:add_module' course.id %}" class="btn-minimal btn-blue">+ Add Module</a>
+            <a href="{% url 'courses:edit_course' course.id %}" class="btn-minimal btn-blue">Settings</a>
+            <a href="{% url 'courses:delete_course' course.id %}" class="btn-minimal text-danger">Delete</a>
+        </div>
     </div>
     {% endif %}
 
-    <div class="course-header shadow-sm">
-        <h1 class="display-6 fw-bold mb-3">{{ course.title }}</h1>
-        <p class="lead text-muted mb-4">{{ course.description }}</p>
+    <header class="course-header">
+        <h1>{{ course.title }}</h1>
+        <p class="course-desc">{{ course.description }}</p>
         
-        <div class="d-flex gap-4 mb-2">
-            <div class="small"><i class="bi bi-person-badge"></i> <strong>Instructor:</strong> {{ course.teacher.username }}</div>
-            <div class="small"><i class="bi bi-people"></i> <strong>Enrolled:</strong> {{ enrolled_students_count }} students</div>
+        <div class="course-meta">
+            <span>Instructor: <strong>{{ course.teacher.username }}</strong></span>
+            <span>Enrolled: <strong>{{ enrolled_students_count }} students</strong></span>
         </div>
 
         {% if role == "student" %}
-        <div class="progress-wrapper">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="small fw-bold text-uppercase text-muted">Your Completion Progress</span>
-                <span class="badge bg-success">{{ progress_percent }}%</span>
+        <div class="progress-section">
+            <div class="progress-text">
+                <span>Completion</span>
+                <span>{{ progress_percent }}%</span>
             </div>
             <div class="progress-track">
                 <div class="progress-fill" style="width: {{ progress_percent }}%;"></div>
             </div>
         </div>
         {% endif %}
-    </div>
+    </header>
 
-    <div class="content-area">
-        <h4 class="mb-4 fw-bold">Course Curriculum</h4>
+    <main class="content-area">
+        <h2 class="curriculum-title">Curriculum</h2>
         
         {% for module in modules %}
-        <div class="module-card shadow-sm">
-            <div class="module-header">
-                <h5 class="mb-0" style="font-size: 1.05rem;">
-                    <span class="text-muted small me-2">Module {{ forloop.counter }}</span> {{ module.title }}
-                </h5>
-                {% if role == "teacher" and course.teacher == request.user %}
-                <div class="btn-group">
-                    <a href="{% url 'courses:add_lecture' module.id %}" class="btn btn-sm btn-outline-success">Add Lecture</a>
-                    <a href="{% url 'courses:edit_module' module.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+        <section class="module-group">
+            <div class="module-label">
+                <span>Module {{ forloop.counter }}: {{ module.title }}</span>
+                {% if role == "teacher" %}
+                <div>
+                    <a href="{% url 'courses:add_lecture' module.id %}" class="edit-text action-text">+ Lecture</a>
+                    <a href="{% url 'courses:edit_module' module.id %}" class="edit-text action-text">Edit</a>
+                    <a href="{% url 'courses:delete_module' module.id %}" class="delete-text action-text">Delete</a>
                 </div>
                 {% endif %}
             </div>
@@ -92,62 +147,42 @@
             <div class="lecture-list">
                 {% for lecture in module.lectures.all %}
                 <div class="lecture-item">
-                    <div>
-                        <i class="bi bi-play-circle text-primary me-2"></i>
-                        <a href="{% url 'courses:lecture_detail' lecture.id %}" class="text-decoration-none text-dark fw-medium">
-                            {{ lecture.title }}
-                        </a>
-                    </div>
+                    <a href="{% url 'courses:lecture_detail' lecture.id %}" class="lecture-link">
+                        <i class="bi bi-play-circle"></i> {{ lecture.title }}
+                    </a>
                     
-                    {% if role == "teacher" and course.teacher == request.user %}
-                    <div class="small">
-                        <a href="{% url 'courses:edit_lecture' lecture.id %}" class="text-muted me-2 text-decoration-none">Edit</a>
-                        <a href="{% url 'courses:delete_lecture' lecture.id %}" class="text-danger text-decoration-none">Delete</a>
+                    {% if role == "teacher" %}
+                    <div class="item-actions">
+                        <a href="{% url 'courses:edit_lecture' lecture.id %}" class="edit-text action-text">Edit</a>
+                        <a href="{% url 'courses:delete_lecture' lecture.id %}" class="delete-text action-text">Delete</a>
                     </div>
                     {% endif %}
                 </div>
                 {% empty %}
-                <div class="p-3 text-muted small text-center italic">No lectures found.</div>
+                <div class="p-3 text-center text-muted small">No lectures added yet.</div>
                 {% endfor %}
             </div>
-        </div>
+        </section>
         {% empty %}
-        <div class="text-center py-5 border rounded bg-light">
-            <p class="text-muted">No content has been published for this course yet.</p>
-        </div>
+        <p class="text-muted">No content available.</p>
         {% endfor %}
-    </div>
+    </main>
 
-    <div class="discussion-section">
-        <h4 class="fw-bold mb-2">Questions & Discussion</h4>
-        <p class="text-muted mb-4">Have a doubt? Join the community and ask your instructor or peers.</p>
-        
-        <div class="d-inline-flex align-items-center gap-3 mb-4">
-            <div class="px-3 py-2 bg-light rounded-pill border">
-                <strong class="text-primary">{{ comment_count }}</strong> <span class="small text-muted">Comments</span>
-            </div>
-        </div>
-        <br>
-        <a href="{% url 'discussion:course_discussion' course.id %}" class="btn btn-primary px-5 py-2 shadow-sm">
-            Open Discussion Board
+    <div class="discussion-box">
+        <h4 class="fw-bold mb-2">Discussion Board</h4>
+        <p class="text-muted small mb-3">Have a question? Join the {{ comment_count }} comments in the course community.</p>
+        <a href="{% url 'discussion:course_discussion' course.id %}" class="btn-minimal btn-dark px-4 py-2">
+            Open Discussion
         </a>
     </div>
 
-    <footer class="mt-5 pt-4 border-top">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <span class="text-muted small"><strong>Coming Soon:</strong> Quizzes & Certificates</span>
-            </div>
-            <div class="col-md-6 text-end">
-                {% if role == "student" %}
-                <a href="{% url 'courses:unenroll_course' course.id %}?next={{ request.path }}" 
-                   class="btn btn-sm btn-link text-danger text-decoration-none" 
-                   onclick="return confirm('Unenroll from {{ course.title }}?')">
-                    Unenroll from Course
-                </a>
-                {% endif %}
-            </div>
-        </div>
+    <footer class="mt-5 pt-4 border-top d-flex justify-content-between">
+        <span class="text-muted small">Interactive quizzes (Soon)</span>
+        {% if role == "student" %}
+        <a href="{% url 'courses:unenroll_course' course.id %}?next={{ request.path }}" class="delete-text action-text" style="margin:0">
+            Unenroll from course
+        </a>
+        {% endif %}
     </footer>
 </div>
 {% endblock %}

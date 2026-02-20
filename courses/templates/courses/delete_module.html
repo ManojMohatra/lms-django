@@ -1,19 +1,173 @@
 {% extends "base.html" %}
-{% block title %} Delete Module {% endblock %}
+{% block title %} Delete Module | {{ module.title }} {% endblock %}
+
 {% block content %}
-<h2> Delete Module </h2>
+<style>
+    .delete-wrapper { 
+        max-width: 500px; 
+        margin: 5rem auto; 
+        font-family: sans-serif;
+    }
 
-<p> Are you sure you want  to delete module: </p>
-<h3> {{ module.title }} </h3>
+    /* Minimalist Header matching other pages */
+    .delete-header { 
+        margin-bottom: 2rem; 
+        text-align: left; 
+    }
 
-<p> This will delete All lectures inside this module. </p>
+    .section-label-red { 
+        font-size: 0.75rem; 
+        font-weight: 800; 
+        color: #ef4444; 
+        text-transform: uppercase; 
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
 
-<form method="POST">
-  {% csrf_token %}
-  <button type="submit"> Yes, Delete</button>
+    .delete-header h2 { 
+        font-weight: 800; 
+        color: #1e293b; 
+        font-size: 2rem; 
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+    }
 
-</form>
+    /* Standardized Form Card */
+    .delete-card {
+        background: #fff;
+        border: 1px solid #fee2e2;
+        border-radius: 12px;
+        padding: 2.5rem;
+    }
 
-<a href="{% url 'courses:course_detail' module.course.id %}"> Cancel </a>
+    .context-tag {
+        font-size: 0.7rem;
+        font-weight: 800;
+        color: #94a3b8;
+        text-transform: uppercase;
+        margin-bottom: 0.25rem;
+        display: block;
+    }
 
+    .module-display {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        padding: 1rem;
+        border-radius: 6px;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* Impact List */
+    .impact-box {
+        background: #fef2f2;
+        border-radius: 8px;
+        padding: 1.25rem;
+        margin-bottom: 2rem;
+    }
+
+    .impact-box ul {
+        margin: 0;
+        padding-left: 1.2rem;
+        color: #991b1b;
+        font-size: 0.9rem;
+        font-weight: 500;
+        list-style: none;
+    }
+
+    .impact-box li {
+        margin-bottom: 0.4rem;
+        position: relative;
+    }
+
+    .impact-box li::before {
+        content: "✕";
+        position: absolute;
+        left: -1.2rem;
+        font-weight: 800;
+        font-size: 0.75rem;
+    }
+
+    /* Standardized Action Buttons */
+    .btn-delete-confirm {
+        width: 100%;
+        padding: 14px;
+        background: #dc2626;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: 800;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-bottom: 1rem;
+    }
+
+    .btn-delete-confirm:hover {
+        background: #991b1b;
+    }
+
+    .action-footer {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .btn-cancel { 
+        color: #64748b; 
+        text-decoration: none; 
+        font-size: 0.85rem; 
+        font-weight: 700; 
+        text-transform: uppercase; 
+        letter-spacing: 0.05em; 
+    }
+    
+    .btn-cancel:hover { color: #1e293b; }
+</style>
+
+<div class="delete-wrapper">
+    <div class="delete-header">
+        <span class="section-label-red">Curriculum Removal</span>
+        <h2>Delete Module</h2>
+        <p class="text-muted small">You are removing a structural component of this course.</p>
+    </div>
+
+    <div class="delete-card">
+        <span class="context-tag">{{ module.course.title }}</span>
+        <div class="module-display">
+            <i class="bi bi-folder-x text-danger"></i>
+            {{ module.title }}
+        </div>
+
+        <span class="section-label-red" style="font-size: 0.65rem; margin-bottom: 10px;">Immediate Impact:</span>
+        <div class="impact-box">
+            <ul>
+                <li><strong>{{ module.lectures.count }}</strong> Lecture{{ module.lectures.count|pluralize }} will be lost</li>
+                <li>All associated lesson notes and descriptions</li>
+                <li>Student progress records for this section</li>
+            </ul>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn-delete-confirm">
+                Permanently Delete Module
+            </button>
+        </form>
+    </div>
+
+    <div class="action-footer">
+        <a href="{% url 'courses:course_detail' module.course.id %}" class="btn-cancel">
+            Cancel and Return
+        </a>
+    </div>
+</div>
 {% endblock %}

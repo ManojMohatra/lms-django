@@ -57,43 +57,29 @@ def enroll_course(request,course_id):
 
 @login_required
 def unenroll_course(request, course_id):
+    # 1. Security check: Only students allowed
     if request.user.profile.role != "student":
         return HttpResponseForbidden("Only students can unenroll.")
 
+    # 2. Get the specific enrollment or 404
     enrollment = get_object_or_404(
         Enrollment,
         student=request.user,
         course_id=course_id
     )
 
-    next_page = request.GET.get("next") or "courses:my_courses"
-
     if request.method == "POST":
+        # 3. Perform the deletion
         enrollment.delete()
-        return redirect(next_page)
+        # 4. Redirect specifically to the course list
+        return redirect("courses:course_list")
 
+    # 5. If GET, show the confirmation page
     return render(request, "courses/confirm_unenroll.html", {
         "course": enrollment.course,
-        "next": next_page
+        "next": "courses:course_list"  # Provides a safe return path for the 'Cancel' link
     })
 
-
-@login_required
-def my_courses(request):
-    user = request.user
-    role = user.profile.role
-
-    if role == "student":
-        courses = Course.objects.filter(enrollments__student=user)
-    elif role == "teacher":
-        courses = Course.objects.filter(teacher=user)
-    else:
-        courses = Course.objects.none()
-
-    return render(request,"courses/my_courses.html",{
-        "courses":courses,
-        "role":role,
-    })
 
 @login_required
 def edit_course(request,course_id):
@@ -106,7 +92,7 @@ def edit_course(request,course_id):
         form = CourseForm(request.POST,instance=course)
         if form.is_valid():
             form.save()
-            return redirect("courses:my_courses")
+            return redirect("courses:course_detail")
     else:
         form = CourseForm(instance=course)
     return render(request,"courses/edit_course.html",{"form":form,"course":course})
@@ -304,7 +290,7 @@ def delete_course(request,course_id):
 
     if request.method == "POST":
         course.delete()
-        return redirect("courses:my_courses")
+        return redirect("accounts:dashboard")
 
     return render(request,"courses/delete_course.html",{
         "course":course

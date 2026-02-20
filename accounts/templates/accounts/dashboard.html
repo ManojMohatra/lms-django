@@ -1,91 +1,172 @@
 {% extends "base.html" %}
-
-{% block title %} Discussion {% endblock %}
+{% block title %} Dashboard {% endblock %}
 
 {% block content %}
-<h2> Dashboard </h2>
-<p>Welcome back, <strong>{{ user.username }}</strong>!</p>
+<style>
+    .dash-wrapper { max-width: 900px; margin: 2rem auto; font-family: sans-serif; }
+    
+    /* Simple Header */
+    .dash-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 2rem;
+    }
 
-<div style="padding:10px; border:1px solid #ccc;">
-  <p>Your assigned role is: <strong>{{ user.profile.get_role_display }}</strong></p>
-</div>
+    .user-info h2 { font-weight: 800; color: #1e293b; margin: 0; font-size: 1.75rem; }
+    .role-text { color: #64748b; font-size: 0.9rem; font-weight: 500; }
 
-<hr>
+    .header-links a {
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        color: #0d6efd;
+    }
 
-{% if user.profile.role == 'teacher' %}
-   <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2>My Created Courses</h2>
-        <a href="{% url 'courses:create_course' %}" style="padding: 8px 15px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px;">
-            + Create New Course
-        </a>
+    /* Section Styling */
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #334155;
+        margin-bottom: 1.25rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* List Item Styling */
+    .dash-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .dash-item:last-child { border-bottom: none; }
+
+    .item-main { flex: 1; }
+    .item-title {
+        font-weight: 600;
+        color: #1e293b;
+        text-decoration: none;
+        font-size: 1.05rem;
+        display: block;
+    }
+
+    /* Compact Progress */
+    .progress-container { width: 150px; margin-right: 2rem; }
+    .progress-bar-bg { background: #e2e8f0; height: 6px; border-radius: 10px; margin-top: 4px; }
+    .progress-bar-fill { background: #10b981; height: 100%; border-radius: 10px; }
+
+    /* Action Buttons */
+    .btn-action {
+        padding: 6px 14px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+    .btn-blue { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+    .btn-blue:hover { background: #dbeafe; }
+
+    .btn-yellow { background: #fffbeb; color: #92400e; border: 1px solid #fef3c7; }
+    .btn-yellow:hover { background: #fef3c7; }
+
+    .btn-dark { background: #1e293b; color: #fff; border: none; }
+    .btn-dark:hover { background: #0f172a; }
+
+    .logout-btn {
+        background: none;
+        border: none;
+        color: #94a3b8;
+        font-size: 0.85rem;
+        padding: 0;
+        cursor: pointer;
+    }
+    .logout-btn:hover { color: #dc2626; text-decoration: underline; }
+</style>
+
+<div class="dash-wrapper">
+    
+    <div class="dash-header">
+        <div class="user-info">
+            <h2>Dashboard</h2>
+            <span class="role-text">{{ user.profile.get_role_display }} • {{ user.username }}</span>
+        </div>
+        <div class="header-links">
+            <a href="{% url 'courses:course_list' %}">Explore Catalog <i class="bi bi-arrow-right"></i></a>
+        </div>
     </div>
 
-    {% for course in teacher_courses %}
-        <div class="card" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 8px;">
-            <h3>{{ course.title }}</h3>
-            <p>Students Enrolled: {{ course.students.count }}</p>
-            
-            <div style="display: flex; gap: 10px;">
-                <a href="{% url 'courses:course_detail' course.id %}">
-                    <button>View Course</button>
-                </a>
-                <a href="{% url 'courses:edit_course' course.id %}">
-                    <button style="background-color: #ffc107;">Edit Content</button>
-                </a>
+    {% if user.profile.role == 'teacher' %}
+    <div class="section-title">
+        My Created Courses
+        <a href="{% url 'courses:create_course' %}" class="btn-action btn-dark">+ New Course</a>
+    </div>
+
+    <div class="dash-list">
+        {% for course in teacher_courses %}
+            <div class="dash-item">
+                <div class="item-main">
+                    <a href="{% url 'courses:course_detail' course.id %}" class="item-title">{{ course.title }}</a>
+                    <span class="text-muted small">{{ course.students.count }} students enrolled</span>
+                </div>
+                <div class="item-actions">
+                    <a href="{% url 'courses:edit_course' course.id %}" class="btn-action btn-yellow me-2">Edit</a>
+                    <a href="{% url 'courses:course_detail' course.id %}" class="btn-action btn-blue">Manage</a>
+                </div>
             </div>
-        </div>
-    {% empty %}
-        <p>You haven't created any courses yet.</p>
-        <a href="{% url 'courses:create_course' %}" style="color: #007bff;">Start by creating your first course.</a>
-    {% endfor %}
-{% elif user.profile.role == 'student' %}
-<h2>My Courses</h2>
-
-{% for item in course_data %}
-    <div class="card">
-        <h3>{{ item.course.title }}</h3>
-
-        <p>Progress: {{ item.progress_percent }}%</p>
-
-        <div style="background:#ddd; height:15px; border-radius:8px;">
-            <div style="
-                width:{{ item.progress_percent }}%;
-                background:#4caf50;
-                height:100%;
-                border-radius:8px;
-            "></div>
-        </div>
-
-        <br>
-
-        {% if item.progress_percent == 100 %}
-            <p style="color:green;">🎉 Course Completed</p>
-        {% elif item.next_lecture %}
-            <a href="{% url 'courses:lecture_detail' item.next_lecture.id %}">
-                <button>Resume Course</button>
-            </a>
-        {% endif %}
-
-        <a href="{% url 'courses:course_detail' item.course.id %}">
-            <button>View Course</button>
-        </a>
-
+        {% empty %}
+            <p class="text-muted small">No courses created yet.</p>
+        {% endfor %}
     </div>
-{% empty %}
-    <p>You are not enrolled in any courses yet.</p>
-{% endfor %}
-   
-{% else %}
-    <p>Please contact an administrator to assign your permissions.</p>
-{% endif %}
 
-    <hr>
+    {% elif user.profile.role == 'student' %}
+    <div class="section-title">Enrolled Courses</div>
 
+    <div class="dash-list">
+        {% for item in course_data %}
+            <div class="dash-item">
+                <div class="item-main">
+                    <a href="{% url 'courses:course_detail' item.course.id %}" class="item-title">{{ item.course.title }}</a>
+                    <span class="text-muted small">By {{ item.course.teacher.username }}</span>
+                </div>
+                
+                <div class="progress-container d-none d-md-block">
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span class="text-muted">Progress</span>
+                        <span class="fw-bold">{{ item.progress_percent }}%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: {{ item.progress_percent }}%;"></div>
+                    </div>
+                </div>
 
+                <div class="item-actions">
+                    {% if item.progress_percent == 100 %}
+                        <span class="text-success small fw-bold me-2"><i class="bi bi-check2-circle"></i> Done</span>
+                    {% elif item.next_lecture %}
+                        <a href="{% url 'courses:lecture_detail' item.next_lecture.id %}" class="btn-action btn-dark me-2">Resume</a>
+                    {% endif %}
+                    <a href="{% url 'courses:course_detail' item.course.id %}" class="btn-action btn-blue">Details</a>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-muted small">You haven't enrolled in any courses yet.</p>
+        {% endfor %}
+    </div>
+    {% endif %}
 
-<form action="{% url 'accounts:logout' %}" method="post">
-  {% csrf_token %}
-  <button type="submit">Logout</button>
-</form>
-
+    <div class="mt-5 pt-4 border-top">
+        <form action="{% url 'accounts:logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="logout-btn">Logout from session</button>
+        </form>
+    </div>
+</div>
 {% endblock %}

@@ -1,29 +1,184 @@
 {% extends "base.html" %}
-
-{% block title %} Disussion {% endblock %}
+{% block title %} Discussion | {{ course.title }} {% endblock %}
 
 {% block content %}
-<h2>{{ course.title }} - Discussion</h2>
+<style>
+    .discussion-wrapper { 
+        max-width: 850px; 
+        margin: 4rem auto; 
+        font-family: sans-serif;
+    }
+    
+    /* Header & Navigation */
+    .discussion-header { 
+        margin-bottom: 3rem; 
+        text-align: left;
+    }
 
-<form method="post">
-    {% csrf_token %}
-    <textarea name="content" placeholder="Write a comment..." required></textarea>
-    <button type="submit">Post</button>
-</form>
+    .section-label { 
+        font-size: 0.75rem; 
+        font-weight: 800; 
+        color: #94a3b8; 
+        text-transform: uppercase; 
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
 
-<hr>
+    .discussion-header h2 { 
+        font-weight: 800; 
+        color: #1e293b; 
+        font-size: 2.25rem; 
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+    }
 
-{% for comment in comments %}
-    {% include "discussion/comment_block.html" with comment=comment level=0 %}
-{% empty %}
-    <p>No comments yet.</p>
-{% endfor %}
+    .course-breadcrumb { 
+        color: #64748b; 
+        text-decoration: none; 
+        font-size: 0.85rem; 
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        transition: color 0.2s; 
+    }
+    
+    .course-breadcrumb:hover { color: #1e293b; }
+
+    /* Standardized Input Card */
+    .comment-card { 
+        background: #fff; 
+        border: 1px solid #e2e8f0; 
+        border-radius: 12px; 
+        padding: 2rem; 
+        margin-bottom: 4rem;
+    }
+    
+    .comment-card textarea {
+        width: 100%;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 1rem;
+        min-height: 120px;
+        font-size: 0.95rem;
+        outline: none;
+        transition: all 0.2s;
+        margin-bottom: 1rem;
+        box-sizing: border-box;
+    }
+
+    .comment-card textarea:focus {
+        border-color: #1e40af;
+        background-color: #f8fafc;
+    }
+
+    /* Submit Button - Dark Style */
+    .btn-post-main {
+        background: #1e293b;
+        color: white;
+        border: none;
+        padding: 12px 28px;
+        border-radius: 6px;
+        font-weight: 800;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        float: right;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .btn-post-main:hover { background: #0f172a; }
+
+    /* Thread Section */
+    .thread-meta {
+        border-bottom: 2px solid #1e293b;
+        padding-bottom: 0.75rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .thread-meta h3 {
+        font-size: 0.9rem;
+        font-weight: 900;
+        color: #1e293b;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin: 0;
+    }
+
+    /* Empty State - Minimalist */
+    .empty-thread {
+        text-align: center;
+        padding: 4rem 2rem;
+        border: 1px dashed #cbd5e1;
+        border-radius: 12px;
+        color: #94a3b8;
+    }
+
+    .empty-thread i { font-size: 2.5rem; display: block; margin-bottom: 1rem; }
+    .empty-thread p { font-size: 0.95rem; font-weight: 500; }
+
+    .clearfix::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
+</style>
+
+<div class="discussion-wrapper">
+    
+    <div class="discussion-header">
+        <a href="{% url 'courses:course_detail' course.id %}" class="course-breadcrumb">
+            &larr; Return to {{ course.title }}
+        </a>
+        <div style="margin-top: 1.5rem;">
+            <span class="section-label">Knowledge Exchange</span>
+            <h2>Community Discussion</h2>
+            <p class="text-muted small">Post questions, share insights, and collaborate with other students.</p>
+        </div>
+    </div>
+
+    <div class="comment-card">
+        <form method="post">
+            {% csrf_token %}
+            <textarea name="content" placeholder="Share a thought or ask a question..." required></textarea>
+            <div class="clearfix">
+                <button type="submit" class="btn-post-main">
+                    <i class="bi bi-send-fill me-2"></i>Post to Thread
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="thread-meta">
+        <i class="bi bi-chat-square-text-fill"></i>
+        <h3>Discussion Thread</h3>
+    </div>
+
+    <div class="comment-feed">
+        {% for comment in comments %}
+            {% include "discussion/comment_block.html" with comment=comment level=0 %}
+        {% empty %}
+            <div class="empty-thread">
+                <i class="bi bi-chat-quote"></i>
+                <p>The conversation hasn't started yet.<br>Be the first to contribute.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
 
 <script>
+/**
+ * Toggles the visibility of the reply form and focuses the textarea.
+ */
 function toggleReplyForm(id) {
-    var form = document.getElementById("reply-form-" + id);
-    if (form.style.display === "none") {
+    const form = document.getElementById("reply-form-" + id);
+    if (form.style.display === "none" || form.style.display === "") {
         form.style.display = "block";
+        form.querySelector('textarea').focus();
     } else {
         form.style.display = "none";
     }

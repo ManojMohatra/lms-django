@@ -1,17 +1,180 @@
 {% extends "base.html" %}
-{% block title %} Add Lecture {% endblock %}
+
+{% block title %} Add Lecture | {{ module.title }} {% endblock %}
 
 {% block content %}
+<style>
+    .form-wrapper { 
+        max-width: 700px; 
+        margin: 4rem auto; 
+        font-family: sans-serif;
+    }
 
-<h2> Add Lecture to {{ module.title }} </h2>
+    .form-header { 
+        margin-bottom: 2.5rem; 
+        text-align: left; 
+    }
 
-<form method="post">
-  {% csrf_token %}
-    <input type="text" name="title" placeholder="Lecture title" required><br>
-    <textarea name="notes" placeholder="Notes"></textarea><br>
-    <input type="url" name="video_url" placeholder="Video URL"><br>
-    <input type="number" name="order" placeholder="Order" required><br>
-    <button type="submit">Add Lecture</button>
+    .form-header h2 { 
+        font-weight: 800; 
+        color: #1e293b; 
+        font-size: 2rem; 
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+    }
 
-</form>
+    .section-label { 
+        font-size: 0.75rem; 
+        font-weight: 800; 
+        color: #94a3b8; 
+        text-transform: uppercase; 
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .module-badge {
+        display: inline-block;
+        background: #f1f5f9;
+        color: #475569;
+        padding: 4px 12px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        border: 1px solid #e2e8f0;
+        margin-bottom: 1rem;
+    }
+
+    /* Minimalist Form Card */
+    .form-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 2.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: #64748b;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+    }
+
+    /* Standardized Controls */
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        box-sizing: border-box;
+        outline: none;
+    }
+
+    .form-control:focus {
+        border-color: #1e40af;
+        background-color: #f8fafc;
+        box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.05);
+    }
+
+    textarea.form-control {
+        min-height: 140px;
+        resize: vertical;
+    }
+
+    /* Submit Button - Dark Style */
+    .btn-submit-main {
+        width: 100%;
+        padding: 14px;
+        background: #1e293b;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: 800;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-top: 1rem;
+    }
+
+    .btn-submit-main:hover {
+        background: #0f172a;
+    }
+
+    /* Footer Navigation */
+    .action-footer {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .btn-cancel { 
+        color: #64748b; 
+        text-decoration: none; 
+        font-size: 0.85rem; 
+        font-weight: 700; 
+        text-transform: uppercase; 
+        letter-spacing: 0.05em; 
+    }
+    
+    .btn-cancel:hover { color: #1e293b; }
+</style>
+
+<div class="form-wrapper">
+    <div class="form-header">
+        <div class="module-badge">Module: {{ module.title }}</div>
+        <span class="section-label">Content Creation</span>
+        <h2>Add New Lecture</h2>
+        <p class="text-muted small">Configure video and description for this lesson.</p>
+    </div>
+
+    <div class="form-card">
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="title">Lecture Title</label>
+                <input type="text" name="title" id="title" class="form-control" placeholder="e.g. Getting Started with the Basics" required>
+            </div>
+
+            <div class="form-group">
+                <label for="video_url">Video Player URL</label>
+                <input type="url" name="video_url" id="video_url" class="form-control" placeholder="https://youtube.com/watch?v=...">
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Lesson Description / Notes</label>
+                <textarea name="notes" id="notes" class="form-control" placeholder="Add lecture description or textual content here..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="order">Sequence Position</label>
+                <input type="number" name="order" id="order" class="form-control" placeholder="e.g. 1" required>
+            </div>
+
+            <button type="submit" class="btn-submit-main">
+                <i class="bi bi-plus-circle me-1"></i> Create Lecture
+            </button>
+        </form>
+    </div>
+
+    <div class="action-footer">
+        <a href="{% url 'courses:course_detail' module.course.id %}" class="btn-cancel">
+            Cancel and Return
+        </a>
+    </div>
+</div>
+
 {% endblock %}

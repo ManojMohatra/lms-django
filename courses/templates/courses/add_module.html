@@ -1,13 +1,180 @@
 {% extends "base.html" %}
-{% block title %} Add module {% endblock %}
+
+{% block title %} Add Module | {{ course.title }} {% endblock %}
+
 {% block content %}
-<h2> Add module to {{ course.title }} </h2>
+<style>
+    .form-wrapper { 
+        max-width: 600px; 
+        margin: 4rem auto; 
+        font-family: sans-serif;
+    }
 
-<form method = "post">
-  {% csrf_token %}
-  <input type="text" name="title" placeholder="Module Title" required>
-  <input type="number"name="order" placeholder="Order" required>
-  <button type="submit"> Add module </button>
+    .form-header { 
+        margin-bottom: 2.5rem; 
+        text-align: left; 
+    }
 
-</form>
+    .form-header h2 { 
+        font-weight: 800; 
+        color: #1e293b; 
+        font-size: 2rem; 
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+    }
+
+    .section-label { 
+        font-size: 0.75rem; 
+        font-weight: 800; 
+        color: #94a3b8; 
+        text-transform: uppercase; 
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    /* Minimalist Info Box */
+    .info-strip {
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        color: #64748b;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    /* Form Card */
+    .form-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 2.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: #64748b;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+    }
+
+    /* Standardized Inputs */
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        box-sizing: border-box;
+        outline: none;
+    }
+
+    .form-control:focus {
+        border-color: #1e40af;
+        background-color: #f8fafc;
+        box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.05);
+    }
+
+    /* Submit Button - Dark Style */
+    .btn-submit-main {
+        width: 100%;
+        padding: 14px;
+        background: #1e293b;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: 800;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-top: 1rem;
+    }
+
+    .btn-submit-main:hover {
+        background: #0f172a;
+    }
+
+    /* Footer Navigation */
+    .action-footer {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .btn-cancel { 
+        color: #64748b; 
+        text-decoration: none; 
+        font-size: 0.85rem; 
+        font-weight: 700; 
+        text-transform: uppercase; 
+        letter-spacing: 0.05em; 
+    }
+    
+    .btn-cancel:hover { color: #1e293b; }
+</style>
+
+<div class="form-wrapper">
+    <div class="form-header">
+        <span class="section-label">Curriculum Architect</span>
+        <h2>Add New Module</h2>
+        <p class="text-muted small">Organizing content for: <strong>{{ course.title }}</strong></p>
+    </div>
+
+    <div class="info-strip">
+        <i class="bi bi-info-circle-fill text-primary"></i>
+        <span><strong>Pro Tip:</strong> Use the "Order" field to rank modules. (e.g., 1 for Chapter 1).</span>
+    </div>
+
+    <div class="form-card">
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="id_title">Module Title</label>
+                <input type="text" 
+                       name="title" 
+                       id="id_title" 
+                       class="form-control" 
+                       placeholder="e.g. Fundamental Concepts" 
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="id_order">Sequence Position</label>
+                <input type="number" 
+                       name="order" 
+                       id="id_order" 
+                       class="form-control" 
+                       placeholder="1" 
+                       required>
+            </div>
+
+            <button type="submit" class="btn-submit-main">
+                <i class="bi bi-plus-lg me-1"></i> Create Module
+            </button>
+        </form>
+    </div>
+
+    <div class="action-footer">
+        <a href="{% url 'courses:course_detail' course.id %}" class="btn-cancel">
+            Cancel and Return
+        </a>
+    </div>
+</div>
+
 {% endblock %}

@@ -1,49 +1,170 @@
-<div style="margin-left: {{ level }}px; margin-top:15px; padding:10px; border-left:2px solid #ddd;">
+<div class="comment-wrapper" style="margin-left: {% if level > 0 %}2.5rem{% else %}0{% endif %}; margin-top: 2rem;">
+    
+    <style>
+        .comment-card {
+            position: relative;
+            padding-left: 1.5rem;
+            /* Sharp, structural thread line */
+            border-left: 2px solid #e2e8f0; 
+            transition: all 0.2s ease-in-out;
+        }
 
-    <strong>{{ comment.user.username }}</strong>
-    <small>{{ comment.created_at }}</small>
-    <p>{{ comment.content }}</p>
+        .comment-card:hover {
+            border-left-color: #1e293b; /* Dark slate on hover */
+        }
 
-    <!-- If the comment is edited show that it's edited -->
-    {% if comment.is_edited  %}
-    <small>(edited)</small>
-    {% endif %}
+        .user-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 0.75rem;
+        }
 
+        .username {
+            font-weight: 800;
+            font-size: 0.85rem;
+            color: #1e293b;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
 
-    <!-- Reply Button -->
-    <button type="button" onclick="toggleReplyForm({{ comment.id }})">
-        Reply
-    </button>
+        .timestamp {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
 
-    <!-- Delete -->
-    {% if request.user == comment.user or request.user == course.teacher or request.user.is_staff %}
+        .comment-content {
+            color: #334155;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            word-wrap: break-word;
+        }
 
-    <a href="{% url 'discussion:delete_comment' comment.id %}"
-       style="color:red;">
-      Delete
-    </a>
+        /* Action Bar - Directory Style */
+        .action-bar {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
 
-    {% endif %}
+        .action-btn {
+            background: none;
+            border: none;
+            padding: 0;
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #64748b;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
 
-    {% if request.user == comment.user or request.user == course.teacher or request.user.is_staff %}
-    <a href="{% url 'discussion:edit_comment' comment.id %}">
-        Edit
-    </a>
-    {% endif %}
+        .action-btn:hover {
+            color: #1e293b;
+        }
 
-    <!-- Reply Form -->
-    <form method="post"
-          id="reply-form-{{ comment.id }}"
-          style="display:none; margin-top:10px;">
-        {% csrf_token %}
-        <input type="hidden" name="parent_id" value="{{ comment.id }}">
-        <textarea name="content" required></textarea>
-        <button type="submit">Post Reply</button>
-    </form>
+        .action-btn.delete:hover {
+            color: #ef4444; /* Directory Red */
+        }
 
-    <!-- Recursive Replies -->
-    {% for reply in comment.replies.all %}
-        {% include "discussion/comment_block.html" with comment=reply level=level|add:30 %}
-    {% endfor %}
+        /* Reply Form - High Contrast */
+        .reply-form-container {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border: 1px solid #e2e8f0;
+        }
 
+        .reply-form-container textarea {
+            width: 100%;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 0.9rem;
+            min-height: 100px;
+            margin-bottom: 12px;
+            outline: none;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+
+        .reply-form-container textarea:focus {
+            border-color: #1e40af;
+            background-color: #f8fafc;
+        }
+
+        /* Avatar - Minimalist */
+        .avatar-square {
+            width: 28px; 
+            height: 28px; 
+            background: #1e293b; 
+            border-radius: 4px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 0.75rem; 
+            font-weight: 800; 
+            color: #fff;
+        }
+    </style>
+
+    <div class="comment-card">
+        <div class="user-meta">
+            <div class="avatar-square">
+                {{ comment.user.username|slice:":1"|upper }}
+            </div>
+            <span class="username">{{ comment.user.username }}</span>
+            <span class="timestamp">{{ comment.created_at|timesince }} ago</span>
+            {% if comment.is_edited %}
+                <span class="timestamp" style="font-style: italic; opacity: 0.7;">(edited)</span>
+            {% endif %}
+        </div>
+
+        <div class="comment-content">
+            {{ comment.content }}
+        </div>
+
+        <div class="action-bar">
+            <button type="button" class="action-btn" onclick="toggleReplyForm({{ comment.id }})">
+                <i class="bi bi-reply-fill"></i> Reply
+            </button>
+
+            {% if request.user == comment.user or request.user == course.teacher or request.user.is_staff %}
+                <a href="{% url 'discussion:edit_comment' comment.id %}" class="action-btn">
+                    <i class="bi bi-pencil-square"></i> Edit
+                </a>
+                
+                <a href="{% url 'discussion:delete_comment' comment.id %}" class="action-btn delete">
+                    <i class="bi bi-trash"></i> Delete
+                </a>
+            {% endif %}
+        </div>
+
+        <div id="reply-form-{{ comment.id }}" class="reply-form-container" style="display:none;">
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                <textarea name="content" placeholder="Type your reply..." required></textarea>
+                <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" class="action-btn" onclick="toggleReplyForm({{ comment.id }})">Cancel</button>
+                    <button type="submit" class="btn-post-main" style="padding: 8px 16px; font-size: 0.7rem;">Post Reply</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="replies-container">
+        {% for reply in comment.replies.all %}
+            {% include "discussion/comment_block.html" with comment=reply level=level|add:1 %}
+        {% endfor %}
+    </div>
 </div>

@@ -1,16 +1,123 @@
 {% extends "base.html" %}
-{% block title %} Edit comment {% endblock %}
+{% block title %} Edit Comment | {{ course.title }} {% endblock %}
 
 {% block content %}
-<h2>Edit Comment</h2>
+<style>
+    .edit-container {
+        max-width: 650px;
+        margin: 4rem auto;
+        background: #ffffff;
+        padding: 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        border: 1px solid #f0f0f0;
+    }
 
-<form method="post">
-    {% csrf_token %}
-    <textarea name="content" required>{{ comment.content }}</textarea>
-    <br><br>
-    <button type="submit">Save Changes</button>
-    <a href="{% url 'discussion:course_discussion' course.id %}">
-        Cancel
-    </a>
-</form>
+    .edit-header {
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .edit-header h2 {
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 0.5rem;
+    }
+
+    .edit-header p {
+        color: #64748b;
+        font-size: 0.9rem;
+    }
+
+    /* Form Elements */
+    .edit-form textarea {
+        width: 100%;
+        min-height: 150px;
+        padding: 1rem;
+        border: 2px solid #edf2f7;
+        border-radius: 12px;
+        font-size: 1rem;
+        line-height: 1.6;
+        outline: none;
+        transition: all 0.2s ease;
+        margin-bottom: 1.5rem;
+        resize: vertical;
+    }
+
+    .edit-form textarea:focus {
+        border-color: #0d6efd;
+        background-color: #f8faff;
+        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+    }
+
+    .action-group {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .btn-save {
+        padding: 12px 25px;
+        background-color: #0d6efd;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: background 0.2s;
+        cursor: pointer;
+    }
+
+    .btn-save:hover {
+        background-color: #0b5ed7;
+    }
+
+    .btn-cancel {
+        color: #64748b;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+
+    .btn-cancel:hover {
+        color: #1e293b;
+        text-decoration: underline;
+    }
+
+    .original-context {
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-size: 0.85rem;
+        color: #64748b;
+        border-left: 3px solid #cbd5e1;
+        margin-bottom: 1.5rem;
+    }
+</style>
+
+<div class="edit-container">
+    <div class="edit-header">
+        <h2>Edit Comment</h2>
+        <p>Modify your message in the <strong>{{ course.title }}</strong> discussion.</p>
+    </div>
+
+    <div class="original-context">
+        <i class="bi bi-info-circle me-1"></i> 
+        Original post: <span class="text-truncate d-inline-block align-bottom" style="max-width: 300px;">"{{ comment.content }}"</span>
+    </div>
+
+    <form method="post" class="edit-form">
+        {% csrf_token %}
+        
+        <textarea name="content" required placeholder="Update your thoughts...">{{ comment.content }}</textarea>
+        
+        <div class="action-group">
+            <button type="submit" class="btn-save shadow-sm">
+                Save Changes
+            </button>
+            <a href="{% url 'discussion:course_discussion' course.id %}" class="btn-cancel">
+                Discard Changes
+            </a>
+        </div>
+    </form>
+</div>
 {% endblock %}

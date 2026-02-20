@@ -1,15 +1,99 @@
 {% extends "base.html" %}
-{% block title %} Unenroll {% endblock %}
+{% block title %} Unenroll | {{ course.title }} {% endblock %}
+
 {% block content %}
-<h2>Unenroll from {{ course.title }}</h2>
+<style>
+    .delete-container {
+        max-width: 500px;
+        margin: 4rem auto;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        border: 1px solid #fee2e2;
+        overflow: hidden;
+    }
 
-<p>Are you sure you want to unenroll?</p>
+    .delete-header {
+        background-color: #fef2f2;
+        padding: 2rem;
+        text-align: center;
+        border-bottom: 1px solid #fee2e2;
+    }
 
-<form method="POST">
-    {% csrf_token %}
-    <input type="hidden" name="next" value="{{ next }}">
-    <button type="submit">Yes, Unenroll</button>
-</form>
+    .delete-body {
+        padding: 2.5rem;
+        text-align: center;
+    }
 
-<a href="{{ next }}">Cancel</a>
+    .impact-box {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 1.25rem;
+        margin: 1.5rem 0;
+        border: 1px solid #e2e8f0;
+        text-align: left;
+    }
+
+    .btn-danger-confirm {
+        width: 100%;
+        padding: 14px;
+        background-color: #dc2626;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-bottom: 1rem;
+    }
+
+    .btn-danger-confirm:hover {
+        background-color: #b91c1c;
+    }
+
+    .btn-cancel {
+        display: block;
+        color: #64748b;
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    .btn-cancel:hover {
+        color: #1e293b;
+    }
+</style>
+
+<div class="delete-container">
+    <div class="delete-header">
+        <i class="bi bi-person-x text-danger fs-1 mb-2"></i>
+        <h2 class="h4 fw-bold mb-0" style="color: #991b1b;">Unenroll from Course</h2>
+    </div>
+
+    <div class="delete-body">
+        <p class="text-muted mb-1 small text-uppercase fw-bold">Student Action</p>
+        <h4 class="fw-bold mb-3">{{ course.title }}</h4>
+        
+        <p class="text-secondary small">Are you sure you want to leave this course?</p>
+
+        <div class="impact-box">
+            <h6 class="small fw-bold text-dark mb-2">Note for students:</h6>
+            <ul class="list-unstyled mb-0 small text-muted">
+                <li><i class="bi bi-info-circle me-2 text-primary"></i> Your progress is saved, but you'll lose access to content.</li>
+                <li><i class="bi bi-info-circle me-2 text-primary"></i> You can re-enroll at any time from the catalog.</li>
+            </ul>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn-danger-confirm shadow-sm">
+                Confirm Unenrollment
+            </button>
+        </form>
+
+        <a href="{% url next %}" class="btn-cancel">
+            Cancel and Return
+        </a>
+    </div>
+</div>
 {% endblock %}

@@ -1,61 +1,220 @@
 {% extends "base.html" %}
-{% block title %} Lecture {% endblock %}
+{% block title %} {{ lecture.title }} {% endblock %}
+
 {% block content %}
-<h2>{{ lecture.title }}</h2>
-<div class="lecture-content">
-    {% if lecture.notes %}
-        <p>{{ lecture.notes|linebreaks }}</p>
-    {% endif %}
-    {% if lecture.video_url %}
-        <p><a href="{{ lecture.video_url }}" target="_blank">▶ Watch Video</a></p>
-    {% endif %}
-</div>
-<hr>
-<h3>Resources & Materials</h3>
-<ul>
-    {% for material in lecture.materials.all %}
-        <li>
-            <a href="{{ material.link }}" target="_blank">{{ material.title }}</a>
-            
-            {% if is_teacher %}
-                <form action="{% url 'materials:delete_material' material.id %}" method="POST" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" style="color:red; background:none; border:none; cursor:pointer;" onclick="return confirm('Delete?')">
-                        (Delete)
-                    </button>
-                </form>
+<style>
+    .lecture-wrapper { max-width: 1000px; margin: 2rem auto; font-family: sans-serif; }
+
+    /* Navigation */
+    .lecture-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 2rem;
+    }
+
+    .btn-back { color: #64748b; text-decoration: none; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .btn-back:hover { color: #1e293b; }
+
+    /* Header */
+    .lecture-header { margin-bottom: 2.5rem; }
+    .lecture-header h1 { font-weight: 800; color: #1e293b; font-size: 2.25rem; margin-bottom: 1rem; }
+    
+    .section-label { 
+        font-size: 0.75rem; 
+        font-weight: 800; 
+        color: #94a3b8; 
+        text-transform: uppercase; 
+        letter-spacing: 0.05em;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    /* Video Strip */
+    .video-strip {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .lecture-body { color: #334155; line-height: 1.7; font-size: 1.05rem; }
+
+    /* Resources / Materials List */
+    .resource-list { border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #fff; }
+    .resource-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 0.9rem;
+    }
+    .resource-item:last-child { border-bottom: none; }
+    .resource-link { text-decoration: none; color: #1e40af; font-weight: 600; }
+    .resource-link:hover { text-decoration: underline; }
+
+    /* Delete Button Styling */
+    .delete-btn-minimal {
+        background: transparent !important;
+        border: none !important;
+        color: #cbd5e1;
+        font-size: 1.4rem;
+        font-weight: 400;
+        line-height: 1;
+        padding: 0 5px;
+        cursor: pointer;
+        transition: color 0.2s;
+        box-shadow: none !important;
+    }
+    .delete-btn-minimal:hover { color: #ef4444; }
+
+    /* Teacher Tools Box */
+    .teacher-box {
+        margin-top: 1.5rem;
+        padding: 1.25rem;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+    }
+
+    /* Standardized Buttons */
+    .btn-minimal {
+        padding: 6px 14px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: 0.2s;
+        display: inline-block;
+    }
+    .btn-blue { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+    .btn-dark { background: #1e293b; color: white; border: none; }
+    .btn-success-mark { background: #10b981; color: white; border: none; }
+
+    /* Status Bar */
+    .status-bar {
+        margin-top: 4rem;
+        padding: 1.5rem 0;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
+
+<div class="lecture-wrapper">
+    
+    <nav class="lecture-nav">
+        <a href="{% url 'courses:course_detail' course.id %}" class="btn-back">
+            <i class="bi bi-chevron-left"></i> Curriculum
+        </a>
+        {% if is_teacher %}
+            <a href="{% url 'courses:edit_lecture' lecture.id %}" class="btn-minimal btn-blue">Edit Content</a>
+        {% endif %}
+    </nav>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <header class="lecture-header">
+                <span class="section-label">Lecture Module</span>
+                <h1>{{ lecture.title }}</h1>
+            </header>
+
+            {% if lecture.video_url %}
+            <div class="video-strip">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-play-circle-fill text-primary"></i>
+                    <span class="small fw-bold text-dark">Instructional Video</span>
+                </div>
+                <a href="{{ lecture.video_url }}" target="_blank" class="btn-minimal btn-dark">Watch Player</a>
+            </div>
             {% endif %}
-        </li>
-    {% empty %}
-        <li>No materials added yet.</li>
-    {% endfor %}
-</ul>
 
-{% if not completed %}
-<form method="post">
-  {% csrf_token %}
-  <input type="hidden" name="action" value="mark">
-  <button type="submit">Mark as Complete</button>
-</form>
-{% else %}
-<p style="color:green;">✔ Lesson Completed</p>
-<form method="post">
-  {% csrf_token %}
-  <input type="hidden" name="action" value="unmark">
-  <button type="submit" style="color:gray; background:none; border:none; cursor:pointer;">↩ Mark as Incomplete</button>
-</form>
-{% endif %}
+            <div class="lecture-body">
+                <span class="section-label">Lesson Description</span>
+                {% if lecture.notes %}
+                    {{ lecture.notes|linebreaks }}
+                {% else %}
+                    <p class="text-muted small italic">No specific description provided for this lesson.</p>
+                {% endif %}
+            </div>
+        </div>
 
-{% if is_teacher %}
-    <div style="margin-top: 20px; padding: 15px; border: 1px solid #ccc;">
-        <h4>Add Resource</h4>
-        <form action="{% url 'materials:lecture_materials' lecture.id %}" method="POST">
-            {% csrf_token %}
-            <input type="text" name="title" placeholder="Title (e.g. GitHub Repo)" required>
-            <input type="url" name="link" placeholder="URL" required>
-            <button type="submit">Add</button>
-        </form>
+        <div class="col-lg-4">
+            <span class="section-label">Lesson Materials</span>
+            <div class="resource-list">
+                {% for material in lecture.materials.all %}
+                    <div class="resource-item">
+                        <a href="{{ material.link }}" target="_blank" class="resource-link">
+                            <i class="bi bi-file-text me-1"></i> {{ material.title }}
+                        </a>
+                        
+                        {% if is_teacher %}
+                            <form action="{% url 'materials:delete_material' material.id %}" method="POST" class="m-0" 
+                                  onsubmit="return confirm('Permanently delete this resource?');">
+                                {% csrf_token %}
+                                <button type="submit" class="delete-btn-minimal" title="Delete">&times;</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <div class="p-3 text-center text-muted small">No materials.</div>
+                {% endfor %}
+            </div>
+
+            {% if is_teacher %}
+            <div class="teacher-box">
+                <span class="section-label" style="color: #475569;">Add Resource</span>
+                <form action="{% url 'materials:lecture_materials' lecture.id %}" method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="title" class="form-control form-control-sm mb-2" placeholder="Title" required>
+                    <input type="url" name="link" class="form-control form-control-sm mb-2" placeholder="URL (https://...)" required>
+                    <button type="submit" class="btn-minimal btn-dark w-100">Upload</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
     </div>
-{% endif %}
-<p><a href="{% url 'courses:course_detail' course.id %}">← Back to Course</a></p>
+
+    <div class="status-bar">
+        <div class="d-flex align-items-center gap-3">
+            {% if not is_teacher %}
+                {% if completed %}
+                    <span class="badge bg-success py-2 px-3 rounded-pill"><i class="bi bi-check-lg me-1"></i> Completed</span>
+                {% else %}
+                    <span class="text-muted small fw-bold text-uppercase">Lesson Pending</span>
+                {% endif %}
+            {% else %}
+                <span class="text-muted small fw-bold text-uppercase">Lecture Published</span>
+            {% endif %}
+        </div>
+        
+        <div>
+            {% if not is_teacher %}
+                {% if not completed %}
+                    <form method="post" class="m-0">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="mark">
+                        <button type="submit" class="btn-minimal btn-success-mark px-4">Mark as complete</button>
+                    </form>
+                {% else %}
+                    <form method="post" class="m-0">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="unmark">
+                        <button type="submit" class="btn btn-link btn-sm text-muted text-decoration-none fw-bold">
+                            Mark Incomplete
+                        </button>
+                    </form>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
 {% endblock %}
