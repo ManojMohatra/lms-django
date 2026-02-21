@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %} Create Assignment | {{ lecture.title }} {% endblock %}
+
+{% block content %}
+<style>
+    .form-wrapper { 
+        max-width: 600px; 
+        margin: 4rem auto; 
+        font-family: sans-serif;
+    }
+
+    /* Standardized Directory Header */
+    .form-header { 
+        margin-bottom: 2.5rem; 
+        text-align: left; 
+    }
+
+    .section-label { 
+        font-size: 0.75rem; 
+        font-weight: 800; 
+        color: #94a3b8; 
+        text-transform: uppercase; 
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .form-header h2 { 
+        font-weight: 800; 
+        color: #1e293b; 
+        font-size: 2.25rem; 
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+    }
+
+    .context-tag {
+        font-size: 0.7rem;
+        font-weight: 800;
+        color: #64748b;
+        background: #f1f5f9;
+        padding: 4px 8px;
+        border-radius: 4px;
+        text-transform: uppercase;
+        display: inline-block;
+        margin-bottom: 1rem;
+    }
+
+    /* Minimalist Form Card */
+    .form-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 2.5rem;
+    }
+
+    /* Styling Django's form paragraphs */
+    form p {
+        margin-bottom: 1.75rem;
+    }
+
+    form label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: #64748b;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+    }
+
+    /* Target inputs, textareas, and dates */
+    form input[type="text"], 
+    form input[type="date"],
+    form input[type="datetime-local"],
+    form textarea, 
+    form select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        box-sizing: border-box;
+        outline: none;
+        color: #1e293b;
+    }
+
+    form input:focus, form textarea:focus {
+        border-color: #1e40af;
+        background-color: #f8fafc;
+    }
+
+    form textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    /* Primary Submit Button */
+    .btn-save-main {
+        width: 100%;
+        padding: 14px;
+        background: #1e293b;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: 800;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-top: 1rem;
+    }
+
+    .btn-save-main:hover {
+        background: #0f172a;
+    }
+
+    .action-footer {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .btn-cancel { 
+        color: #64748b; 
+        text-decoration: none; 
+        font-size: 0.85rem; 
+        font-weight: 700; 
+        text-transform: uppercase; 
+        letter-spacing: 0.05em; 
+    }
+</style>
+
+<div class="form-wrapper">
+    <div class="form-header">
+        <span class="context-tag">{{ lecture.title }}</span>
+        <span class="section-label">Curriculum Requirement</span>
+        <h2>New Assignment</h2>
+        <p class="text-muted small">Set instructions and deadlines for your students.</p>
+    </div>
+
+    <div class="form-card">
+        <form method="post" novalidate>
+            {% csrf_token %}
+            
+            {{ form.as_p }}
+
+            <button type="submit" class="btn-save-main">
+                <i class="bi bi-journal-plus me-2"></i> Create Assignment
+            </button>
+        </form>
+    </div>
+
+    <div class="action-footer">
+        <a href="{% url 'courses:lecture_detail' lecture.id %}" class="btn-cancel">
+            Cancel and Return to Lecture
+        </a>
+    </div>
+</div>
+{% endblock %}

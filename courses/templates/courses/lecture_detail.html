@@ -1,220 +1,405 @@
 {% extends "base.html" %}
-{% block title %} {{ lecture.title }} {% endblock %}
+{% block title %}{{ lecture.title }}{% endblock %}
 
 {% block content %}
 <style>
-    .lecture-wrapper { max-width: 1000px; margin: 2rem auto; font-family: sans-serif; }
-
-    /* Navigation */
-    .lecture-nav {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-bottom: 1.5rem;
-        border-bottom: 1px solid #e2e8f0;
-        margin-bottom: 2rem;
+    :root {
+        --dir-border: #e2e8f0;
+        --dir-text: #1e293b;
+        --dir-label: #64748b;
+        --dir-accent: #0f172a;
+        --dir-bg-light: #f8fafc;
+        --dir-card-bg: #ffffff;
     }
 
-    .btn-back { color: #64748b; text-decoration: none; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-    .btn-back:hover { color: #1e293b; }
+    .lecture-wrapper {
+        max-width: 1000px;
+        margin: 2rem auto;
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        color: var(--dir-text);
+    }
 
-    /* Header */
-    .lecture-header { margin-bottom: 2.5rem; }
-    .lecture-header h1 { font-weight: 800; color: #1e293b; font-size: 2.25rem; margin-bottom: 1rem; }
-    
-    .section-label { 
-        font-size: 0.75rem; 
-        font-weight: 800; 
-        color: #94a3b8; 
-        text-transform: uppercase; 
-        letter-spacing: 0.05em;
-        margin-bottom: 1rem;
+    /* Labels */
+    .dir-label {
+        font-size: 0.65rem;
+        font-weight: 600;
+        color: var(--dir-label);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
         display: block;
+        margin-bottom: 0.25rem;
     }
 
-    /* Video Strip */
-    .video-strip {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 1rem 1.5rem;
-        display: flex;
-        justify-content: space-between;
+    /* Navigation link – matches dir-label aesthetic */
+    .dir-nav-link {
+        font-size: 0.65rem;
+        font-weight: 600;
+        color: var(--dir-label);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        text-decoration: none;
+        display: inline-flex;
         align-items: center;
-        margin-bottom: 2rem;
+        gap: 0.25rem;
+        transition: color 0.15s;
+    }
+    .dir-nav-link:hover {
+        color: var(--dir-accent);
+        text-decoration: underline;
     }
 
-    .lecture-body { color: #334155; line-height: 1.7; font-size: 1.05rem; }
+    .dir-title {
+        font-weight: 700;
+        font-size: 2rem;
+        letter-spacing: -0.01em;
+        margin-bottom: 1rem;
+        margin-top: 0;
+        line-height: 1.2;
+        color: var(--dir-accent);
+    }
 
-    /* Resources / Materials List */
-    .resource-list { border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #fff; }
+    /* Buttons */
+    .btn-dir {
+        padding: 0.4rem 1rem;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        border-radius: 4px;
+        text-decoration: none;
+        cursor: pointer;
+        border: 1px solid var(--dir-border);
+        background: white;
+        color: var(--dir-text);
+        transition: all 0.15s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .btn-dir-dark {
+        background: var(--dir-accent);
+        color: white;
+        border: 1px solid var(--dir-accent);
+    }
+
+    .btn-dir-dark:hover {
+        background: #1e293b;
+        border-color: #1e293b;
+    }
+
+    .btn-dir:hover {
+        background: var(--dir-bg-light);
+        border-color: #94a3b8;
+    }
+
+    /* Resource box (materials) */
+    .resource-box {
+        background: var(--dir-card-bg);
+        border: 1px solid var(--dir-border);
+        border-radius: 6px;
+        padding: 0.75rem;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+
     .resource-item {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 10px 15px;
-        border-bottom: 1px solid #f1f5f9;
-        font-size: 0.9rem;
-    }
-    .resource-item:last-child { border-bottom: none; }
-    .resource-link { text-decoration: none; color: #1e40af; font-weight: 600; }
-    .resource-link:hover { text-decoration: underline; }
-
-    /* Delete Button Styling */
-    .delete-btn-minimal {
-        background: transparent !important;
-        border: none !important;
-        color: #cbd5e1;
-        font-size: 1.4rem;
-        font-weight: 400;
-        line-height: 1;
-        padding: 0 5px;
-        cursor: pointer;
-        transition: color 0.2s;
-        box-shadow: none !important;
-    }
-    .delete-btn-minimal:hover { color: #ef4444; }
-
-    /* Teacher Tools Box */
-    .teacher-box {
-        margin-top: 1.5rem;
-        padding: 1.25rem;
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-    }
-
-    /* Standardized Buttons */
-    .btn-minimal {
-        padding: 6px 14px;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid var(--dir-border);
         font-size: 0.85rem;
-        font-weight: 700;
-        border-radius: 6px;
-        text-decoration: none;
-        transition: 0.2s;
-        display: inline-block;
     }
-    .btn-blue { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
-    .btn-dark { background: #1e293b; color: white; border: none; }
-    .btn-success-mark { background: #10b981; color: white; border: none; }
 
-    /* Status Bar */
-    .status-bar {
-        margin-top: 4rem;
-        padding: 1.5rem 0;
-        border-top: 1px solid #e2e8f0;
+    .resource-item:last-child {
+        border-bottom: none;
+    }
+
+    /* Assignment cards */
+    .assignment-registry {
+        margin-top: 2rem;
+        border: 1px solid var(--dir-border);
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--dir-card-bg);
+    }
+
+    .registry-header {
+        background: var(--dir-bg-light);
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--dir-border);
+        font-weight: 600;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--dir-label);
+    }
+
+    .assignment-card {
+        display: grid;
+        grid-template-columns: 80px 1fr auto;
+        gap: 1rem;
+        padding: 1rem 1rem;
+        border-bottom: 1px solid var(--dir-border);
+        align-items: start;
+        background: white;
+        transition: background 0.1s;
+    }
+
+    .assignment-card:last-child {
+        border-bottom: none;
+    }
+
+    .assignment-card:hover {
+        background: var(--dir-bg-light);
+    }
+
+    .assignment-number {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: var(--dir-label);
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        padding-top: 0.2rem;
+    }
+
+    .assignment-content {
+        min-width: 0;
+    }
+
+    .assignment-title {
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin: 0 0 0.25rem;
+        color: var(--dir-accent);
+    }
+
+    .assignment-description {
+        font-size: 0.8rem;
+        color: #475569;
+        margin: 0 0 0.35rem;
+        line-height: 1.4;
+    }
+
+    .assignment-meta {
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .submission-status {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #15803d;
+        background: #f0fdf4;
+        padding: 0.2rem 0.6rem;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .due-badge {
+        font-size: 0.65rem;
+        font-weight: 600;
+        color: #b91c1c;
+        background: #fef2f2;
+        padding: 0.2rem 0.6rem;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.2rem;
+    }
+
+    .assignment-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.5rem;
+    }
+
+    /* Status row */
+    .status-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1rem;
+        background: var(--dir-bg-light);
+        border-top: 1px solid var(--dir-border);
+        font-size: 0.8rem;
+    }
+
+    /* Inputs */
+    .dir-input {
+        border: 1px solid var(--dir-border);
+        padding: 0.4rem 0.75rem;
+        font-size: 0.8rem;
+        border-radius: 4px;
+        outline: none;
+        width: 100%;
+        background: white;
+    }
+
+    .dir-input:focus {
+        border-color: var(--dir-accent);
+        box-shadow: 0 0 0 2px rgba(15,23,42,0.1);
+    }
+
+    .lecture-body {
+        line-height: 1.7;
+        color: #334155;
+        margin-top: 1.5rem;
     }
 </style>
 
 <div class="lecture-wrapper">
-    
-    <nav class="lecture-nav">
-        <a href="{% url 'courses:course_detail' course.id %}" class="btn-back">
-            <i class="bi bi-chevron-left"></i> Curriculum
+    <!-- Navigation header with matching dir aesthetic -->
+    <nav class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+        <a href="{% url 'courses:course_detail' course.id %}" class="btn-dir">
+            Curriculum
         </a>
         {% if is_teacher %}
-            <a href="{% url 'courses:edit_lecture' lecture.id %}" class="btn-minimal btn-blue">Edit Content</a>
+            <a href="{% url 'courses:edit_lecture' lecture.id %}" class="btn-dir">Edit Module</a>
         {% endif %}
     </nav>
-
-    <div class="row">
+    <br>
+    
+    <!-- Main content row -->
+    <div class="row g-4 mb-4">
+      <!-- Left column: Lecture info -->
         <div class="col-lg-8">
-            <header class="lecture-header">
-                <span class="section-label">Lecture Module</span>
-                <h1>{{ lecture.title }}</h1>
-            </header>
-
+            <span class="dir-label">  Current Unit</span>
+            <h1 class="dir-title">{{ lecture.title }}</h1>
+            
             {% if lecture.video_url %}
-            <div class="video-strip">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="bi bi-play-circle-fill text-primary"></i>
-                    <span class="small fw-bold text-dark">Instructional Video</span>
-                </div>
-                <a href="{{ lecture.video_url }}" target="_blank" class="btn-minimal btn-dark">Watch Player</a>
+            <div class="d-flex align-items-center justify-content-between p-3 mb-4 bg-light border rounded-3">
+                <a href="{{ lecture.video_url }}" target="_blank" class="btn-dir btn-dir-dark">Play Video</a>
             </div>
             {% endif %}
 
             <div class="lecture-body">
-                <span class="section-label">Lesson Description</span>
-                {% if lecture.notes %}
-                    {{ lecture.notes|linebreaks }}
-                {% else %}
-                    <p class="text-muted small italic">No specific description provided for this lesson.</p>
-                {% endif %}
+                <span class="dir-label">Unit Description</span>
+                {{ lecture.notes|linebreaks|default:"<p class='text-muted fst-italic'>System: No instructional notes provided.</p>" }}
             </div>
         </div>
 
+        <!-- Right column: Materials -->
         <div class="col-lg-4">
-            <span class="section-label">Lesson Materials</span>
-            <div class="resource-list">
+            <span class="dir-label">Supplementary Files</span>
+            <div class="resource-box">
                 {% for material in lecture.materials.all %}
-                    <div class="resource-item">
-                        <a href="{{ material.link }}" target="_blank" class="resource-link">
-                            <i class="bi bi-file-text me-1"></i> {{ material.title }}
-                        </a>
-                        
-                        {% if is_teacher %}
-                            <form action="{% url 'materials:delete_material' material.id %}" method="POST" class="m-0" 
-                                  onsubmit="return confirm('Permanently delete this resource?');">
-                                {% csrf_token %}
-                                <button type="submit" class="delete-btn-minimal" title="Delete">&times;</button>
-                            </form>
-                        {% endif %}
-                    </div>
+                <div class="resource-item">
+                    <a href="{{ material.link }}" target="_blank" class="text-decoration-none fw-semibold small" style="color: #1e40af;">
+                        <i class="bi bi-file-earmark-text me-1"></i> {{ material.title }}
+                    </a>
+                    {% if is_teacher %}
+                    <form action="{% url 'materials:delete_material' material.id %}" method="POST" class="m-0">
+                        {% csrf_token %}
+                        <button type="submit" class="text-secondary border-0 bg-transparent p-0" style="font-size:1.2rem; line-height:1;">&times;</button>
+                    </form>
+                    {% endif %}
+                </div>
                 {% empty %}
-                    <div class="p-3 text-center text-muted small">No materials.</div>
+                <p class="text-muted small mb-0">No files indexed.</p>
                 {% endfor %}
             </div>
 
             {% if is_teacher %}
-            <div class="teacher-box">
-                <span class="section-label" style="color: #475569;">Add Resource</span>
-                <form action="{% url 'materials:lecture_materials' lecture.id %}" method="POST">
-                    {% csrf_token %}
-                    <input type="text" name="title" class="form-control form-control-sm mb-2" placeholder="Title" required>
-                    <input type="url" name="link" class="form-control form-control-sm mb-2" placeholder="URL (https://...)" required>
-                    <button type="submit" class="btn-minimal btn-dark w-100">Upload</button>
-                </form>
-            </div>
+                <div class="mt-3 p-3 border rounded-3 bg-light">
+    <span class="dir-label mb-2 d-block">Material Indexing</span>
+    <form action="{% url 'materials:lecture_materials' lecture.id %}" method="POST">
+        {% csrf_token %}
+        
+        <input type="text" name="title" class="dir-input mb-2 w-100" placeholder="Title" required>
+
+        <div class="d-flex align-items-center">
+            <input type="url" name="link" class="dir-input" placeholder="Resource URL" required 
+                   style="flex: 1; margin-right: 10px; width: auto;">
+            
+            <button type="submit" class="btn-dir btn-dir-dark" 
+                    style="white-space: nowrap; width: auto;">Upload Asset</button>
+        </div>
+    </form>
+</div>
             {% endif %}
         </div>
     </div>
 
-    <div class="status-bar">
-        <div class="d-flex align-items-center gap-3">
-            {% if not is_teacher %}
+    <!-- Assignments registry -->
+    <div class="assignment-registry">
+        <div class="registry-header">
+            <i class="bi bi-list-check me-2"></i>Task Directory & Unit Registry
+        </div>
+
+        {% for assignment in assignments %}
+        <div class="assignment-card">
+            <div class="assignment-number">#{{ forloop.counter }}</div>
+            <div class="assignment-content">
+                <h4 class="assignment-title">{{ assignment.title }}</h4>
+                <p class="assignment-description">{{ assignment.description }}</p>
+                
+                <div class="assignment-meta">
+                    {% if assignment.user_submission %}
+                        <span class="submission-status">
+                            <i class="bi bi-check-all"></i> Logged: {{ assignment.user_submission.file.name|truncatechars:25 }}
+                        </span>
+                    {% endif %}
+                    {% if assignment.due_date %}
+                        <span class="due-badge">
+                            <i class="bi bi-calendar3"></i> Due {{ assignment.due_date|date:"d M Y" }}
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="assignment-actions">
+                {% if is_teacher %}
+                    <a href="#" class="btn-dir">Review Log</a>
+                {% else %}
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="assignment_id" value="{{ assignment.id }}">
+                        <label for="file_{{ assignment.id }}" class="btn-dir btn-dir-dark">
+                            {% if assignment.user_submission %}Replace{% else %}Upload{% endif %}
+                        </label>
+                        <input type="file" name="file" id="file_{{ assignment.id }}" hidden onchange="this.form.submit()">
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="p-4 text-center text-muted small">
+            No active assignments found in registry.
+        </div>
+        {% endfor %}
+
+        {% if is_teacher %}
+        <div class="p-3 text-center border-top bg-light">
+            <a href="{% url 'courses:create_assignment' lecture.id %}" class="btn-dir">
+                <i class="bi bi-plus-lg me-1"></i> Initialize New Assignment
+            </a>
+        </div>
+        {% endif %}
+
+        {% if not is_teacher %}
+        <div class="status-row">
+            <span class="fw-semibold text-uppercase small">
                 {% if completed %}
-                    <span class="badge bg-success py-2 px-3 rounded-pill"><i class="bi bi-check-lg me-1"></i> Completed</span>
+                    <span class="text-success"><i class="bi bi-check-circle-fill me-1"></i> Registry Status: Completed</span>
                 {% else %}
-                    <span class="text-muted small fw-bold text-uppercase">Lesson Pending</span>
+                    <span class="text-secondary">Registry Status: Pending</span>
                 {% endif %}
-            {% else %}
-                <span class="text-muted small fw-bold text-uppercase">Lecture Published</span>
-            {% endif %}
+            </span>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="{% if completed %}unmark{% else %}mark{% endif %}">
+                <button type="submit" class="btn-dir {% if not completed %}btn-dir-dark{% endif %}">
+                    {% if completed %}Reset Progress{% else %}Mark Complete{% endif %}
+                </button>
+            </form>
         </div>
-        
-        <div>
-            {% if not is_teacher %}
-                {% if not completed %}
-                    <form method="post" class="m-0">
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="mark">
-                        <button type="submit" class="btn-minimal btn-success-mark px-4">Mark as complete</button>
-                    </form>
-                {% else %}
-                    <form method="post" class="m-0">
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="unmark">
-                        <button type="submit" class="btn btn-link btn-sm text-muted text-decoration-none fw-bold">
-                            Mark Incomplete
-                        </button>
-                    </form>
-                {% endif %}
-            {% endif %}
-        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
+h

@@ -33,49 +33,59 @@ class UserLogoutView(LogoutView):
 
 @login_required
 def dashboard(request):
-    # Using request.user consistently to avoid NameErrors
     user = request.user
     role = user.profile.role
-    context = {}
+    context = {"role": role}
 
-    if role == 'student':
+    # -------------------------
+    # STUDENT DASHBOARD
+    # -------------------------
+    if role == "student":
         enrollments = Enrollment.objects.filter(student=user).select_related("course")
         course_data = []
 
         for enrollment in enrollments:
             course = enrollment.course
-            
-            # Calculate total and completed lectures
-            total_lectures = Lecture.objects.filter(module__course=course).count()
-            completed_lectures = LectureProgress.objects.filter(
+
+            # Total lectures in course
+            total_lectures = Lecture.objects.filter(
+                module__course=course
+            ).count()
+
+            # Completed lecture IDs
+            completed_lecture_ids = LectureProgress.objects.filter(
                 student=user,
                 lecture__module__course=course,
                 completed=True
-            ).count()
+            ).values_list("lecture_id", flat=True)
 
+            completed_count = len(completed_lecture_ids)
+
+            # Progress percentage
             progress_percent = 0
             if total_lectures > 0:
-                progress_percent = int((completed_lectures / total_lectures) * 100)
+                progress_percent = int((completed_count / total_lectures) * 100)
 
-            # Find the next incomplete lecture (Resume logic)
-            # Moved outside the 'if total_lectures > 0' to ensure it's always defined
+            # Find next incomplete lecture
             next_lecture = Lecture.objects.filter(
                 module__course=course
             ).exclude(
-                lectureprogress__student=user,
-                lectureprogress__completed=True
-            ).order_by('module__order', 'order').first()
+                id__in=completed_lecture_ids
+            ).order_by("module__order", "order").first()
 
             course_data.append({
                 "course": course,
                 "progress_percent": progress_percent,
                 "next_lecture": next_lecture
             })
-        
-        context['course_data'] = course_data
 
-    elif role == 'teacher':
-        # Fetch courses where this user is the author
-        context['teacher_courses'] = Course.objects.filter(teacher=user)
+        context["course_data"] = course_data
+
+    # -------------------------
+    # TEACHER DASHBOARD
+    # -------------------------
+    elif role == "teacher":
+        teacher_courses = Course.objects.filter(teacher=user)
+        context["teacher_courses"] = teacher_courses
 
     return render(request, "accounts/dashboard.html", context)

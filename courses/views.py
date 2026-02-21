@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpResponseForbidden
-from .forms import CourseForm
-from .models import Course, Enrollment,Module,Lecture,LectureProgress
+from .forms import CourseForm,AssignmentForm
+from .models import Course, Enrollment,Module,Lecture,LectureProgress,Assignment,Submission
 from django.contrib.auth.decorators import login_required
 from discussion.models import Comment
 from django.utils import timezone
@@ -139,37 +139,63 @@ def course_detail(request,course_id):
 
 @login_required
 def lecture_detail(request, lecture_id):
-    lecture = get_object_or_404(
-        Lecture.objects.prefetch_related('materials'), 
-        id=lecture_id
-    )
+    # prefetch_related('materials') keeps the database queries efficient
+    lecture = get_object_or_404(Lecture.objects.prefetch_related('materials'), id=lecture_id)
     course = lecture.module.course
     is_teacher = (course.teacher == request.user)
     
-    if request.method == "POST":
-        progress, created = LectureProgress.objects.get_or_create(
-            student=request.user,
-            lecture=lecture
-        )
-        if request.POST.get('action') == 'unmark':
-            progress.completed = False
-            progress.completed_at = None
-        else:
-            progress.completed = True
-            progress.completed_at = timezone.now()
-        progress.save()
-
-    completed = LectureProgress.objects.filter(
-        student=request.user,
-        lecture=lecture,
-        completed=True
-    ).exists()
+    # Get all assignments for this lecture
+    assignments = Assignment.objects.filter(lecture=lecture)
     
+    # Process POST actions
+    if request.method == "POST":
+        # 1. Handle Student Assignment Upload
+        if 'file' in request.FILES:
+            assignment_id = request.POST.get('assignment_id')
+            target_assignment = get_object_or_404(Assignment, id=assignment_id)
+            
+            # Update existing or create new submission
+            submission, created = Submission.objects.get_or_create(
+                assignment=target_assignment, 
+                student=request.user
+            )
+            submission.file = request.FILES['file']
+            submission.save()
+            return redirect('courses:lecture_detail', lecture_id=lecture.id)
+
+        # 2. Handle Lesson Completion Toggle
+        elif 'action' in request.POST:
+            progress, created = LectureProgress.objects.get_or_create(
+                student=request.user, 
+                lecture=lecture
+            )
+            progress.completed = (request.POST.get('action') == 'mark')
+            if progress.completed:
+                progress.completed_at = timezone.now()
+            progress.save()
+            return redirect('courses:lecture_detail', lecture_id=lecture.id)
+
+    # Prepare Data for Template
+    completed = False
+    if not is_teacher:
+        # Check if the student has marked this lesson complete
+        completed = LectureProgress.objects.filter(
+            student=request.user, 
+            lecture=lecture, 
+            completed=True
+        ).exists()
+
+        # Efficiently attach the user's specific submission to each assignment object
+        user_subs = {s.assignment_id: s for s in Submission.objects.filter(assignment__in=assignments, student=request.user)}
+        for assignment in assignments:
+            assignment.user_submission = user_subs.get(assignment.id)
+
     return render(request, "courses/lecture_detail.html", {
         "lecture": lecture,
         "course": course,
         "is_teacher": is_teacher,
-        "completed": completed
+        "assignments": assignments,
+        "completed": completed,
     })
 
 
@@ -295,3 +321,26 @@ def delete_course(request,course_id):
     return render(request,"courses/delete_course.html",{
         "course":course
         })
+
+@login_required
+def create_assignment(request, lecture_id):
+    lecture = get_object_or_404(Lecture,id=lecture_id)
+
+    if request.user != lecture.module.course.teacher:
+        return HttpResponseForbidden()
+
+    if request.method == "POST":
+        form = AssignmentForm(request.POST)
+        if form.is_valid():
+            assignment = form.save(commit=False)
+            assignment.lecture = lecture
+            assignment.save()
+            return redirect("courses:lecture_detail",lecture_id=lecture.id)
+    else:
+        form = AssignmentForm()
+
+    return render(request,'courses/assignment_form.html',{
+        'form':form,
+        'lecture':lecture
+        })
+            
