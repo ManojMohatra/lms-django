@@ -132,40 +132,45 @@
         <h2 class="curriculum-title">Curriculum</h2>
         
         {% for module in modules %}
-        <section class="module-group">
+            {% endfor %}
+
+        <section class="module-group" style="margin-top: 3rem;">
             <div class="module-label">
-                <span>Module {{ forloop.counter }}: {{ module.title }}</span>
-                {% if role == "teacher" %}
-                <div>
-                    <a href="{% url 'courses:add_lecture' module.id %}" class="edit-text action-text">+ Lecture</a>
-                    <a href="{% url 'courses:edit_module' module.id %}" class="edit-text action-text">Edit</a>
-                    <a href="{% url 'courses:delete_module' module.id %}" class="delete-text action-text">Delete</a>
-                </div>
+                <span><i class="bi bi-patch-question"></i> Course Assessments</span>
+                {% if role == "teacher" and course.teacher == request.user %}
+                    <a href="{% url 'quiz:create_quiz' course.id %}" class="edit-text action-text">+ Create Quiz</a>
                 {% endif %}
             </div>
 
             <div class="lecture-list">
-                {% for lecture in module.lectures.all %}
+                {% for quiz in course.quizzes.all %}
                 <div class="lecture-item">
-                    <a href="{% url 'courses:lecture_detail' lecture.id %}" class="lecture-link">
-                        <i class="bi bi-play-circle"></i> {{ lecture.title }}
-                    </a>
-                    
-                    {% if role == "teacher" %}
-                    <div class="item-actions">
-                        <a href="{% url 'courses:edit_lecture' lecture.id %}" class="edit-text action-text">Edit</a>
-                        <a href="{% url 'courses:delete_lecture' lecture.id %}" class="delete-text action-text">Delete</a>
+                    <div class="d-flex align-items: center; gap: 10px;">
+                        {% if role == "student" %}
+                            <a href="{% url 'quiz:take_quiz' quiz.id %}" class="lecture-link">
+                                <i class="bi bi-journal-check"></i> {{ quiz.title }}
+                            </a>
+                        {% else %}
+                            <span class="lecture-link" style="color: var(--text-main);">
+                                <i class="bi bi-journal-text"></i> {{ quiz.title }}
+                            </span>
+                        {% endif %}
                     </div>
-                    {% endif %}
+                    
+                    <div class="item-actions">
+                        {% if request.user == course.teacher %}
+                            <a href="{% url 'quiz:add_question' quiz.id %}" class="edit-text action-text">Add Questions</a>
+                            <a href="{% url 'quiz:manage_results' quiz.id %}" style="font-size: 0.75rem; color: #1e40af; font-weight: 700; text-decoration: none; margin-left: 12px;">
+                                <i class="bi bi-graph-up"></i> View Submissions
+                            </a>
+                        {% endif %}
+                    </div>
                 </div>
                 {% empty %}
-                <div class="p-3 text-center text-muted small">No lectures added yet.</div>
+                <div class="p-3 text-center text-muted small">No quizzes published yet.</div>
                 {% endfor %}
             </div>
         </section>
-        {% empty %}
-        <p class="text-muted">No content available.</p>
-        {% endfor %}
     </main>
 
     <div class="discussion-box">

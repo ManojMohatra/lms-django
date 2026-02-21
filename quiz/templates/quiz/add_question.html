@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Add Questions - {{ quiz.title }}{% endblock %}
+
+{% block content %}
+<div class="card" style="margin-top: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+        <div>
+            <h2 style="margin: 0;">Add Questions</h2>
+            <p style="color: var(--text-muted); margin: 0; font-size: 0.9rem;">Quiz: {{ quiz.title }}</p>
+        </div>
+        <span class="user-tag">{{ quiz.questions.count }} Questions Added</span>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px;">Question Type</label>
+            <select name="type" id="qType" onchange="toggleFields()" 
+                    style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; background: white;">
+                <option value="MCQ">Multiple Choice (4 Options)</option>
+                <option value="PARA">Paragraph / Open Ended</option>
+            </select>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px;">Question Text</label>
+            <textarea name="text" style="width: 100%; height: 80px; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px;" required></textarea>
+        </div>
+
+        <div id="mcq-section">
+            <label style="display: block; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 12px;">Options</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 1.5rem;">
+                <input type="text" name="opt1" placeholder="Option 1" style="padding: 10px; border: 1px solid var(--border-color); border-radius: 8px;">
+                <input type="text" name="opt2" placeholder="Option 2" style="padding: 10px; border: 1px solid var(--border-color); border-radius: 8px;">
+                <input type="text" name="opt3" placeholder="Option 3" style="padding: 10px; border: 1px solid var(--border-color); border-radius: 8px;">
+                <input type="text" name="opt4" placeholder="Option 4" style="padding: 10px; border: 1px solid var(--border-color); border-radius: 8px;">
+            </div>
+            
+            <label style="display: block; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px;">Correct Option Number</label>
+            <input type="number" name="correct" min="1" max="4" placeholder="1-4" 
+                   style="width: 100px; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 1rem;">
+        </div>
+
+        <div id="para-section" style="display: none; margin-bottom: 1.5rem;">
+            <label style="display: block; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px;">Answer Key / Reference</label>
+            <textarea name="correct" placeholder="Enter keywords or a model answer for reference..." 
+                      style="width: 100%; height: 80px; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px;"></textarea>
+        </div>
+
+        <div style="padding-top: 1.5rem; border-top: 1px solid var(--border-color); display: flex; gap: 15px;">
+            <button type="submit" name="another" class="user-tag" style="cursor: pointer; padding: 10px 20px;">
+                Save & Add Another
+            </button>
+            <button type="submit" class="btn-nav-logout" style="color: var(--primary-blue); font-weight: 700; cursor: pointer;">
+                Save & Finish
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+function toggleFields() {
+    const type = document.getElementById('qType').value;
+    const mcqSection = document.getElementById('mcq-section');
+    const paraSection = document.getElementById('para-section');
+    
+    // Get the actual input elements
+    const mcqInput = mcqSection.querySelector('input[name="correct"]');
+    const paraInput = paraSection.querySelector('textarea[name="correct"]');
+    
+    if (type === 'MCQ') {
+        mcqSection.style.display = 'block';
+        paraSection.style.display = 'none';
+        mcqInput.disabled = false;  // Send this one
+        paraInput.disabled = true;   // Don't send this one
+    } else {
+        mcqSection.style.display = 'none';
+        paraSection.style.display = 'block';
+        mcqInput.disabled = true;    // Don't send this one
+        paraInput.disabled = false;  // Send this one
+    }
+}
+
+// Run once on page load to set initial state
+window.onload = toggleFields;
+</script>
+{% endblock %}
