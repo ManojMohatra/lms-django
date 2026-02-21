@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}{{ quiz.title }} - Take Quiz{% endblock %}
+
+{% block content %}
+<div class="card" style="margin-top: 2rem;">
+    <h1 style="margin-bottom: 0.5rem;">{{ quiz.title }}</h1>
+    <p style="color: var(--text-muted); margin-bottom: 2rem;">{{ quiz.description }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        {% for question in quiz.questions.all %}
+            <div style="margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-color);">
+                <h3 style="font-size: 1.1rem; margin-bottom: 1.2rem;">
+                    <span style="color: var(--primary-blue);">Q{{ forloop.counter }}.</span> {{ question.text }}
+                </h3>
+
+                {% if question.question_type == "MCQ" %}
+                    <div style="display: flex; flex-direction: column; gap: 12px; margin-left: 1rem;">
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                            <input type="radio" name="q_{{ question.id }}" value="1" required> {{ question.option_1 }}
+                        </label>
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                            <input type="radio" name="q_{{ question.id }}" value="2"> {{ question.option_2 }}
+                        </label>
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                            <input type="radio" name="q_{{ question.id }}" value="3"> {{ question.option_3 }}
+                        </label>
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                            <input type="radio" name="q_{{ question.id }}" value="4"> {{ question.option_4 }}
+                        </label>
+                    </div>
+                {% else %}
+                    <div style="margin-left: 1rem;">
+                        <textarea name="q_{{ question.id }}" 
+                                  style="width: 100%; min-height: 150px; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit;" 
+                                  placeholder="Type your paragraph answer here..." required></textarea>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <div style="margin-top: 2rem;">
+            <button type="submit" class="user-tag" style="background: var(--primary-blue); color: white !important; padding: 10px 25px; cursor: pointer; font-weight: 700;">
+                Submit Quiz
+            </button>
+            <a href="{% url 'courses:course_detail' quiz.course.id %}" style="margin-left: 15px; color: var(--text-muted); text-decoration: none; font-size: 0.85rem;">
+                Cancel and Return
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

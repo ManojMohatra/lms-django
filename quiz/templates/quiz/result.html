@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz Result - {{ quiz.title }}{% endblock %}
+
+{% block content %}
+<div class="card" style="text-align: center; margin-top: 5rem; padding: 3rem;">
+    <div style="margin-bottom: 1.5rem;">
+        {% if score == total %}
+            <i class="bi bi-trophy" style="font-size: 4rem; color: #fbbf24;"></i>
+        {% else %}
+            <i class="bi bi-check-circle" style="font-size: 4rem; color: #10b981;"></i>
+        {% endif %}
+    </div>
+
+    <h1 style="margin-bottom: 0.5rem; letter-spacing: -0.02em;">Quiz Submitted!</h1>
+    <p style="color: var(--text-muted); margin-bottom: 2rem;">
+        You have successfully completed <strong>{{ quiz.title }}</strong>.
+    </p>
+
+    <div style="background: var(--bg-main); display: inline-block; padding: 1.5rem 3rem; border-radius: 12px; border: 1px solid var(--border-color);">
+        <span style="display: block; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem;">
+            Your Score
+        </span>
+        <span style="font-size: 3rem; font-weight: 800; color: var(--text-main);">
+            {{ score }} <span style="color: var(--border-color); font-weight: 300;">/</span> {{ total }}
+        </span>
+    </div>
+
+    <div style="margin-top: 3rem; display: flex; justify-content: center; gap: 15px;">
+        <a href="{% url 'courses:course_detail' quiz.course.id %}" class="user-tag" style="text-decoration: none; padding: 10px 20px;">
+            <i class="bi bi-house-door me-1"></i> Back to Course
+        </a>
+        
+        {% if request.user.profile.role == "student" %}
+        <a href="{% url 'accounts:dashboard' %}" style="text-decoration: none; color: var(--primary-blue); font-weight: 700; font-size: 0.85rem; display: flex; align-items: center;">
+            View Dashboard <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+{% if quiz.questions.all %}
+    {% for q in quiz.questions.all %}
+        {% if q.question_type == "PARA" and forloop.first %}
+            <p style="text-align: center; margin-top: 2rem; font-size: 0.9rem; color: var(--text-muted);">
+                <i class="bi bi-info-circle"></i> Note: Paragraph answers are saved for teacher review and are not included in the auto-calculated score.
+            </p>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+{% endblock %}
