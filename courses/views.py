@@ -137,15 +137,19 @@ def course_detail(request,course_id):
         "progress_percent": progress_percent
     })
 
+
 @login_required
 def lecture_detail(request, lecture_id):
-    # prefetch_related('materials') keeps the database queries efficient
-    lecture = get_object_or_404(Lecture.objects.prefetch_related('materials'), id=lecture_id)
+    # Added 'quizzes' and 'assignments' to prefetch_related for efficiency
+    # This ensures that lecture.quizzes.all() in the template doesn't trigger new queries
+    lecture = get_object_or_404(
+        Lecture.objects.prefetch_related('materials', 'quizzes', 'assignments'), 
+        id=lecture_id
+    )
+    
     course = lecture.module.course
     is_teacher = (course.teacher == request.user)
-    
-    # Get all assignments for this lecture
-    assignments = Assignment.objects.filter(lecture=lecture)
+    assignments = lecture.assignments.all()
     
     # Process POST actions
     if request.method == "POST":
@@ -154,7 +158,6 @@ def lecture_detail(request, lecture_id):
             assignment_id = request.POST.get('assignment_id')
             target_assignment = get_object_or_404(Assignment, id=assignment_id)
             
-            # Update existing or create new submission
             submission, created = Submission.objects.get_or_create(
                 assignment=target_assignment, 
                 student=request.user
@@ -178,15 +181,20 @@ def lecture_detail(request, lecture_id):
     # Prepare Data for Template
     completed = False
     if not is_teacher:
-        # Check if the student has marked this lesson complete
+        # Check progress
         completed = LectureProgress.objects.filter(
             student=request.user, 
             lecture=lecture, 
             completed=True
         ).exists()
 
-        # Efficiently attach the user's specific submission to each assignment object
-        user_subs = {s.assignment_id: s for s in Submission.objects.filter(assignment__in=assignments, student=request.user)}
+        # Attach user submissions to assignments
+        user_subs = {
+            s.assignment_id: s for s in Submission.objects.filter(
+                assignment__in=assignments, 
+                student=request.user
+            )
+        }
         for assignment in assignments:
             assignment.user_submission = user_subs.get(assignment.id)
 
@@ -196,6 +204,7 @@ def lecture_detail(request, lecture_id):
         "is_teacher": is_teacher,
         "assignments": assignments,
         "completed": completed,
+        # 'quizzes' are available via 'lecture.quizzes.all' due to the prefetch
     })
 
 

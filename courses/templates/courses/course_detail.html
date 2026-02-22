@@ -15,7 +15,7 @@
         margin-bottom: 2rem;
     }
 
-    /* Course Header: Minimal & Typography-focused */
+    /* Course Header */
     .course-header { margin-bottom: 3rem; }
     .course-header h1 { font-weight: 800; color: #1e293b; font-size: 2.25rem; margin-bottom: 0.5rem; }
     .course-desc { color: #64748b; font-size: 1.1rem; line-height: 1.6; margin-bottom: 1.5rem; }
@@ -101,7 +101,7 @@
         <div class="d-flex gap-2">
             <a href="{% url 'courses:add_module' course.id %}" class="btn-minimal btn-blue">+ Add Module</a>
             <a href="{% url 'courses:edit_course' course.id %}" class="btn-minimal btn-blue">Settings</a>
-            <a href="{% url 'courses:delete_course' course.id %}" class="btn-minimal text-danger">Delete</a>
+            <a href="{% url 'courses:delete_course' course.id %}" class="btn-minimal text-danger">Delete Course</a>
         </div>
     </div>
     {% endif %}
@@ -132,45 +132,44 @@
         <h2 class="curriculum-title">Curriculum</h2>
         
         {% for module in modules %}
-            {% endfor %}
-
-        <section class="module-group" style="margin-top: 3rem;">
-            <div class="module-label">
-                <span><i class="bi bi-patch-question"></i> Course Assessments</span>
-                {% if role == "teacher" and course.teacher == request.user %}
-                    <a href="{% url 'quiz:create_quiz' course.id %}" class="edit-text action-text">+ Create Quiz</a>
-                {% endif %}
-            </div>
-
-            <div class="lecture-list">
-                {% for quiz in course.quizzes.all %}
-                <div class="lecture-item">
-                    <div class="d-flex align-items: center; gap: 10px;">
-                        {% if role == "student" %}
-                            <a href="{% url 'quiz:take_quiz' quiz.id %}" class="lecture-link">
-                                <i class="bi bi-journal-check"></i> {{ quiz.title }}
-                            </a>
-                        {% else %}
-                            <span class="lecture-link" style="color: var(--text-main);">
-                                <i class="bi bi-journal-text"></i> {{ quiz.title }}
-                            </span>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="item-actions">
-                        {% if request.user == course.teacher %}
-                            <a href="{% url 'quiz:add_question' quiz.id %}" class="edit-text action-text">Add Questions</a>
-                            <a href="{% url 'quiz:manage_results' quiz.id %}" style="font-size: 0.75rem; color: #1e40af; font-weight: 700; text-decoration: none; margin-left: 12px;">
-                                <i class="bi bi-graph-up"></i> View Submissions
-                            </a>
-                        {% endif %}
-                    </div>
+            <section class="module-group">
+                <div class="module-label">
+                    <span>{{ module.title }}</span>
+                    {% if role == "teacher" and course.teacher == request.user %}
+                        <div>
+                            <a href="{% url 'courses:add_lecture' module.id %}" class="edit-text action-text">+ Add Lecture</a>
+                            <a href="{% url 'courses:edit_module' module.id %}" class="edit-text action-text">Edit</a>
+                            <a href="{% url 'courses:delete_module' module.id %}" class="delete-text action-text">Delete Module</a>
+                        </div>
+                    {% endif %}
                 </div>
-                {% empty %}
-                <div class="p-3 text-center text-muted small">No quizzes published yet.</div>
-                {% endfor %}
+
+                <div class="lecture-list">
+                    {% for lecture in module.lectures.all %}
+                    <div class="lecture-item">
+                        <div class="d-flex align-items-center">
+                            <a href="{% url 'courses:lecture_detail' lecture.id %}" class="lecture-link">
+                                <i class="bi bi-play-circle"></i> {{ lecture.title }}
+                            </a>
+                        </div>
+                        
+                        {% if role == "teacher" and course.teacher == request.user %}
+                        <div class="item-actions">
+                            <a href="{% url 'courses:edit_lecture' lecture.id %}" class="edit-text action-text">Edit</a>
+                            <a href="{% url 'courses:delete_lecture' lecture.id %}" class="delete-text action-text">Delete</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% empty %}
+                    <div class="p-3 text-center text-muted small">No lectures added yet.</div>
+                    {% endfor %}
+                </div>
+            </section>
+        {% empty %}
+            <div class="p-5 text-center border rounded">
+                <p class="text-muted">This course curriculum is currently empty.</p>
             </div>
-        </section>
+        {% endfor %}
     </main>
 
     <div class="discussion-box">
@@ -182,7 +181,7 @@
     </div>
 
     <footer class="mt-5 pt-4 border-top d-flex justify-content-between">
-        <span class="text-muted small">Interactive quizzes (Soon)</span>
+        <span class="text-muted small">Updated 2024</span>
         {% if role == "student" %}
         <a href="{% url 'courses:unenroll_course' course.id %}?next={{ request.path }}" class="delete-text action-text" style="margin:0">
             Unenroll from course

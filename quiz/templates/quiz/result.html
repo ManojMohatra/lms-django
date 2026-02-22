@@ -27,8 +27,8 @@
     </div>
 
     <div style="margin-top: 3rem; display: flex; justify-content: center; gap: 15px;">
-        <a href="{% url 'courses:course_detail' quiz.course.id %}" class="user-tag" style="text-decoration: none; padding: 10px 20px;">
-            <i class="bi bi-house-door me-1"></i> Back to Course
+        <a href="{% url 'courses:lecture_detail' quiz.lecture.id %}" class="user-tag" style="text-decoration: none; padding: 10px 20px;">
+            <i class="bi bi-house-door me-1"></i> Back to Lecture
         </a>
         
         {% if request.user.profile.role == "student" %}

@@ -30,7 +30,7 @@
         margin-bottom: 0.25rem;
     }
 
-    /* Navigation link – matches dir-label aesthetic */
+    /* Navigation header */
     .dir-nav-link {
         font-size: 0.65rem;
         font-weight: 600;
@@ -43,10 +43,7 @@
         gap: 0.25rem;
         transition: color 0.15s;
     }
-    .dir-nav-link:hover {
-        color: var(--dir-accent);
-        text-decoration: underline;
-    }
+    .dir-nav-link:hover { color: var(--dir-accent); text-decoration: underline; }
 
     .dir-title {
         font-weight: 700;
@@ -77,29 +74,18 @@
         gap: 0.25rem;
     }
 
-    .btn-dir-dark {
-        background: var(--dir-accent);
-        color: white;
-        border: 1px solid var(--dir-accent);
-    }
+    .btn-dir-dark { background: var(--dir-accent); color: white; border: 1px solid var(--dir-accent); }
+    .btn-dir-dark:hover { background: #1e293b; border-color: #1e293b; }
+    .btn-dir:hover { background: var(--dir-bg-light); border-color: #94a3b8; }
 
-    .btn-dir-dark:hover {
-        background: #1e293b;
-        border-color: #1e293b;
-    }
-
-    .btn-dir:hover {
-        background: var(--dir-bg-light);
-        border-color: #94a3b8;
-    }
-
-    /* Resource box (materials) */
+    /* Resource box (materials & quizzes) */
     .resource-box {
         background: var(--dir-card-bg);
         border: 1px solid var(--dir-border);
         border-radius: 6px;
         padding: 0.75rem;
         box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        margin-bottom: 1.5rem;
     }
 
     .resource-item {
@@ -110,10 +96,7 @@
         border-bottom: 1px solid var(--dir-border);
         font-size: 0.85rem;
     }
-
-    .resource-item:last-child {
-        border-bottom: none;
-    }
+    .resource-item:last-child { border-bottom: none; }
 
     /* Assignment cards */
     .assignment-registry {
@@ -145,146 +128,54 @@
         background: white;
         transition: background 0.1s;
     }
+    .assignment-card:hover { background: var(--dir-bg-light); }
+    .assignment-card:last-child { border-bottom: none; }
 
-    .assignment-card:last-child {
-        border-bottom: none;
-    }
+    .assignment-number { font-size: 0.7rem; font-weight: 600; color: var(--dir-label); text-transform: uppercase; padding-top: 0.2rem; }
+    .assignment-title { font-weight: 600; font-size: 0.95rem; margin: 0 0 0.25rem; color: var(--dir-accent); }
+    .assignment-description { font-size: 0.8rem; color: #475569; margin: 0 0 0.35rem; line-height: 1.4; }
 
-    .assignment-card:hover {
-        background: var(--dir-bg-light);
-    }
+    .submission-status { font-size: 0.7rem; font-weight: 600; color: #15803d; background: #f0fdf4; padding: 0.2rem 0.6rem; border-radius: 12px; display: inline-flex; align-items: center; gap: 0.25rem; }
+    .due-badge { font-size: 0.65rem; font-weight: 600; color: #b91c1c; background: #fef2f2; padding: 0.2rem 0.6rem; border-radius: 12px; display: inline-flex; align-items: center; gap: 0.2rem; }
 
-    .assignment-number {
-        font-size: 0.7rem;
-        font-weight: 600;
-        color: var(--dir-label);
-        text-transform: uppercase;
-        letter-spacing: 0.02em;
-        padding-top: 0.2rem;
-    }
-
-    .assignment-content {
-        min-width: 0;
-    }
-
-    .assignment-title {
-        font-weight: 600;
-        font-size: 0.95rem;
-        margin: 0 0 0.25rem;
-        color: var(--dir-accent);
-    }
-
-    .assignment-description {
-        font-size: 0.8rem;
-        color: #475569;
-        margin: 0 0 0.35rem;
-        line-height: 1.4;
-    }
-
-    .assignment-meta {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        flex-wrap: wrap;
-    }
-
-    .submission-status {
-        font-size: 0.7rem;
-        font-weight: 600;
-        color: #15803d;
-        background: #f0fdf4;
-        padding: 0.2rem 0.6rem;
-        border-radius: 12px;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.25rem;
-    }
-
-    .due-badge {
-        font-size: 0.65rem;
-        font-weight: 600;
-        color: #b91c1c;
-        background: #fef2f2;
-        padding: 0.2rem 0.6rem;
-        border-radius: 12px;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.2rem;
-    }
-
-    .assignment-actions {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 0.5rem;
-    }
-
-    /* Status row */
-    .status-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 1rem 1rem;
-        background: var(--dir-bg-light);
-        border-top: 1px solid var(--dir-border);
-        font-size: 0.8rem;
-    }
+    .status-row { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1rem; background: var(--dir-bg-light); border-top: 1px solid var(--dir-border); font-size: 0.8rem; }
 
     /* Inputs */
-    .dir-input {
-        border: 1px solid var(--dir-border);
-        padding: 0.4rem 0.75rem;
-        font-size: 0.8rem;
-        border-radius: 4px;
-        outline: none;
-        width: 100%;
-        background: white;
-    }
+    .dir-input { border: 1px solid var(--dir-border); padding: 0.4rem 0.75rem; font-size: 0.8rem; border-radius: 4px; outline: none; width: 100%; background: white; }
+    .dir-input:focus { border-color: var(--dir-accent); box-shadow: 0 0 0 2px rgba(15,23,42,0.1); }
 
-    .dir-input:focus {
-        border-color: var(--dir-accent);
-        box-shadow: 0 0 0 2px rgba(15,23,42,0.1);
-    }
-
-    .lecture-body {
-        line-height: 1.7;
-        color: #334155;
-        margin-top: 1.5rem;
-    }
+    .lecture-body { line-height: 1.7; color: #334155; margin-top: 1.5rem; }
 </style>
 
 <div class="lecture-wrapper">
-    <!-- Navigation header with matching dir aesthetic -->
     <nav class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
         <a href="{% url 'courses:course_detail' course.id %}" class="btn-dir">
-            Curriculum
+            <i class="bi bi-arrow-left"></i> Curriculum
         </a>
         {% if is_teacher %}
-            <a href="{% url 'courses:edit_lecture' lecture.id %}" class="btn-dir">Edit Module</a>
+            <a href="{% url 'courses:edit_lecture' lecture.id %}" class="btn-dir">Edit Unit</a>
         {% endif %}
     </nav>
-    <br>
-    
-    <!-- Main content row -->
+
     <div class="row g-4 mb-4">
-      <!-- Left column: Lecture info -->
         <div class="col-lg-8">
-            <span class="dir-label">  Current Unit</span>
+            <span class="dir-label">Current Unit</span>
             <h1 class="dir-title">{{ lecture.title }}</h1>
             
             {% if lecture.video_url %}
             <div class="d-flex align-items-center justify-content-between p-3 mb-4 bg-light border rounded-3">
-                <a href="{{ lecture.video_url }}" target="_blank" class="btn-dir btn-dir-dark">Play Video</a>
+                <a href="{{ lecture.video_url }}" target="_blank" class="btn-dir btn-dir-dark">
+                    <i class="bi bi-play-fill"></i> Play Instructional Video
+                </a>
             </div>
             {% endif %}
 
             <div class="lecture-body">
                 <span class="dir-label">Unit Description</span>
-                {{ lecture.notes|linebreaks|default:"<p class='text-muted fst-italic'>System: No instructional notes provided.</p>" }}
+                {{ lecture.notes|linebreaks|default:"<p class='text-muted fst-italic'>System: No instructional notes provided for this module.</p>" }}
             </div>
         </div>
 
-        <!-- Right column: Materials -->
         <div class="col-lg-4">
             <span class="dir-label">Supplementary Files</span>
             <div class="resource-box">
@@ -301,32 +192,50 @@
                     {% endif %}
                 </div>
                 {% empty %}
-                <p class="text-muted small mb-0">No files indexed.</p>
+                <p class="text-muted small mb-0">No files indexed in directory.</p>
                 {% endfor %}
             </div>
 
             {% if is_teacher %}
-                <div class="mt-3 p-3 border rounded-3 bg-light">
-    <span class="dir-label mb-2 d-block">Material Indexing</span>
-    <form action="{% url 'materials:lecture_materials' lecture.id %}" method="POST">
-        {% csrf_token %}
-        
-        <input type="text" name="title" class="dir-input mb-2 w-100" placeholder="Title" required>
-
-        <div class="d-flex align-items-center">
-            <input type="url" name="link" class="dir-input" placeholder="Resource URL" required 
-                   style="flex: 1; margin-right: 10px; width: auto;">
-            
-            <button type="submit" class="btn-dir btn-dir-dark" 
-                    style="white-space: nowrap; width: auto;">Upload Asset</button>
-        </div>
-    </form>
-</div>
+            <div class="mt-3 p-3 border rounded-3 bg-light">
+                <span class="dir-label mb-2 d-block">Material Indexing</span>
+                <form action="{% url 'materials:lecture_materials' lecture.id %}" method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="title" class="dir-input mb-2 w-100" placeholder="Resource Title" required>
+                    <div class="d-flex align-items-center">
+                        <input type="url" name="link" class="dir-input" placeholder="URL" required style="flex: 1; margin-right: 10px;">
+                        <button type="submit" class="btn-dir btn-dir-dark" style="white-space: nowrap;">Upload</button>
+                    </div>
+                </form>
+            </div>
             {% endif %}
+
+            <span class="dir-label mt-4">Unit Assessment</span>
+            <div class="resource-box">
+                {% for quiz in lecture.quizzes.all %}
+                <div class="resource-item">
+                    <a href="{% url 'quiz:take_quiz' quiz.id %}" class="text-decoration-none fw-semibold small" style="color: var(--dir-accent);">
+                        <i class="bi bi-patch-question-fill me-1"></i> {{ quiz.title }}
+                    </a>
+                    {% if is_teacher %}
+                        <a href="{% url 'quiz:manage_results' quiz.id %}" class="text-muted" title="View Results"><i class="bi bi-graph-up"></i></a>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <p class="text-muted small mb-0">No automated quiz indexed.</p>
+                {% endfor %}
+                
+                {% if is_teacher %}
+                <div class="mt-2 pt-2 border-top">
+                    <a href="{% url 'quiz:create_quiz' lecture.id %}" class="dir-nav-link text-primary">
+                        + Initialize Quiz
+                    </a>
+                </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 
-    <!-- Assignments registry -->
     <div class="assignment-registry">
         <div class="registry-header">
             <i class="bi bi-list-check me-2"></i>Task Directory & Unit Registry
@@ -342,7 +251,7 @@
                 <div class="assignment-meta">
                     {% if assignment.user_submission %}
                         <span class="submission-status">
-                            <i class="bi bi-check-all"></i> Logged: {{ assignment.user_submission.file.name|truncatechars:25 }}
+                            <i class="bi bi-check-all"></i> Logged: {{ assignment.user_submission.file.name|truncatechars:20 }}
                         </span>
                     {% endif %}
                     {% if assignment.due_date %}
@@ -368,9 +277,7 @@
             </div>
         </div>
         {% empty %}
-        <div class="p-4 text-center text-muted small">
-            No active assignments found in registry.
-        </div>
+        <div class="p-4 text-center text-muted small">No active assignments found.</div>
         {% endfor %}
 
         {% if is_teacher %}

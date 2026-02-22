@@ -1,9 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
-from courses.models import Course
+from courses.models import Lecture
 
 class Quiz(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="quizzes")
+    lecture = models.ForeignKey(Lecture, on_delete=models.CASCADE, related_name="quizzes",null=True, blank=True)
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -12,7 +12,7 @@ class Quiz(models.Model):
         verbose_name_plural = "Quizzes"
 
     def __str__(self):
-        return f"{self.title} - {self.course.title}"
+        return f"{self.title} - {self.lecture.title}"
 
 class Question(models.Model):
     QUESTION_TYPES = (
