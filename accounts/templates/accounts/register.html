@@ -1,248 +1,46 @@
 {% extends "base.html" %}
+{% load static %}
+{% block title %}Register{% endblock %}
 
-{% block title %}Register - LMS Platform{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
 
 {% block content %}
-<style>
-    /* Narrower container for auth forms */
-    .auth-wrapper { 
-        max-width: 420px; 
-        margin: 4rem auto; 
-        font-family: sans-serif;
-    }
-
-    .auth-header { 
-        margin-bottom: 2rem; 
-        text-align: center;
-    }
-
-    .auth-header h2 { 
-        font-weight: 800; 
-        color: #1e293b; 
-        font-size: 1.75rem; 
-        margin-bottom: 0.5rem;
-    }
-
-    .section-label { 
-        font-size: 0.75rem; 
-        font-weight: 800; 
-        color: #94a3b8; 
-        text-transform: uppercase; 
-        letter-spacing: 0.05em;
-        margin-bottom: 0.8rem;
-        display: block;
-    }
-
-    /* Form Card */
-    .auth-card {
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 2.5rem;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-    }
-
-    /* Role Selection Tiles */
-    .role-selection-group {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-        margin-bottom: 2rem;
-    }
-
-    .role-tile {
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 16px 10px;
-        text-align: center;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        background: #fff;
-    }
-
-    .role-tile i { 
-        display: block; 
-        font-size: 1.4rem; 
-        margin-bottom: 6px; 
-        color: #cbd5e1;
-    }
-
-    .role-tile span {
-        font-size: 0.75rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        color: #64748b;
-        letter-spacing: 0.02em;
-    }
-
-    .role-tile:hover {
-        border-color: #cbd5e1;
-        background: #f8fafc;
-    }
-
-    .role-tile.active {
-        border-color: #1e40af;
-        background: #eff6ff;
-        box-shadow: 0 0 0 1px #1e40af;
-    }
-
-    .role-tile.active i, .role-tile.active span {
-        color: #1e40af;
-    }
-
-    /* Hiding the legacy Django Role field */
-    /* Adjust the selector if your field name is different in the form class */
-    #id_role, label[for="id_role"] {
-        display: none !important;
-    }
-
-    /* Standard Django form styling */
-    .auth-card p {
-        margin-bottom: 1.25rem;
-    }
-
-    .auth-card label {
-        display: block;
-        font-size: 0.75rem;
-        font-weight: 800;
-        color: #64748b;
-        margin-bottom: 0.5rem;
-        text-transform: uppercase;
-    }
-
-    .auth-card input {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid #e2e8f0;
-        border-radius: 6px;
-        font-size: 0.95rem;
-        transition: all 0.2s;
-        box-sizing: border-box;
-    }
-
-    .auth-card input:focus {
-        outline: none;
-        border-color: #1e40af;
-        background: #f8fafc;
-        box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.05);
-    }
-
-    .helptext {
-        display: block;
-        font-size: 0.7rem;
-        color: #94a3b8;
-        margin-top: 5px;
-        line-height: 1.4;
-    }
-
-    .errorlist {
-        color: #ef4444;
-        font-size: 0.8rem;
-        font-weight: 700;
-        list-style: none;
-        padding: 0;
-        margin: 0 0 1rem 0;
-    }
-
-    /* Primary Button */
-    .btn-auth-primary {
-        width: 100%;
-        padding: 14px;
-        background: #1e293b;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-weight: 800;
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        cursor: pointer;
-        transition: background 0.2s;
-        margin-top: 1rem;
-    }
-
-    .btn-auth-primary:hover {
-        background: #0f172a;
-    }
-
-    .auth-footer {
-        margin-top: 1.5rem;
-        text-align: center;
-        font-size: 0.85rem;
-        color: #64748b;
-    }
-
-    .auth-footer a {
-        color: #1e40af;
-        text-decoration: none;
-        font-weight: 800;
-    }
-
-    .auth-footer a:hover {
-        text-decoration: underline;
-    }
-</style>
-
 <div class="auth-wrapper">
     <div class="auth-header">
-        <span class="section-label">Account Creation</span>
-        <h2>Create Profile</h2>
+        <span class="section-label">Create Account</span>
+        <h2>Get Started</h2>
     </div>
 
     <div class="auth-card">
-        <form method="POST" id="registerForm">
+        <form method="post">
             {% csrf_token %}
-            
-            <span class="section-label" style="color: #475569;">I am a...</span>
+
+            <!-- Role Selection -->
+            <div class="section-label">Select Role</div>
             <div class="role-selection-group">
-                <div class="role-tile" data-role="student" id="tile-student">
-                    <i class="bi bi-mortarboard-fill"></i>
+                <div class="role-tile" data-role="student">
+                    <i class="bi bi-mortarboard"></i>
                     <span>Student</span>
                 </div>
-                <div class="role-tile" data-role="teacher" id="tile-teacher">
-                    <i class="bi bi-person-badge-fill"></i>
-                    <span>Teacher</span>
+                <div class="role-tile" data-role="instructor">
+                    <i class="bi bi-person-workspace"></i>
+                    <span>Instructor</span>
                 </div>
             </div>
 
             {{ form.as_p }}
 
             <button type="submit" class="btn-auth-primary">
-                Register Now
+                Create Account
             </button>
         </form>
     </div>
 
     <div class="auth-footer">
-        Already part of the platform? 
-        <a href="{% url 'accounts:login' %}">Sign In</a>
+        Already have an account?
+        <a href="{% url 'accounts:login' %}">Login</a>
     </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const tiles = document.querySelectorAll('.role-tile');
-        const roleInput = document.querySelector('#id_role'); // Targets the hidden Django select/radio
-
-        // If your Django form is currently rendering a Select or Radio list, 
-        // we force it to update based on the tile clicks.
-        tiles.forEach(tile => {
-            tile.addEventListener('click', function() {
-                // UI Update
-                tiles.forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-
-                // Logic Update
-                const selectedValue = this.dataset.role;
-                if (roleInput) {
-                    roleInput.value = selectedValue;
-                }
-            });
-        });
-
-        // Set Student as default on load
-        const defaultTile = document.querySelector('#tile-student');
-        if (defaultTile) defaultTile.click();
-    });
-</script>
 {% endblock %}

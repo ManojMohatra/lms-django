@@ -1,0 +1,86 @@
+ .dash-wrapper { max-width: 900px; margin: 2rem auto; font-family: sans-serif; }
+    
+    /* Simple Header */
+    .dash-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 2rem;
+    }
+
+    .user-info h2 { font-weight: 800; color: #1e293b; margin: 0; font-size: 1.75rem; }
+    .role-text { color: #64748b; font-size: 0.9rem; font-weight: 500; }
+
+    .header-links a {
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        color: #0d6efd;
+    }
+
+    /* Section Styling */
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #334155;
+        margin-bottom: 1.25rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* List Item Styling */
+    .dash-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .dash-item:last-child { border-bottom: none; }
+
+    .item-main { flex: 1; }
+    .item-title {
+        font-weight: 600;
+        color: #1e293b;
+        text-decoration: none;
+        font-size: 1.05rem;
+        display: block;
+    }
+
+    /* Compact Progress */
+    .progress-container { width: 150px; margin-right: 2rem; }
+    .progress-bar-bg { background: #e2e8f0; height: 6px; border-radius: 10px; margin-top: 4px; }
+    .progress-bar-fill { background: #10b981; height: 100%; border-radius: 10px; }
+
+    /* Action Buttons */
+    .btn-action {
+        padding: 6px 14px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+    .btn-blue { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+    .btn-blue:hover { background: #dbeafe; }
+
+    .btn-yellow { background: #fffbeb; color: #92400e; border: 1px solid #fef3c7; }
+    .btn-yellow:hover { background: #fef3c7; }
+
+    .btn-dark { background: #1e293b; color: #fff; border: none; }
+    .btn-dark:hover { background: #0f172a; }
+
+    .logout-btn {
+        background: none;
+        border: none;
+        color: #94a3b8;
+        font-size: 0.85rem;
+        padding: 0;
+        cursor: pointer;
+    }
+    .logout-btn:hover { color: #dc2626; text-decoration: underline; }

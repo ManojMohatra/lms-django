@@ -1,0 +1,160 @@
+  .form-wrapper { 
+        max-width: 650px; 
+        margin: 4rem auto; 
+        font-family: sans-serif;
+    }
+
+    .form-header { 
+        margin-bottom: 2.5rem; 
+        text-align: left; /* Left aligned to match the rest of your UI */
+    }
+
+    .form-header h2 { 
+        font-weight: 800; 
+        color: #1e293b; 
+        font-size: 2rem; 
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+    }
+
+    .section-label { 
+        font-size: 0.75rem; 
+        font-weight: 800; 
+        color: #94a3b8; 
+        text-transform: uppercase; 
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    /* Minimalist Form Card */
+    .form-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 2.5rem;
+    }
+
+    /* Target Django's auto-generated form fields */
+    form p {
+        margin-bottom: 1.5rem;
+    }
+
+    form label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: #64748b;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+    }
+
+    /* Inputs, Textareas, Selects */
+    form input[type="text"], 
+    form input[type="number"], 
+    form input[type="url"], 
+    form textarea, 
+    form select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        box-sizing: border-box;
+    }
+
+    form input:focus, form textarea:focus, form select:focus {
+        outline: none;
+        border-color: #1e40af;
+        background-color: #f8fafc;
+        box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.05);
+    }
+
+    form textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    /* Error Styling */
+    .errorlist {
+        color: #ef4444;
+        list-style: none;
+        padding: 0;
+        margin: 0 0 1rem 0;
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+
+    /* Save Button matching your btn-dark style */
+    .btn-save-main {
+        width: 100%;
+        padding: 14px;
+        background: #1e293b;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: 800;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-top: 1rem;
+    }
+
+    .btn-save-main:hover {
+        background: #0f172a;
+    }
+
+    /* Action Footer */
+    .action-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .btn-back { 
+        color: #64748b; 
+        text-decoration: none; 
+        font-size: 0.85rem; 
+        font-weight: 700; 
+        text-transform: uppercase; 
+        letter-spacing: 0.05em; 
+    }
+    
+    .btn-back:hover { color: #1e293b; }
+
+    .btn-delete-text {
+        color: #94a3b8;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .btn-delete-text:hover { color: #ef4444; }
+
+        .action-footer {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .btn-cancel { 
+        color: #64748b; 
+        text-decoration: none; 
+        font-size: 0.85rem; 
+        font-weight: 700; 
+        text-transform: uppercase; 
+        letter-spacing: 0.05em; 
+    }
+    
+    .btn-cancel:hover { color: #1e293b; }

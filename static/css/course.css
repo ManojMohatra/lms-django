@@ -1,0 +1,163 @@
+.course-page-container {
+    max-width: 900px;
+    margin: 2rem auto;
+}
+
+/* Management Bar */
+.management-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 2rem;
+}
+
+/* Header */
+.course-header { margin-bottom: 3rem; }
+
+.course-header h1 {
+    font-weight: 800;
+    font-size: 2.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.course-desc {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.course-meta {
+    display: flex;
+    gap: 20px;
+    font-size: 0.85rem;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.course-meta strong { color: #475569; }
+
+/* Progress */
+.progress-section { margin-top: 2rem; max-width: 300px; }
+
+.progress-text {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+
+.progress-track {
+    background: var(--border-color);
+    height: 6px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    background: #10b981;
+    height: 100%;
+    border-radius: 10px;
+}
+
+/* Curriculum */
+.curriculum-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.module-group { margin-bottom: 2.5rem; }
+
+.module-label {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.lecture-list {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.lecture-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background: #fff;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background 0.2s;
+}
+
+.lecture-item:hover { background: #f8fafc; }
+
+.lecture-link {
+    text-decoration: none;
+    color: #334155;
+    font-weight: 500;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.lecture-link:hover { color: var(--primary-blue); }
+
+/* Buttons */
+.btn-minimal {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+.btn-blue {
+    background: #eff6ff;
+    color: var(--primary-blue);
+    border: 1px solid #bfdbfe;
+}
+
+.btn-blue:hover { background: #dbeafe; }
+
+.btn-dark {
+    background: var(--text-main);
+    color: white;
+    border: none;
+}
+
+.action-text {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-decoration: none;
+    margin-left: 12px;
+}
+
+.edit-text { color: #94a3b8; }
+.edit-text:hover { color: var(--primary-blue); }
+
+.delete-text { color: #fca5a5; }
+.delete-text:hover { color: #dc2626; }
+
+/* Discussion */
+.discussion-box {
+    margin-top: 4rem;
+    padding: 2rem;
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    text-align: center;
+}

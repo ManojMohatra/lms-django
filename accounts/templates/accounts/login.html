@@ -1,134 +1,32 @@
 {% extends "base.html" %}
+{% load static %}
+{% block title %}Login{% endblock %}
 
-{% block title %}Login - LMS Platform{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
 
 {% block content %}
-<style>
-    /* Narrower container for auth forms */
-    .auth-wrapper { 
-        max-width: 400px; 
-        margin: 5rem auto; 
-        font-family: sans-serif;
-    }
-
-    .auth-header { 
-        margin-bottom: 2rem; 
-        text-align: center;
-    }
-
-    .auth-header h2 { 
-        font-weight: 800; 
-        color: #1e293b; 
-        font-size: 1.75rem; 
-        margin-bottom: 0.5rem;
-    }
-
-    .section-label { 
-        font-size: 0.75rem; 
-        font-weight: 800; 
-        color: #94a3b8; 
-        text-transform: uppercase; 
-        letter-spacing: 0.05em;
-        margin-bottom: 0.5rem;
-        display: block;
-    }
-
-    /* Form Styling */
-    .auth-card {
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 2.5rem;
-    }
-
-    /* Styling Django's default form fields */
-    .auth-card p {
-        margin-bottom: 1.25rem;
-    }
-
-    .auth-card label {
-        display: block;
-        font-size: 0.8rem;
-        font-weight: 700;
-        color: #64748b;
-        margin-bottom: 0.5rem;
-        text-transform: uppercase;
-    }
-
-    .auth-card input {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid #e2e8f0;
-        border-radius: 6px;
-        font-size: 0.95rem;
-        transition: border-color 0.2s;
-    }
-
-    .auth-card input:focus {
-        outline: none;
-        border-color: #1e40af;
-        background: #f8fafc;
-    }
-
-    /* Buttons */
-    .btn-auth-primary {
-        width: 100%;
-        padding: 12px;
-        background: #1e293b;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-weight: 700;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: background 0.2s;
-        margin-top: 1rem;
-    }
-
-    .btn-auth-primary:hover {
-        background: #0f172a;
-    }
-
-    .auth-footer {
-        margin-top: 1.5rem;
-        text-align: center;
-        font-size: 0.85rem;
-        color: #64748b;
-    }
-
-    .auth-footer a {
-        color: #1e40af;
-        text-decoration: none;
-        font-weight: 700;
-    }
-
-    .auth-footer a:hover {
-        text-decoration: underline;
-    }
-</style>
-
 <div class="auth-wrapper">
     <div class="auth-header">
-        <span class="section-label">Portal Access</span>
-        <h2>Welcome Back</h2>
+        <span class="section-label">Welcome Back</span>
+        <h2>Sign In</h2>
     </div>
 
     <div class="auth-card">
-        <form method="POST">
+        <form method="post">
             {% csrf_token %}
-            
-            {# Django form rendered here - CSS above targets the input tags #}
             {{ form.as_p }}
 
             <button type="submit" class="btn-auth-primary">
-                Sign In
+                Login
             </button>
         </form>
     </div>
 
     <div class="auth-footer">
-        Don't have an account? 
-        <a href="{% url 'accounts:register' %}">Create one</a>
+        Don’t have an account?
+        <a href="{% url 'accounts:register' %}">Register</a>
     </div>
 </div>
 {% endblock %}

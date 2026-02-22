@@ -1,0 +1,103 @@
+  .home-wrapper { max-width: 1000px; margin: 3rem auto; font-family: sans-serif; }
+
+    /* Hero Section matching your Header styles */
+    .hero-section {
+        padding-bottom: 3rem;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 3rem;
+    }
+
+    .hero-section h1 { 
+        font-weight: 800; 
+        color: #1e293b; 
+        font-size: 3rem; 
+        margin-bottom: 1rem; 
+        letter-spacing: -0.02em;
+    }
+
+    .hero-subtext { 
+        color: #64748b; 
+        font-size: 1.2rem; 
+        font-weight: 500; 
+        margin-bottom: 2rem; 
+        max-width: 600px;
+    }
+
+    /* Section Labels matching Lecture page */
+    .section-label { 
+        font-size: 0.75rem; 
+        font-weight: 800; 
+        color: #94a3b8; 
+        text-transform: uppercase; 
+        letter-spacing: 0.05em;
+        margin-bottom: 1.5rem;
+        display: block;
+    }
+
+    /* Featured Courses Grid */
+    .course-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .course-card-minimal {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .course-card-minimal:hover {
+        border-color: #cbd5e1;
+        background: #f8fafc;
+    }
+
+    .course-card-minimal h3 {
+        font-weight: 700;
+        color: #1e293b;
+        font-size: 1.25rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .course-card-minimal p {
+        color: #64748b;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Standardized Buttons from previous pages */
+    .btn-minimal {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: 0.2s;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .btn-dark { background: #1e293b; color: white; border: none; }
+    .btn-dark:hover { background: #0f172a; }
+
+    .btn-blue-outline { 
+        background: transparent; 
+        color: #1e40af; 
+        border: 1px solid #bfdbfe; 
+    }
+    .btn-blue-outline:hover { background: #eff6ff; }
+
+    .empty-state {
+        padding: 3rem;
+        text-align: center;
+        background: #f8fafc;
+        border-radius: 12px;
+        color: #94a3b8;
+        font-weight: 500;
+    }

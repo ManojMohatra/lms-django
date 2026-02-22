@@ -1,0 +1,195 @@
+/* =========================
+   AUTH GLOBAL WRAPPER
+========================= */
+
+.auth-wrapper {
+    max-width: 420px;
+    margin: 4rem auto;
+}
+
+.auth-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.auth-header h2 {
+    font-weight: 800;
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+}
+
+/* Section Label (shared with home page style language) */
+.section-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+    display: block;
+}
+
+/* =========================
+   AUTH CARD
+========================= */
+
+.auth-card {
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+/* Django default form spacing */
+.auth-card p {
+    margin-bottom: 1.25rem;
+}
+
+/* Labels */
+.auth-card label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+/* Inputs */
+.auth-card input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    box-sizing: border-box;
+}
+
+.auth-card input:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    background: #f8fafc;
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.05);
+}
+
+/* Help text */
+.helptext {
+    display: block;
+    font-size: 0.7rem;
+    color: #94a3b8;
+    margin-top: 5px;
+    line-height: 1.4;
+}
+
+/* Error list */
+.errorlist {
+    color: #ef4444;
+    font-size: 0.8rem;
+    font-weight: 700;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem 0;
+}
+
+/* =========================
+   ROLE TILES (Register Only)
+========================= */
+
+.role-selection-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 2rem;
+}
+
+.role-tile {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #fff;
+}
+
+.role-tile i {
+    display: block;
+    font-size: 1.4rem;
+    margin-bottom: 6px;
+    color: #cbd5e1;
+}
+
+.role-tile span {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+}
+
+.role-tile:hover {
+    border-color: #cbd5e1;
+    background: #f8fafc;
+}
+
+.role-tile.active {
+    border-color: var(--primary-blue);
+    background: #eff6ff;
+    box-shadow: 0 0 0 1px var(--primary-blue);
+}
+
+.role-tile.active i,
+.role-tile.active span {
+    color: var(--primary-blue);
+}
+
+/* Hide legacy Django role field */
+#id_role,
+label[for="id_role"] {
+    display: none !important;
+}
+
+/* =========================
+   PRIMARY BUTTON
+========================= */
+
+.btn-auth-primary {
+    width: 100%;
+    padding: 14px;
+    background: var(--text-main);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 800;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 1rem;
+}
+
+.btn-auth-primary:hover {
+    background: #0f172a;
+}
+
+/* Footer */
+.auth-footer {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.auth-footer a {
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-weight: 800;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}

@@ -1,52 +1,205 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block title %}Quiz Result - {{ quiz.title }}{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/lecture.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="card" style="text-align: center; margin-top: 5rem; padding: 3rem;">
-    <div style="margin-bottom: 1.5rem;">
-        {% if score == total %}
-            <i class="bi bi-trophy" style="font-size: 4rem; color: #fbbf24;"></i>
-        {% else %}
-            <i class="bi bi-check-circle" style="font-size: 4rem; color: #10b981;"></i>
-        {% endif %}
-    </div>
-
-    <h1 style="margin-bottom: 0.5rem; letter-spacing: -0.02em;">Quiz Submitted!</h1>
-    <p style="color: var(--text-muted); margin-bottom: 2rem;">
-        You have successfully completed <strong>{{ quiz.title }}</strong>.
-    </p>
-
-    <div style="background: var(--bg-main); display: inline-block; padding: 1.5rem 3rem; border-radius: 12px; border: 1px solid var(--border-color);">
-        <span style="display: block; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem;">
-            Your Score
-        </span>
-        <span style="font-size: 3rem; font-weight: 800; color: var(--text-main);">
-            {{ score }} <span style="color: var(--border-color); font-weight: 300;">/</span> {{ total }}
-        </span>
-    </div>
-
-    <div style="margin-top: 3rem; display: flex; justify-content: center; gap: 15px;">
-        <a href="{% url 'courses:lecture_detail' quiz.lecture.id %}" class="user-tag" style="text-decoration: none; padding: 10px 20px;">
-            <i class="bi bi-house-door me-1"></i> Back to Lecture
-        </a>
+<div class="lecture-wrapper">
+    <div class="quiz-result-container">
+        <div class="result-icon">
+            {% if score == total %}
+                <i class="bi bi-trophy"></i>
+            {% else %}
+                <i class="bi bi-check-circle"></i>
+            {% endif %}
+        </div>
         
-        {% if request.user.profile.role == "student" %}
-        <a href="{% url 'accounts:dashboard' %}" style="text-decoration: none; color: var(--primary-blue); font-weight: 700; font-size: 0.85rem; display: flex; align-items: center;">
-            View Dashboard <i class="bi bi-arrow-right ms-1"></i>
-        </a>
+        <span class="dir-label">Assessment Complete</span>
+        <h1 class="dir-title" style="text-align: center; margin-bottom: 1rem;">Quiz Submitted</h1>
+        
+        <p class="result-description">
+            You have successfully completed <strong>{{ quiz.title }}</strong>.
+        </p>
+        
+        <div class="score-display">
+            <span class="score-label">Your Score</span>
+            <div class="score-value">
+                <span class="score-earned">{{ score }}</span>
+                <span class="score-divider">/</span>
+                <span class="score-total">{{ total }}</span>
+            </div>
+        </div>
+        
+        <div class="result-actions">
+            <a href="{% url 'courses:lecture_detail' quiz.lecture.id %}" class="btn-dir btn-dir-dark">
+                <i class="bi bi-arrow-left me-1"></i> Back to Unit
+            </a>
+            
+            {% if request.user.profile.role == "student" %}
+            <a href="{% url 'accounts:dashboard' %}" class="btn-dir">
+                View Dashboard <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+            {% endif %}
+        </div>
+        
+        {% if quiz.questions.all %}
+            {% for q in quiz.questions.all %}
+                {% if q.question_type == "PARA" and forloop.first %}
+                    <div class="result-note">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Paragraph answers are saved for teacher review and are not included in the auto-calculated score.
+                    </div>
+                {% endif %}
+            {% endfor %}
         {% endif %}
     </div>
 </div>
 
-{% if quiz.questions.all %}
-    {% for q in quiz.questions.all %}
-        {% if q.question_type == "PARA" and forloop.first %}
-            <p style="text-align: center; margin-top: 2rem; font-size: 0.9rem; color: var(--text-muted);">
-                <i class="bi bi-info-circle"></i> Note: Paragraph answers are saved for teacher review and are not included in the auto-calculated score.
-            </p>
-        {% endif %}
-    {% endfor %}
-{% endif %}
+<style>
+.quiz-result-container {
+    max-width: 600px;
+    margin: 4rem auto;
+    text-align: center;
+}
 
+.result-icon {
+    margin-bottom: 1.5rem;
+}
+
+.result-icon i {
+    font-size: 4rem;
+}
+
+.result-icon .bi-trophy {
+    color: #fbbf24;
+}
+
+.result-icon .bi-check-circle {
+    color: #10b981;
+}
+
+.quiz-result-container .dir-label {
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+
+.result-description {
+    font-size: 0.95rem;
+    color: #64748b;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+}
+
+.result-description strong {
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+/* Score Display */
+.score-display {
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 2rem 3rem;
+    margin-bottom: 2.5rem;
+    display: inline-block;
+}
+
+.score-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+}
+
+.score-value {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1;
+}
+
+.score-divider {
+    color: #cbd5e1;
+    font-weight: 300;
+    margin: 0 0.25rem;
+}
+
+.score-total {
+    color: #94a3b8;
+}
+
+/* Result Actions */
+.result-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Result Note */
+.result-note {
+    margin-top: 2.5rem;
+    padding: 1rem 1.5rem;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: #1e40af;
+    line-height: 1.5;
+    text-align: left;
+    display: flex;
+    align-items: flex-start;
+}
+
+.result-note i {
+    margin-top: 0.125rem;
+    flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .quiz-result-container {
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    
+    .result-icon i {
+        font-size: 3rem;
+    }
+    
+    .score-display {
+        padding: 1.5rem 2rem;
+    }
+    
+    .score-value {
+        font-size: 2.5rem;
+    }
+    
+    .result-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .result-actions .btn-dir {
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .score-display {
+        padding: 1.25rem 1.5rem;
+    }
+    
+    .score-value {
+        font-size: 2rem;
+    }
+}
+</style>
 {% endblock %}

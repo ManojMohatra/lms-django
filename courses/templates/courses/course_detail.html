@@ -1,98 +1,12 @@
 {% extends "base.html" %}
+{% load static %}
+
+
 {% block title %} {{ course.title }} {% endblock %}
-
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/course.css' %}">
+{% endblock %}
 {% block content %}
-<style>
-    .course-page-container { max-width: 900px; margin: 2rem auto; font-family: sans-serif; }
-    
-    /* Subtle Instructor Toolbar */
-    .management-bar { 
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 0;
-        border-bottom: 1px solid #f1f5f9;
-        margin-bottom: 2rem;
-    }
-
-    /* Course Header */
-    .course-header { margin-bottom: 3rem; }
-    .course-header h1 { font-weight: 800; color: #1e293b; font-size: 2.25rem; margin-bottom: 0.5rem; }
-    .course-desc { color: #64748b; font-size: 1.1rem; line-height: 1.6; margin-bottom: 1.5rem; }
-    
-    .course-meta { display: flex; gap: 20px; font-size: 0.85rem; color: #94a3b8; font-weight: 500; }
-    .course-meta strong { color: #475569; }
-
-    /* Progress: Integrated Line */
-    .progress-section { margin-top: 2rem; max-width: 300px; }
-    .progress-text { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: #64748b; margin-bottom: 6px; text-transform: uppercase; }
-    .progress-track { background: #e2e8f0; height: 6px; border-radius: 10px; overflow: hidden; }
-    .progress-fill { background: #10b981; height: 100%; border-radius: 10px; }
-
-    /* Curriculum: List Style */
-    .curriculum-title { font-size: 1.25rem; font-weight: 700; color: #1e293b; margin-bottom: 1.5rem; }
-    
-    .module-group { margin-bottom: 2.5rem; }
-    .module-label { 
-        font-size: 0.8rem; 
-        font-weight: 800; 
-        color: #94a3b8; 
-        text-transform: uppercase; 
-        letter-spacing: 0.05em;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 0.75rem;
-    }
-
-    .lecture-list { border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; }
-    .lecture-item { 
-        display: flex; 
-        justify-content: space-between; 
-        align-items: center; 
-        padding: 12px 20px; 
-        background: #fff;
-        border-bottom: 1px solid #f1f5f9;
-        transition: background 0.2s;
-    }
-    .lecture-item:last-child { border-bottom: none; }
-    .lecture-item:hover { background: #f8fafc; }
-
-    .lecture-link { text-decoration: none; color: #334155; font-weight: 500; font-size: 0.95rem; display: flex; align-items: center; gap: 10px; }
-    .lecture-link i { color: #cbd5e1; }
-    .lecture-link:hover { color: #0d6efd; }
-
-    /* Discussion: Simple Footer Box */
-    .discussion-box {
-        margin-top: 4rem;
-        padding: 2rem;
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        text-align: center;
-    }
-
-    /* Buttons & Actions */
-    .btn-minimal {
-        padding: 6px 12px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        text-decoration: none;
-        border-radius: 6px;
-        transition: 0.2s;
-    }
-    .btn-blue { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
-    .btn-blue:hover { background: #dbeafe; }
-    
-    .btn-dark { background: #1e293b; color: white; border: none; }
-    
-    .action-text { font-size: 0.75rem; font-weight: 700; text-decoration: none; margin-left: 12px; }
-    .edit-text { color: #94a3b8; }
-    .edit-text:hover { color: #0d6efd; }
-    .delete-text { color: #fca5a5; }
-    .delete-text:hover { color: #dc2626; }
-</style>
-
 <div class="course-page-container">
 
     {% if role == "teacher" and course.teacher == request.user %}
@@ -181,7 +95,6 @@
     </div>
 
     <footer class="mt-5 pt-4 border-top d-flex justify-content-between">
-        <span class="text-muted small">Updated 2024</span>
         {% if role == "student" %}
         <a href="{% url 'courses:unenroll_course' course.id %}?next={{ request.path }}" class="delete-text action-text" style="margin:0">
             Unenroll from course

@@ -1,0 +1,108 @@
+  .delete-wrapper { 
+        max-width: 550px; 
+        margin: 5rem auto; 
+        font-family: sans-serif;
+    }
+
+    /* Minimalist Header */
+    .delete-header { 
+        margin-bottom: 2rem; 
+        text-align: left; 
+    }
+
+    .section-label-red { 
+        font-size: 0.75rem; 
+        font-weight: 800; 
+        color: #ef4444; 
+        text-transform: uppercase; 
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .delete-header h2 { 
+        font-weight: 800; 
+        color: #1e293b; 
+        font-size: 2rem; 
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+    }
+
+    /* High-Contrast Warning Card */
+    .delete-card {
+        background: #fff;
+        border: 1px solid #fee2e2;
+        border-radius: 12px;
+        padding: 2.5rem;
+    }
+
+    .course-display {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        padding: 1rem;
+        border-radius: 6px;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .impact-box {
+        background: #fef2f2;
+        border-radius: 8px;
+        padding: 1.25rem;
+        margin-bottom: 2rem;
+    }
+
+    .impact-box ul {
+        margin: 0;
+        padding-left: 1.2rem;
+        color: #991b1b;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .impact-box li {
+        margin-bottom: 0.4rem;
+    }
+
+    /* Standardized Action Buttons */
+    .btn-delete-confirm {
+        width: 100%;
+        padding: 14px;
+        background: #dc2626; /* Primary Danger Red */
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: 800;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-bottom: 1rem;
+    }
+
+    .btn-delete-confirm:hover {
+        background: #991b1b;
+    }
+
+    .action-footer {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .btn-cancel { 
+        color: #64748b; 
+        text-decoration: none; 
+        font-size: 0.85rem; 
+        font-weight: 700; 
+        text-transform: uppercase; 
+        letter-spacing: 0.05em; 
+    }
+    
+    .btn-cancel:hover { color: #1e293b; }

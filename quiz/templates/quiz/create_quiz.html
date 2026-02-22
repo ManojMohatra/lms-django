@@ -1,36 +1,168 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block title %}Create New Quiz - {{ lecture.title }}{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/lecture.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="card" style="margin-top: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
-    <h2 style="margin-bottom: 1.5rem; letter-spacing: -0.02em;">
-        <i class="bi bi-plus-circle me-2" style="color: var(--primary-blue);"></i>Create Quiz
-    </h2>
-    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem;">
-        Lecture: <strong>{{ lecture.title }}</strong>
-    </p>
+<div class="lecture-wrapper">
+    <nav class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+        <a href="{% url 'courses:lecture_detail' lecture.id %}" class="btn-dir">
+            <i class="bi bi-arrow-left"></i> Back to Unit
+        </a>
+    </nav>
 
-    <form method="post">
-        {% csrf_token %}
-        <div style="margin-bottom: 1.5rem;">
-            <label style="display: block; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px;">Quiz Title</label>
-            <input type="text" name="title" placeholder="e.g., Midterm Assessment" 
-                   style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px;" required>
+    <div class="quiz-create-container">
+        <div class="quiz-create-header">
+            <span class="dir-label">Initialize Assessment</span>
+            <h1 class="dir-title">Create Quiz</h1>
+            <p class="quiz-create-subtitle">
+                Unit: <strong>{{ lecture.title }}</strong>
+            </p>
         </div>
 
-        <div style="margin-bottom: 2rem;">
-            <label style="display: block; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px;">Description (Optional)</label>
-            <textarea name="description" placeholder="Provide instructions for students..." 
-                      style="width: 100%; height: 100px; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px;"></textarea>
-        </div>
-
-        <div style="display: flex; gap: 10px; align-items: center;">
-            <button type="submit" class="user-tag" style="background: var(--primary-blue); color: white !important; padding: 10px 20px; cursor: pointer; border: none; font-weight: 700;">
-                Continue to Questions
-            </button>
-            <a href="{% url 'courses:lecture_detail' lecture.id %}" style="text-decoration: none; color: var(--text-muted); font-size: 0.85rem;">Cancel</a>
-        </div>
-    </form>
+        <form method="post" class="quiz-create-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label class="form-label">Quiz Title</label>
+                <input type="text" 
+                       name="title" 
+                       class="form-input" 
+                       placeholder="e.g., Midterm Assessment" 
+                       required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Description (Optional)</label>
+                <textarea name="description" 
+                          class="form-textarea" 
+                          placeholder="Provide instructions for students..."
+                          rows="4"></textarea>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn-dir btn-dir-dark">
+                    <i class="bi bi-arrow-right me-1"></i> Continue to Questions
+                </button>
+                <a href="{% url 'courses:lecture_detail' lecture.id %}" class="btn-dir">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
 </div>
+
+<style>
+.quiz-create-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.quiz-create-header {
+    margin-bottom: 2.5rem;
+}
+
+.quiz-create-subtitle {
+    font-size: 0.95rem;
+    color: #64748b;
+    margin-top: 0.5rem;
+}
+
+.quiz-create-subtitle strong {
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+/* Quiz Create Form */
+.quiz-create-form {
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.75rem;
+}
+
+.form-group:last-of-type {
+    margin-bottom: 2rem;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.form-input,
+.form-textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    transition: border-color 0.2s ease;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--text-main);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+    color: #94a3b8;
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.6;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .quiz-create-form {
+        padding: 1.5rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .form-actions .btn-dir {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .quiz-create-container {
+        padding: 0;
+    }
+    
+    .quiz-create-form {
+        padding: 1.25rem;
+    }
+}
+</style>
 {% endblock %}
