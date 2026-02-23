@@ -24,13 +24,34 @@
                     <i class="bi bi-mortarboard"></i>
                     <span>Student</span>
                 </div>
-                <div class="role-tile" data-role="instructor">
+                <div class="role-tile" data-role="teacher">
                     <i class="bi bi-person-workspace"></i>
-                    <span>Instructor</span>
+                    <span>Teacher</span>
                 </div>
             </div>
 
-            {{ form.as_p }}
+             <!-- Hidden input that carries the selected role to the form -->
+            <input type="hidden" name="role" id="selected-role" value="">
+
+            <!-- Role error message from form validation -->
+            {% if form.role.errors %}
+                <p class="text-danger">{{ form.role.errors }}</p>
+            {% endif %}
+
+            <!-- Render all fields except role (handled by tiles above) -->
+            {% for field in form %}
+                {% if field.name != 'role' %}
+                    <p>
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.errors %}
+                            <span class="text-danger">{{ field.errors }}</span>
+                        {% endif %}
+                    </p>
+                {% endif %}
+            {% endfor %}
+
+           
 
             <button type="submit" class="btn-auth-primary">
                 Create Account
@@ -43,4 +64,18 @@
         <a href="{% url 'accounts:login' %}">Login</a>
     </div>
 </div>
+
+<script>
+    const tiles = document.querySelectorAll('.role-tile');
+    const hiddenInput = document.getElementById('selected-role');
+
+    tiles.forEach(tile => {
+        tile.addEventListener('click', () => {
+            tiles.forEach(t => t.classList.remove('active'));
+            tile.classList.add('active');
+            hiddenInput.value = tile.dataset.role;
+        });
+    });
+</script>
+
 {% endblock %}
