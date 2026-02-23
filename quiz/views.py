@@ -101,3 +101,22 @@ def manage_quiz_results(request, quiz_id):
     
     submissions = QuizSubmission.objects.filter(quiz=quiz).order_by('-submitted_at')
     return render(request, 'quiz/manage_results.html', {'quiz': quiz, 'submissions': submissions})
+
+@login_required
+# REMOVE @require_POST here
+def delete_quiz(request, quiz_id):
+    # Ensure the ID in the URL matches the variable name 'quiz_id'
+    quiz = get_object_or_404(Quiz, id=quiz_id)
+
+    # Permission check
+    if quiz.lecture.module.course.teacher != request.user:
+        return HttpResponseForbidden("You are not allowed to delete this quiz")
+    
+    if request.method == "POST":
+        lecture_id = quiz.lecture.id
+        quiz.delete()
+        # Redirect back to the lecture detail page
+        return redirect("courses:lecture_detail", lecture_id=lecture_id)
+    
+    # If GET, show the confirmation page
+    return render(request, "quiz/delete_quiz.html", {"quiz": quiz})

@@ -79,8 +79,27 @@
                         <i class="bi bi-patch-question-fill me-1"></i> {{ quiz.title }}
                     </a>
                     {% if is_teacher %}
-                        <a href="{% url 'quiz:manage_results' quiz.id %}" class="text-muted" title="View Results"><i class="bi bi-graph-up"></i></a>
-                    {% endif %}
+		    
+		    <div class="d-flex justify-content-end align-items-center gap-4">
+    
+   
+
+    <a href="{% url 'quiz:delete_quiz' quiz.id %}" 
+       class="text-muted small-delete" 
+       title="Delete Quiz">
+       Delete
+    </a>
+
+     <a href="{% url 'quiz:manage_results' quiz.id %}" 
+       class="text-muted" 
+       title="View Results">
+       Check Results 
+    </a>
+
+</div>
+
+
+				     {% endif %}
                 </div>
                 {% empty %}
                 <p class="text-muted small mb-0">No automated quiz indexed.</p>
@@ -91,7 +110,8 @@
                     <a href="{% url 'quiz:create_quiz' lecture.id %}" class="dir-nav-link text-primary">
                         + Initialize Quiz
                     </a>
-                </div>
+	 
+		 
                 {% endif %}
             </div>
         </div>
@@ -99,7 +119,7 @@
 
     <div class="assignment-registry">
         <div class="registry-header">
-            <i class="bi bi-list-check me-2"></i>Task Directory & Unit Registry
+            <i class="bi bi-list-check me-2"></i>Assignments
         </div>
 
         {% for assignment in assignments %}

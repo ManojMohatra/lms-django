@@ -314,3 +314,20 @@ nav.border-bottom {
         font-size: 1.25rem;
     }
 }
+.btn-minimal-delete {
+        background-color: transparent;
+        color: #6c757d; /* Muted gray */
+        border: 1px solid #dee2e6; /* Light border */
+        padding: 0.4rem 1rem;
+        font-weight: 400;
+        font-size: 0.9rem;
+        transition: all 0.2s ease-in-out;
+        border-radius: 4px; /* Slight roundness for a soft touch */
+    }
+
+    .btn-minimal-delete:hover {
+        background-color: #fff5f5; /* Very soft red tint */
+        color: #dc3545; /* Bootstrap red */
+        border-color: #dc3545;
+        text-decoration: none;
+    }
