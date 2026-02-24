@@ -3,19 +3,22 @@ from sklearn.metrics.pairwise import cosine_similarity
 from .models import Course,Enrollment
 
 
-courses = list(Course.objects.all())
-
-documents = [
-    (c.title + " " + c.description).lower()
-    for c in courses
+def build_similarity():
+    courses = list(Course.objects.all())
+    
+    documents = [
+        (c.title + " " + c.description).lower()
+        for c in courses
     ]
 
-vectorizer = TfidfVectorizer(stop_words='english')
-tfidf_matrix = vectorizer.fit_transform(documents)
+    vectorizer = TfidfVectorizer(stop_words='english')
+    tfidf_matrix = vectorizer.fit_transform(documents)
+    similarity_matrix = cosine_similarity(tfidf_matrix)
 
-similarity_matrix = cosine_similarity(tfidf_matrix)
+    return courses, similarity_matrix
 
 def recommend_for_user(user,top_n=3): #The top_n is number of courses to be recommended to the user
+    courses,similarity_matrix = build_similarity()
     enrolled_courses = Enrollment.objects.filter(student=user)
     enrolled_ids = [e.course.id for e in enrolled_courses]
 

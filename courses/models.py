@@ -10,6 +10,12 @@ class Course(models.Model):
         related_name="courses_taught"
     )
 
+    thumbnail = models.ImageField(
+        upload_to ="course_thumbnails/",
+        null=True,
+        blank=True
+        )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
