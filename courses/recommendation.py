@@ -23,10 +23,10 @@ def recommend_for_user(user,top_n=3): #The top_n is number of courses to be reco
     enrolled_ids = [e.course.id for e in enrolled_courses]
 
     if not enrolled_ids:
-        return Course.objects.order_by('-id')[:5]
+        return Course.objects.order_by('-id')[:3]  #3 new courses if the user is not authenticated or is teacher(i.e not enrolled)
 
     recommended_scores = {}
-
+    
     for enrolled_id in enrolled_ids:
         index = next(
             (i for i,c in enumerate(courses) if c.id == enrolled_id),
