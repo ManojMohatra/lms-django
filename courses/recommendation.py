@@ -15,7 +15,7 @@ tfidf_matrix = vectorizer.fit_transform(documents)
 
 similarity_matrix = cosine_similarity(tfidf_matrix)
 
-def recommend_for_user(user,top_n=3):
+def recommend_for_user(user,top_n=3): #The top_n is number of courses to be recommended to the user
     enrolled_courses = Enrollment.objects.filter(student=user)
     enrolled_ids = [e.course.id for e in enrolled_courses]
 

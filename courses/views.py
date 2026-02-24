@@ -23,8 +23,6 @@ def create_course(request):
     return render(request,"courses/create_course.html",{"form":form})
 
 
-
-
 def course_list(request):
     courses = Course.objects.all()
     enrolled_courses = []
