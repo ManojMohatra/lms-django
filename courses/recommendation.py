@@ -11,6 +11,9 @@ def build_similarity():
         for c in courses
     ]
 
+    if not documents:
+        return courses, None
+    
     vectorizer = TfidfVectorizer(stop_words='english')
     tfidf_matrix = vectorizer.fit_transform(documents)
     similarity_matrix = cosine_similarity(tfidf_matrix)
@@ -19,6 +22,9 @@ def build_similarity():
 
 def recommend_for_user(user,top_n=3): #The top_n is number of courses to be recommended to the user
     courses,similarity_matrix = build_similarity()
+
+    if not courses or similarity_matrix is None:
+        return Course.objects.none()
     enrolled_courses = Enrollment.objects.filter(student=user)
     enrolled_ids = [e.course.id for e in enrolled_courses]
 
