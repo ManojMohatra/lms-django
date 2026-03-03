@@ -5,46 +5,123 @@
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 {% endblock %}
 {% block content %}
-
 <div class="home-wrapper">
+    <!-- Hero Section -->
     <div class="hero-section">
-        <span class="section-label">Education Platform</span>
-        <h1>Learn. Grow. Succeed.</h1>
-        <p class="hero-subtext">
-            Access high-quality modules, track your progress, and master new skills with our unified Learning Management System.
-        </p>
-
-        {% if not request.user.is_authenticated %}
-            <a href="{% url 'accounts:register' %}" class="btn-minimal btn-dark">
-                Create Account
-            </a>
-            <a href="{% url 'accounts:login' %}" class="btn-minimal btn-blue-outline" style="margin-left: 10px;">
-                Sign In
-            </a>
-        {% else %}
-            <a href="{% url 'courses:course_list' %}" class="btn-minimal btn-dark">
-                Courses Catalog
-            </a>
-        {% endif %}
+        <div class="hero-content">
+            <span class="section-label">Education Platform</span>
+            <h1 class="hero-title">Learn. Grow. Succeed.</h1>
+            <p class="hero-subtext">
+                Access high-quality modules, track your progress, and master new skills with our unified Learning Management System.
+            </p>
+            <div class="hero-actions">
+                {% if not request.user.is_authenticated %}
+                    <a href="{% url 'accounts:register' %}" class="btn-minimal btn-dark">
+                        Create Account
+                    </a>
+                    <a href="{% url 'accounts:login' %}" class="btn-minimal btn-blue-outline">
+                        Sign In
+                    </a>
+                {% else %}
+                    <a href="{% url 'courses:course_list' %}" class="btn-minimal btn-dark">
+                        Explore All Courses
+                    </a>
+                {% endif %}
+            </div>
+        </div>
     </div>
 
-    <span class="section-label">Featured Courses</span>
-    <div class="course-grid">
-        {% for course in courses %}
-            <div class="course-card-minimal">
-                <div>
-                    <h3>{{ course.title }}</h3>
-                    <p>{{ course.description|truncatewords:20 }}</p>
+    <!-- Courses Section -->
+    <div class="courses-section">
+        {% if request.user.is_authenticated %}
+            <!-- Authenticated: Show Recommended Courses -->
+            {% if recommended_courses %}
+                <div class="section-header">
+                    <span class="section-label">Recommended for You</span>
                 </div>
-                <a href="{% url 'courses:course_detail' course.id %}" class="btn-minimal btn-blue-outline w-100">
-                    View Course
-                </a>
+                <div class="course-grid">
+                    {% for course in recommended_courses %}
+                        <div class="course-card">
+                            <div class="course-card-content">
+                                <h3 class="course-title">{{ course.title }}</h3>
+                                <p class="course-description">{{ course.description|truncatewords:20 }}</p>
+                                {% if course.instructor %}
+                                    <div class="course-meta">
+                                        <span class="meta-item">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                <circle cx="12" cy="7" r="4"></circle>
+                                            </svg>
+                                            {{ course.instructor.get_full_name|default:course.instructor.username }}
+                                        </span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <a href="{% url 'courses:course_detail' course.id %}" 
+                               class="btn-minimal btn-blue-outline course-btn">
+                                View Course
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="section-header">
+                    <span class="section-label">Get Started</span>
+                    <p class="section-description">Browse our course catalog to begin your learning journey</p>
+                </div>
+                <div class="empty-state">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    <p class="empty-message">No recommendations yet. Start exploring courses to get personalized suggestions!</p>
+                    <a href="{% url 'courses:course_list' %}" class="btn-minimal btn-dark">
+                        Browse Courses
+                    </a>
+                </div>
+            {% endif %}
+        {% else %}
+            <!-- Not Authenticated: Show Featured Courses -->
+            <div class="section-header">
+                <span class="section-label">Featured Courses</span>
+                <p class="section-description">Explore our most popular courses and start learning today</p>
             </div>
-        {% empty %}
-            <div class="empty-state w-100">
-                <p>No featured courses available yet.</p>
-            </div>
-        {% endfor %}
+            {% if courses %}
+                <div class="course-grid">
+                    {% for course in courses %}
+                        <div class="course-card">
+                            <div class="course-card-content">
+                                <h3 class="course-title">{{ course.title }}</h3>
+                                <p class="course-description">{{ course.description|truncatewords:20 }}</p>
+                                {% if course.instructor %}
+                                    <div class="course-meta">
+                                        <span class="meta-item">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                <circle cx="12" cy="7" r="4"></circle>
+                                            </svg>
+                                            {{ course.instructor.get_full_name|default:course.instructor.username }}
+                                        </span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <a href="{% url 'courses:course_detail' course.id %}" 
+                               class="btn-minimal btn-blue-outline course-btn">
+                                View Course
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    <p class="empty-message">No featured courses available yet. Check back soon!</p>
+                </div>
+            {% endif %}
+        {% endif %}
     </div>
 </div>
 {% endblock %}
