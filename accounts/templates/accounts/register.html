@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block title %}Register{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/auth.css' %}">
 {% endblock %}
@@ -16,7 +18,6 @@
         <form method="post" id="registerForm">
             {% csrf_token %}
             
-            <!-- Role Selection -->
             <span class="section-label">Select Role</span>
             <div class="role-selection-group">
                 <div class="role-tile" data-role="student">
@@ -28,40 +29,28 @@
                     <span>Teacher</span>
                 </div>
             </div>
-<<<<<<< HEAD
 
-             <!-- Hidden input that carries the selected role to the form -->
-            <input type="hidden" name="role" id="selected-role" value="">
+            <input type="hidden" name="role" id="selected-role" value="{{ form.role.value|default:'' }}">
 
-            <!-- Role error message from form validation -->
             {% if form.role.errors %}
-                <p class="text-danger">{{ form.role.errors }}</p>
+                <div class="text-danger mb-3">{{ form.role.errors }}</div>
             {% endif %}
 
-            <!-- Render all fields except role (handled by tiles above) -->
             {% for field in form %}
                 {% if field.name != 'role' %}
-                    <p>
+                    <div class="form-group mb-3">
                         {{ field.label_tag }}
                         {{ field }}
                         {% if field.errors %}
-                            <span class="text-danger">{{ field.errors }}</span>
+                            <div class="text-danger small">{{ field.errors }}</div>
                         {% endif %}
-                    </p>
+                        {% if field.help_text %}
+                            <small class="text-muted">{{ field.help_text }}</small>
+                        {% endif %}
+                    </div>
                 {% endif %}
             {% endfor %}
 
-           
-
-=======
-            
-            <!-- Hidden role input -->
-            <input type="hidden" name="role" id="roleInput" value="">
-            
-            <!-- Form fields -->
-            {{ form.as_p }}
-            
->>>>>>> feature/recommendation
             <button type="submit" class="btn-auth-primary">
                 Create Account
             </button>
@@ -75,79 +64,22 @@
 </div>
 
 <script>
-<<<<<<< HEAD
-    const tiles = document.querySelectorAll('.role-tile');
-    const hiddenInput = document.getElementById('selected-role');
+    document.addEventListener('DOMContentLoaded', () => {
+        const tiles = document.querySelectorAll('.role-tile');
+        const hiddenInput = document.getElementById('selected-role');
 
-    tiles.forEach(tile => {
-        tile.addEventListener('click', () => {
-            tiles.forEach(t => t.classList.remove('active'));
-            tile.classList.add('active');
-            hiddenInput.value = tile.dataset.role;
-        });
-    });
-</script>
-
-=======
-document.addEventListener('DOMContentLoaded', function() {
-    const roleTiles = document.querySelectorAll('.role-tile');
-    const roleInput = document.getElementById('roleInput');
-    const form = document.getElementById('registerForm');
-    
-    // Handle role tile clicks
-    roleTiles.forEach(tile => {
-        tile.addEventListener('click', function() {
-            // Remove active class from all tiles
-            roleTiles.forEach(t => t.classList.remove('active'));
-            
-            // Add active class to clicked tile
-            this.classList.add('active');
-            
-            // Get the role value and update hidden input
-            const roleValue = this.getAttribute('data-role');
-            roleInput.value = roleValue;
-        });
-    });
-    
-    // Form validation - ensure a role is selected
-    form.addEventListener('submit', function(e) {
-        if (!roleInput.value) {
-            e.preventDefault();
-            alert('Please select a role (Student or Instructor)');
-            return false;
-        }
-    });
-    
-    // If there's an existing role value (from form errors), select that tile
-    if (roleInput.value) {
-        const selectedTile = document.querySelector(`.role-tile[data-role="${roleInput.value}"]`);
-        if (selectedTile) {
-            selectedTile.classList.add('active');
-        }
-    }
-    
-    // Check if the form has a role field and sync it
-    const existingRoleField = document.querySelector('select[name="role"]') || 
-                              document.querySelector('input[name="role"]:not(#roleInput)');
-    
-    if (existingRoleField) {
-        // If role field exists in form, sync initial value
-        if (existingRoleField.value) {
-            roleInput.value = existingRoleField.value;
-            const selectedTile = document.querySelector(`.role-tile[data-role="${existingRoleField.value}"]`);
-            if (selectedTile) {
-                selectedTile.classList.add('active');
+        tiles.forEach(tile => {
+            // Highlight tile if it was already selected (e.g., after a validation error)
+            if (tile.dataset.role === hiddenInput.value) {
+                tile.classList.add('active');
             }
-        }
-        
-        // Keep them in sync when tiles are clicked
-        roleTiles.forEach(tile => {
-            tile.addEventListener('click', function() {
-                existingRoleField.value = this.getAttribute('data-role');
+
+            tile.addEventListener('click', () => {
+                tiles.forEach(t => t.classList.remove('active'));
+                tile.classList.add('active');
+                hiddenInput.value = tile.dataset.role;
             });
         });
-    }
-});
+    });
 </script>
->>>>>>> feature/recommendation
 {% endblock %}
