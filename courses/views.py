@@ -11,7 +11,7 @@ def create_course(request):
         return HttpResponseForbidden("Only teacher can create courses.")
 
     if request.method == "POST":
-        form = CourseForm(request.POST)
+        form = CourseForm(request.POST,request.FILES)
         if form.is_valid():
             course = form.save(commit=False)
             course.teacher = request.user
@@ -87,7 +87,7 @@ def edit_course(request,course_id):
         return HttpResponseForbidden("You cannot edit this course")
 
     if request.method == "POST":
-        form = CourseForm(request.POST,instance=course)
+        form = CourseForm(request.POST, request.FILES ,instance=course)
         if form.is_valid():
             form.save()
             return redirect("courses:course_detail",course_id=course.id)

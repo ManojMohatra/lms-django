@@ -21,6 +21,13 @@
     {% endif %}
 
     <header class="course-header">
+
+    {% if course.thumbnail %}
+    <div class="course-thumbnail-card">
+        <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="course-thumbnail-img">
+        <div class="thumbnail-overlay"></div>
+    </div>
+    {% endif %}
         <h1>{{ course.title }}</h1>
         <p class="course-desc">{{ course.description }}</p>
         
