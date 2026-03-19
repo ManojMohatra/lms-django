@@ -274,3 +274,21 @@
         padding: 2rem 1rem;
     }
 }
+
+.course-thumbnail {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
+}
+
+.course-thumbnail-placeholder {
+    width: 100%;
+    height: 160px;
+    background: #f1f5f9;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+}
