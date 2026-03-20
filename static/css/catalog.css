@@ -19,9 +19,10 @@
     .catalog-item {
         display: flex;
         align-items: center;
-        padding: 12px 0;
+        padding: 14px 0;
         border-bottom: 1px solid #f1f5f9;
         transition: background-color 0.1s;
+	min-height: 52px;
     }
 
     .catalog-item:hover { background-color: #f8fafc; margin-left: -10px; padding-left: 10px; border-radius: 4px; }
@@ -39,16 +40,20 @@
         flex: 0 0 220px; /* Adjust this width based on your average title length */
         overflow: hidden;
         text-overflow: ellipsis;
-        white-space: nowrap;
+        white-space: normal;
         padding-right: 15px;
     }
 
-    .item-title {
-        font-weight: 700;
-        color: #1e293b;
-        text-decoration: none;
-        font-size: 0.95rem;
-    }
+ .item-title {
+    display: block;           /* makes title its own line */
+    font-weight: 700;
+    color: #1e293b;
+    text-decoration: none;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
     .item-title:hover { color: #0d6efd; }
 
@@ -67,7 +72,7 @@
 
     /* Column 4: Actions (Fixed Width) */
     .item-actions {
-        flex: 0 0 auto;
+        flex: 0 0 220px;
         display: flex;
         align-items: center;
         gap: 15px;
@@ -75,11 +80,28 @@
     }
 
     .instructor-name {
-        font-size: 0.7rem;
-        font-weight: 700;
-        color: #94a3b8;
-        text-transform: uppercase;
-    }
+    flex: 0 0 60px;           /* fixed width so longer names don't push badge */
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #64748b;           /* darker than #94a3b8 — easier to read */
+    text-transform: uppercase;
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.diff-badge {
+    flex: 0 0 80px;           /* fixed width — INTERMEDIATE and ADVANCED same space */
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;           /* darker — easier to read */
+    font-family: monospace;
+    text-align: right;
+}
+
+.diff-badge--advanced { color: #475569; }
 
     .btn-minimal {
         padding: 4px 12px;
@@ -109,3 +131,104 @@
         font-weight: 800;
         text-transform: uppercase;
     }
+
+/* ── Search Bar ───────────────────────────────────────────────────────────── */
+.search-bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.search-input,
+.search-select {
+    height: 30px;
+    padding: 0 10px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #1e293b;
+    background: transparent;
+    border: none;
+    border-bottom: 1.5px solid #e2e8f0;
+    border-radius: 0;
+    outline: none;
+    transition: border-color 0.15s;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.search-input::placeholder { color: #cbd5e1; }
+
+.search-input:focus,
+.search-select:focus { border-bottom-color: #1e293b; }
+
+.search-input--wide { flex: 1; min-width: 160px; }
+.search-select      { min-width: 110px; cursor: pointer; }
+
+.search-clear {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #cbd5e1;
+    text-decoration: none;
+    letter-spacing: 0.03em;
+}
+.search-clear:hover { color: #94a3b8; }
+
+/* ── Active filter chips ──────────────────────────────────────────────────── */
+.active-filters {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 1rem;
+    font-size: 0.72rem;
+}
+
+.active-filters-label {
+    color: #cbd5e1;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.filter-chip {
+    background: #f1f5f9;
+    color: #475569;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 700;
+    font-size: 0.7rem;
+}
+
+.result-count {
+    margin-left: auto;
+    color: #cbd5e1;
+    font-weight: 700;
+    font-size: 0.72rem;
+    font-family: monospace;
+}
+
+/* ── Difficulty badge (in list row) ──────────────────────────────────────── */
+.diff-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #94a3b8;        /* same muted tone as instructor-name */
+    font-family: monospace;
+}
+
+/* no color per level — just dim the advanced ones slightly */
+.diff-badge--advanced { color: #64748b; }
+
+/* ── Tag chips ───────────────────────────────────────────────────────────── */
+.item-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px;min-height: 16px;}
+
+.tag-chip {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #94a3b8;           /* slightly darker than before */
+}

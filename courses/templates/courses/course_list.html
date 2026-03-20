@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %} All Courses {% endblock %}
 {% load static %}
-{% block content %}
+{% block title %} All Courses {% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/catalog.css' %}">
 {% endblock %}
+{% block content %}
 <div class="courses-wrapper">
-    
+
     <div class="catalog-header">
         <div class="catalog-info">
             <h2>Course Catalog</h2>
@@ -18,77 +18,101 @@
             </a>
         {% endif %}
     </div>
-    <form method="GET" action="{% url 'courses:course_list' %}">
-  <!-- Keyword search -->
-  <input 
-    type="text" 
-    name="search" 
-    value="{{ current_search }}" 
-    placeholder="Search courses..."
-  >
 
-  <!-- Difficulty dropdown -->
-  <select name="difficulty">
-    <option value="">All Levels</option>
-    {% for value, label in difficulty_choices %}
-      <option value="{{ value }}" {% if current_difficulty == value %}selected{% endif %}>
-        {{ label }}
-      </option>
-    {% endfor %}
-  </select>
+    <!-- Search & Filter Bar -->
+    <form method="GET" action="{% url 'courses:course_list' %}" class="search-bar">
 
-  <!-- Tag dropdown -->
-  <select name="tag">
-    <option value="">All Topics</option>
-    {% for tag in all_tags %}
-      <option value="{{ tag.slug }}" {% if current_tag == tag.slug %}selected{% endif %}>
-        {{ tag.name }}
-      </option>
-    {% endfor %}
-  </select>
+        <input
+            type="text"
+            name="search"
+            value="{{ current_search }}"
+            placeholder="Search courses..."
+            class="search-input search-input--wide"
+        >
 
-  <!-- Teacher search -->
-  <input 
-    type="text" 
-    name="teacher" 
-    value="{{ current_teacher }}" 
-    placeholder="Teacher username..."
-  >
+        <select name="difficulty" class="search-select">
+            <option value="">All Levels</option>
+            {% for value, label in difficulty_choices %}
+                <option value="{{ value }}" {% if current_difficulty == value %}selected{% endif %}>
+                    {{ label }}
+                </option>
+            {% endfor %}
+        </select>
 
-  <button type="submit">Search</button>
-  <a href="{% url 'courses:course_list' %}">Clear</a>
-</form>
+        <select name="tag" class="search-select">
+            <option value="">All Topics</option>
+            {% for tag in all_tags %}
+                <option value="{{ tag.slug }}" {% if current_tag == tag.slug %}selected{% endif %}>
+                    {{ tag.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <input
+            type="text"
+            name="teacher"
+            value="{{ current_teacher }}"
+            placeholder="Instructor..."
+            class="search-input"
+        >
+
+        <button type="submit" class="btn-minimal btn-dark">Search</button>
+        <a href="{% url 'courses:course_list' %}" class="search-clear">Clear</a>
+
+    </form>
+
+    <!-- Active filters summary -->
+    {% if current_search or current_difficulty or current_tag or current_teacher %}
+    <div class="active-filters">
+        <span class="active-filters-label">Filtered by:</span>
+        {% if current_search %}
+            <span class="filter-chip">{{ current_search }}</span>
+        {% endif %}
+        {% if current_difficulty %}
+            <span class="filter-chip">{{ current_difficulty|capfirst }}</span>
+        {% endif %}
+        {% if current_tag %}
+            <span class="filter-chip">#{{ current_tag }}</span>
+        {% endif %}
+        {% if current_teacher %}
+            <span class="filter-chip">@{{ current_teacher }}</span>
+        {% endif %}
+        <span class="result-count">{{ courses|length }} result{{ courses|length|pluralize }}</span>
+    </div>
+    {% endif %}
 
     <div class="catalog-list">
         {% for course in courses %}
             <div class="catalog-item">
                 <div class="item-number">{{ forloop.counter|stringformat:"02d" }}</div>
-
                 <div class="item-title-box">
                     <a href="{% url 'courses:course_detail' course.id %}" class="item-title">
                         {{ course.title }}
                     </a>
+                    <!-- Tags shown under title on mobile -->
+                    <div class="item-tags d-lg-none">
+                        {% for tag in course.tags.all %}
+                            <span class="tag-chip">#{{ tag.name }}</span>
+                        {% endfor %}
+                    </div>
                 </div>
-
                 <p class="item-desc d-none d-md-block">
                     {{ course.description }}
                 </p>
-
                 <div class="item-actions">
                     <span class="instructor-name d-none d-lg-inline">
                         {{ course.teacher.username }}
                     </span>
-
+                    <!-- Difficulty badge -->
+                    <span class="diff-badge diff-badge--{{ course.difficulty }} d-none d-lg-inline">
+                        {{ course.get_difficulty_display }}
+                    </span>
                     {% if request.user.profile.role == "student" %}
                         {% if course.id in enrolled_courses %}
                             <span class="status-enrolled">Joined</span>
-                            <a href="{% url 'courses:unenroll_course' course.id %}?next={{ request.path }}" class="unenroll-text">
-                                Leave
-                            </a>
+                            <a href="{% url 'courses:unenroll_course' course.id %}?next={{ request.path }}" class="unenroll-text">Leave</a>
                         {% else %}
-                            <a href="{% url 'courses:enroll_course' course.id %}?next={{ request.path }}" class="btn-minimal btn-blue">
-                                Enroll
-                            </a>
+                            <a href="{% url 'courses:enroll_course' course.id %}?next={{ request.path }}" class="btn-minimal btn-blue">Enroll</a>
                         {% endif %}
                     {% else %}
                         <a href="{% url 'courses:course_detail' course.id %}" class="btn-minimal btn-blue">View</a>
@@ -96,7 +120,14 @@
                 </div>
             </div>
         {% empty %}
-            <div class="py-4 text-center text-muted small">The catalog is currently empty.</div>
+            <div class="py-4 text-center text-muted small">
+                {% if current_search or current_difficulty or current_tag or current_teacher %}
+                    No courses match your search.
+                    <a href="{% url 'courses:course_list' %}" class="search-clear">Clear filters</a>
+                {% else %}
+                    The catalog is currently empty.
+                {% endif %}
+            </div>
         {% endfor %}
     </div>
 </div>
