@@ -1,7 +1,8 @@
+from django.db.models import Q
 from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpResponseForbidden
 from .forms import CourseForm,AssignmentForm
-from .models import Course, Enrollment,Module,Lecture,LectureProgress,Assignment,Submission
+from .models import Course, Enrollment,Module,Lecture,LectureProgress,Assignment,Submission,Tag
 from django.contrib.auth.decorators import login_required
 from discussion.models import Comment
 from django.utils import timezone
@@ -24,20 +25,43 @@ def create_course(request):
 
 
 def course_list(request):
-    courses = Course.objects.all()
+    courses = Course.objects.prefetch_related("tags").all()
     enrolled_courses = []
 
-    if request.user.profile.role == "student":
+    if request.user.is_authenticated and request.user.profile.role == "student":
         enrolled_courses = Enrollment.objects.filter(
             student=request.user
         ).values_list("course_id",flat=True)
-        
-    return render(request,
-                  "courses/course_list.html",
-                  {
-                      "courses": courses,
-                      "enrolled_courses":enrolled_courses
-                  })
+       
+    search     = request.GET.get("search", "").strip()
+    difficulty = request.GET.get("difficulty", "")
+    tag_slug   = request.GET.get("tag", "")
+    teacher    = request.GET.get("teacher", "").strip()
+
+    if search:
+        courses = courses.filter(
+            Q(title__icontains=search) | Q(description__icontains=search)
+        )
+    if difficulty:
+        courses = courses.filter(difficulty=difficulty)
+    if tag_slug:
+        courses = courses.filter(tags__slug=tag_slug)
+    if teacher:
+        courses = courses.filter(teacher__username__icontains=teacher)
+
+    all_tags = Tag.objects.all()  # for the filter dropdown in the template
+
+    return render(request, "courses/course_list.html", {
+        "courses": courses,
+        "enrolled_courses": enrolled_courses,
+        "all_tags": all_tags,
+        "difficulty_choices": Course.Difficulty.choices,
+        # Pass back current filters so the form stays filled
+        "current_search":     search,
+        "current_difficulty": difficulty,
+        "current_tag":        tag_slug,
+        "current_teacher":    teacher,
+    })
 
 def enroll_course(request,course_id):
     if request.user.profile.role != "student":

@@ -5,19 +5,16 @@
 <link rel="stylesheet" href="{% static 'css/add_course.css' %}">
 {% endblock %}
 {% block content %}
-
-
 <div class="form-wrapper">
     <div class="form-header">
         <span class="section-label">Academy Creation</span>
         <h2>Create Course</h2>
         <p class="text-muted small">Establish the foundation for your students learning experience</p>
     </div>
-
     <div class="form-card">
-        <form method="post" enctype="multipart/form-data"  novalidate>
+        <form method="post" enctype="multipart/form-data" novalidate>
             {% csrf_token %}
-            
+
             {% if form.non_field_errors %}
                 <div class="errorlist">
                     {{ form.non_field_errors }}
@@ -31,12 +28,25 @@
             </button>
         </form>
     </div>
-
     <div class="action-footer">
         <a href="{% url 'accounts:dashboard' %}" class="btn-cancel">
             Cancel and Return
         </a>
     </div>
 </div>
+{% endblock %}
 
+{% block extra_js %}
+<script>
+    // Show/hide price field based on is_free checkbox
+    const isFreeCheckbox = document.getElementById("id_is_free");
+    const priceRow       = document.getElementById("id_price").closest("p");
+
+    function togglePrice() {
+        priceRow.style.display = isFreeCheckbox.checked ? "none" : "block";
+    }
+
+    isFreeCheckbox.addEventListener("change", togglePrice);
+    togglePrice(); // run on page load
+</script>
 {% endblock %}

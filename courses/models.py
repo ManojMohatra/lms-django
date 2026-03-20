@@ -1,7 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class Tag(models.Model):
+    name = models.CharField(max_length=50,unique=True)
+    slug = models.SlugField(max_length=50,unique=True)
+    
+    def __str__(self):
+        return self.name
+
 class Course(models.Model):
+    class Difficulty(models.TextChoices):
+        BEGINNER = "beginner", "Beginner"
+        INTERMEDIATE = "intermediate", "Intermediate"
+        ADVANCED = "advanced", "Advanced"
+
     title = models.CharField(max_length=200)
     description = models.TextField()
     teacher = models.ForeignKey(
@@ -15,6 +27,30 @@ class Course(models.Model):
         null=True,
         blank=True
         )
+
+    difficulty = models.CharField(
+            max_length=20,
+            choices=Difficulty.choices,
+            default=Difficulty.BEGINNER,
+            )
+    tags = models.ManyToManyField(
+            Tag,
+            blank=True,
+            related_name="courses"
+            )
+    language = models.CharField(
+            max_length=50,
+            default="English",
+            )
+    is_free = models.BooleanField(default=True)
+    price = models.DecimalField(
+            max_digits=8,
+            decimal_places=2,
+            null=True,
+            blank=True,
+            help_text="Leave blank if the course is free",
+            )
+
 
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -124,6 +160,6 @@ class Submission(models.Model):
     class Meta:
         unique_together = ("assignment","student")
     def __str__(self):
-        return f"{self.student.username} - {self.assigment.title}"
+        return f"{self.student.username} - {self.assignment.title}"
 
     

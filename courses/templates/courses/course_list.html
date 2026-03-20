@@ -18,6 +18,46 @@
             </a>
         {% endif %}
     </div>
+    <form method="GET" action="{% url 'courses:course_list' %}">
+  <!-- Keyword search -->
+  <input 
+    type="text" 
+    name="search" 
+    value="{{ current_search }}" 
+    placeholder="Search courses..."
+  >
+
+  <!-- Difficulty dropdown -->
+  <select name="difficulty">
+    <option value="">All Levels</option>
+    {% for value, label in difficulty_choices %}
+      <option value="{{ value }}" {% if current_difficulty == value %}selected{% endif %}>
+        {{ label }}
+      </option>
+    {% endfor %}
+  </select>
+
+  <!-- Tag dropdown -->
+  <select name="tag">
+    <option value="">All Topics</option>
+    {% for tag in all_tags %}
+      <option value="{{ tag.slug }}" {% if current_tag == tag.slug %}selected{% endif %}>
+        {{ tag.name }}
+      </option>
+    {% endfor %}
+  </select>
+
+  <!-- Teacher search -->
+  <input 
+    type="text" 
+    name="teacher" 
+    value="{{ current_teacher }}" 
+    placeholder="Teacher username..."
+  >
+
+  <button type="submit">Search</button>
+  <a href="{% url 'courses:course_list' %}">Clear</a>
+</form>
 
     <div class="catalog-list">
         {% for course in courses %}

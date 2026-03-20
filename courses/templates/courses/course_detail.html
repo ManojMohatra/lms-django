@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
 
-
 {% block title %} {{ course.title }} {% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/course.css' %}">
@@ -22,15 +21,52 @@
 
     <header class="course-header">
 
-    {% if course.thumbnail %}
-    <div class="course-thumbnail-card">
-        <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="course-thumbnail-img">
-        <div class="thumbnail-overlay"></div>
-    </div>
-    {% endif %}
+        {% if course.thumbnail %}
+        <div class="course-thumbnail-card">
+            <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="course-thumbnail-img">
+            <div class="thumbnail-overlay"></div>
+        </div>
+        {% endif %}
+
         <h1>{{ course.title }}</h1>
         <p class="course-desc">{{ course.description }}</p>
-        
+
+        <!-- ── New: badges row ─────────────────────────────────────────── -->
+        <div class="course-badges">
+
+            <!-- Difficulty -->
+            <span class="badge badge-difficulty badge-{{ course.difficulty }}">
+                <i class="bi bi-bar-chart-fill me-1"></i>
+                {{ course.get_difficulty_display }}
+            </span>
+
+            <!-- Language -->
+            <span class="badge badge-language">
+                <i class="bi bi-translate me-1"></i>
+                {{ course.language }}
+            </span>
+
+            <!-- Price -->
+            {% if course.is_free %}
+                <span class="badge badge-free">
+                    <i class="bi bi-gift me-1"></i> Free
+                </span>
+            {% else %}
+                <span class="badge badge-paid">
+                    <i class="bi bi-tag me-1"></i> ${{ course.price }}
+                </span>
+            {% endif %}
+
+            <!-- Tags -->
+            {% for tag in course.tags.all %}
+                <span class="badge badge-tag">
+                    <i class="bi bi-hash"></i>{{ tag.name }}
+                </span>
+            {% endfor %}
+
+        </div>
+        <!-- ─────────────────────────────────────────────────────────────── -->
+
         <div class="course-meta">
             <span>Instructor: <strong>{{ course.teacher.username }}</strong></span>
             <span>Enrolled: <strong>{{ enrolled_students_count }} students</strong></span>
@@ -51,7 +87,7 @@
 
     <main class="content-area">
         <h2 class="curriculum-title">Curriculum</h2>
-        
+
         {% for module in modules %}
             <section class="module-group">
                 <div class="module-label">
@@ -73,7 +109,6 @@
                                 <i class="bi bi-play-circle"></i> {{ lecture.title }}
                             </a>
                         </div>
-                        
                         {% if role == "teacher" and course.teacher == request.user %}
                         <div class="item-actions">
                             <a href="{% url 'courses:edit_lecture' lecture.id %}" class="edit-text action-text">Edit</a>
