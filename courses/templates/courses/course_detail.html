@@ -11,7 +11,9 @@
 
     {% if role == "teacher" and course.teacher == request.user %}
     <div class="management-bar">
-        <span class="role-text" style="color: #f59e0b; font-weight: 700; font-size: 0.8rem; text-transform: uppercase;">Instructor Mode</span>
+        <span class="role-text"
+            style="color: #f59e0b; font-weight: 700; font-size: 0.8rem; text-transform: uppercase;">Instructor
+            Mode</span>
         <div class="d-flex gap-2">
             <a href="{% url 'courses:add_module' course.id %}" class="btn-minimal btn-blue">+ Add Module</a>
             <a href="{% url 'courses:edit_course' course.id %}" class="btn-minimal btn-blue">Settings</a>
@@ -22,91 +24,177 @@
 
     <header class="course-header">
 
-    {% if course.thumbnail %}
-    <div class="course-thumbnail-card">
-        <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="course-thumbnail-img">
-        <div class="thumbnail-overlay"></div>
-    </div>
-    {% endif %}
+        {% if course.thumbnail %}
+        <div class="course-thumbnail-card">
+            <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="course-thumbnail-img">
+            <div class="thumbnail-overlay"></div>
+        </div>
+        {% endif %}
         <h1>{{ course.title }}</h1>
         <p class="course-desc">{{ course.description }}</p>
-        
+
         <div class="course-meta">
             <span>Instructor: <strong>{{ course.teacher.username }}</strong></span>
             <span>Enrolled: <strong>{{ enrolled_students_count }} students</strong></span>
+            
+            <span>
+                Rating:
+                <div class="star-display">
+                    {% for i in "12345" %}
+                    {% if forloop.counter <= rounded_rating|default:0 %} <span class="filled">★
+            </span>
+            {% else %}
+            <span class="empty">★</span>
+            {% endif %}
+            {% endfor %}
         </div>
-
-        {% if role == "student" %}
-        <div class="progress-section">
-            <div class="progress-text">
-                <span>Completion</span>
-                <span>{{ progress_percent }}%</span>
-            </div>
-            <div class="progress-track">
-                <div class="progress-fill" style="width: {{ progress_percent }}%;"></div>
-            </div>
-        </div>
-        {% endif %}
-    </header>
-
-    <main class="content-area">
-        <h2 class="curriculum-title">Curriculum</h2>
-        
-        {% for module in modules %}
-            <section class="module-group">
-                <div class="module-label">
-                    <span>{{ module.title }}</span>
-                    {% if role == "teacher" and course.teacher == request.user %}
-                        <div>
-                            <a href="{% url 'courses:add_lecture' module.id %}" class="edit-text action-text">+ Add Lecture</a>
-                            <a href="{% url 'courses:edit_module' module.id %}" class="edit-text action-text">Edit</a>
-                            <a href="{% url 'courses:delete_module' module.id %}" class="delete-text action-text">Delete Module</a>
-                        </div>
-                    {% endif %}
-                </div>
-
-                <div class="lecture-list">
-                    {% for lecture in module.lectures.all %}
-                    <div class="lecture-item">
-                        <div class="d-flex align-items-center">
-                            <a href="{% url 'courses:lecture_detail' lecture.id %}" class="lecture-link">
-                                <i class="bi bi-play-circle"></i> {{ lecture.title }}
-                            </a>
-                        </div>
-                        
-                        {% if role == "teacher" and course.teacher == request.user %}
-                        <div class="item-actions">
-                            <a href="{% url 'courses:edit_lecture' lecture.id %}" class="edit-text action-text">Edit</a>
-                            <a href="{% url 'courses:delete_lecture' lecture.id %}" class="delete-text action-text">Delete</a>
-                        </div>
-                        {% endif %}
-                    </div>
-                    {% empty %}
-                    <div class="p-3 text-center text-muted small">No lectures added yet.</div>
-                    {% endfor %}
-                </div>
-            </section>
-        {% empty %}
-            <div class="p-5 text-center border rounded">
-                <p class="text-muted">This course curriculum is currently empty.</p>
-            </div>
-        {% endfor %}
-    </main>
-
-    <div class="discussion-box">
-        <h4 class="fw-bold mb-2">Discussion Board</h4>
-        <p class="text-muted small mb-3">Have a question? Join the {{ comment_count }} comments in the course community.</p>
-        <a href="{% url 'discussion:course_discussion' course.id %}" class="btn-minimal btn-dark px-4 py-2">
-            Open Discussion
-        </a>
-    </div>
-
-    <footer class="mt-5 pt-4 border-top d-flex justify-content-between">
-        {% if role == "student" %}
-        <a href="{% url 'courses:unenroll_course' course.id %}?next={{ request.path }}" class="delete-text action-text" style="margin:0">
-            Unenroll from course
-        </a>
-        {% endif %}
-    </footer>
+        </span>
 </div>
+
+{% if role == "student" %}
+<div class="progress-section">
+    <div class="progress-text">
+        <span>Completion</span>
+        <span>{{ progress_percent }}%</span>
+    </div>
+    <div class="progress-track">
+        <div class="progress-fill" style="width: {{ progress_percent }}%;"></div>
+    </div>
+</div>
+{% endif %}
+</header>
+
+<main class="content-area">
+    <h2 class="curriculum-title">Curriculum</h2>
+
+    {% for module in modules %}
+    <section class="module-group">
+        <div class="module-label">
+            <span>{{ module.title }}</span>
+            {% if role == "teacher" and course.teacher == request.user %}
+            <div>
+                <a href="{% url 'courses:add_lecture' module.id %}" class="edit-text action-text">+ Add Lecture</a>
+                <a href="{% url 'courses:edit_module' module.id %}" class="edit-text action-text">Edit</a>
+                <a href="{% url 'courses:delete_module' module.id %}" class="delete-text action-text">Delete Module</a>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="lecture-list">
+            {% for lecture in module.lectures.all %}
+            <div class="lecture-item">
+                <div class="d-flex align-items-center">
+                    <a href="{% url 'courses:lecture_detail' lecture.id %}" class="lecture-link">
+                        <i class="bi bi-play-circle"></i> {{ lecture.title }}
+                    </a>
+                </div>
+
+                {% if role == "teacher" and course.teacher == request.user %}
+                <div class="item-actions">
+                    <a href="{% url 'courses:edit_lecture' lecture.id %}" class="edit-text action-text">Edit</a>
+                    <a href="{% url 'courses:delete_lecture' lecture.id %}" class="delete-text action-text">Delete</a>
+                </div>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="p-3 text-center text-muted small">No lectures added yet.</div>
+            {% endfor %}
+        </div>
+    </section>
+    {% empty %}
+    <div class="p-5 text-center border rounded">
+        <p class="text-muted">This course curriculum is currently empty.</p>
+    </div>
+    {% endfor %}
+</main>
+
+<div class="discussion-box">
+    <h4 class="fw-bold mb-2">Discussion Board</h4>
+    <p class="text-muted small mb-3">Have a question? Join the {{ comment_count }} comments in the course community.</p>
+    <a href="{% url 'discussion:course_discussion' course.id %}" class="btn-minimal btn-dark px-4 py-2">
+        Open Discussion
+    </a>
+</div>
+
+<footer class="mt-5 pt-4 border-top d-flex justify-content-between">
+    {% if role == "student" %}
+    <a href="{% url 'courses:unenroll_course' course.id %}?next={{ request.path }}" class="delete-text action-text"
+        style="margin:0">
+        Unenroll from course
+    </a>
+    {% endif %}
+</footer>
+</div>
+
+
+<!-- review part -->
+<div class="review-section mt-5">
+    <!-- <h3>Course Reviews</h3> -->
+    {% if role == "student" and not user_review %}
+    <form method="POST" id="reviewForm">
+        {% csrf_token %}
+        <div class="star-rating mb-3">
+            <span class="star" data-value="1">★</span>
+            <span class="star" data-value="2">★</span>
+            <span class="star" data-value="3">★</span>
+            <span class="star" data-value="4">★</span>
+            <span class="star" data-value="5">★</span>
+        </div>
+
+        <!-- Hidden input (IMPORTANT) -->
+        <input type="hidden" name="rating" id="ratingInput">
+
+        <textarea name="comment" class="form-control mb-2" placeholder="Write your review"></textarea>
+
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+    </form>
+    {% endif %}
+</div>
+
+
+
+
+<div class="review-section mt-5">
+    <h3>Student Reviews</h3>
+    <p>
+        ⭐ Average Rating:
+        <strong>{{ avg_rating|floatformat:1 }}/5</strong>
+        ({{ reviews.count }} reviews)
+    </p>
+
+    <hr>
+
+    <!-- 📝 Reviews List -->
+    {% for review in reviews %}
+    <div class="border rounded p-3 mb-3">
+
+        <div class="d-flex justify-content-between">
+            <strong>{{ review.student.username }}</strong>
+            <small class="text-muted">{{ review.created_at|date:"M d, Y" }}</small>
+        </div>
+
+        <div>
+            {% for i in "12345" %}
+            {% if forloop.counter <= review.rating %} <span style="color: gold;">★</span>
+                {% else %}
+                <span style="color: #ccc;">★</span>
+                {% endif %}
+                {% endfor %}
+        </div>
+
+        <p class="mt-2">{{ review.comment }}</p>
+
+    </div>
+    {% empty %}
+    <p class="text-muted">No reviews yet. Be the first to review!</p>
+    {% endfor %}
+</div>
+
+
+
+
+{% block extra_js %}
+<script src="{% static 'js/course.js' %}"></script>
+{% endblock %}
+
 {% endblock %}

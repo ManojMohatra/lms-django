@@ -1,5 +1,5 @@
 from django import forms
-from .models import Course,Assignment,Submission
+from .models import Course,Assignment,Submission,Review
 
 class CourseForm(forms.ModelForm):
     class Meta:
@@ -23,3 +23,8 @@ class SubmissionForm(forms.ModelForm):
         model = Submission
         fields = ['file']
 
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ["rating", "comment"]

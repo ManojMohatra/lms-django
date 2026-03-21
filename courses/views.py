@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpResponseForbidden
-from .forms import CourseForm,AssignmentForm
-from .models import Course, Enrollment,Module,Lecture,LectureProgress,Assignment,Submission
+from .forms import CourseForm,AssignmentForm,ReviewForm
+from django.db.models import Avg
+from django.db.models.functions import Round
+from .models import Course, Enrollment,Module,Lecture,LectureProgress,Assignment,Submission,Review
 from django.contrib.auth.decorators import login_required
 from discussion.models import Comment
 from django.utils import timezone
@@ -105,6 +107,28 @@ def course_detail(request,course_id):
 
     total_lectures = Lecture.objects.filter(module__course=course).count()
 
+    reviews = course.reviews.all().order_by("-created_at")
+    review_form = ReviewForm()
+    rating_data = course.reviews.aggregate(avg_rating=Avg('rating'),
+                  rounded_rating=Round(Avg('rating')))
+    # average rating
+    avg_rating = rating_data['avg_rating']
+    rounded_rating = rating_data['rounded_rating']
+
+    # prevent multiple reviews
+    user_review = Review.objects.filter(course=course, student=request.user).first()
+
+    if request.method == "POST":
+        if role == "student":
+            if not user_review:
+                form = ReviewForm(request.POST)
+                if form.is_valid():
+                    review = form.save(commit=False)
+                    review.course = course
+                    review.student = request.user
+                    review.save()
+                    return redirect('courses:course_detail', course_id=course.id)
+
     completed_lectures = LectureProgress.objects.filter(
         student=request.user,
         lecture__module__course=course,
@@ -132,7 +156,12 @@ def course_detail(request,course_id):
         "modules":modules,
         "enrolled_students_count":enrolled_students_count,
         "comment_count":comment_count,
-        "progress_percent": progress_percent
+        "progress_percent": progress_percent,
+        "reviews": reviews,
+        "review_form": review_form,
+        "avg_rating": avg_rating,
+        "rounded_rating": rounded_rating,
+        "user_review": user_review,
     })
 
 
