@@ -1,4 +1,4 @@
-from django.db.models import Q
+from django.db.models import Q,Prefetch
 from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpResponseForbidden
 from .forms import CourseForm,AssignmentForm
@@ -171,8 +171,18 @@ def lecture_detail(request, lecture_id):
     
     course = lecture.module.course
     is_teacher = (course.teacher == request.user)
-    assignments = lecture.assignments.all()
-    
+    assignments = lecture.assignments.prefetch_related(
+    Prefetch(
+        "submissions",
+        queryset=Submission.objects.filter(student=request.user),
+        to_attr="student_submissions"
+        )
+    )
+
+
+    for a in assignments:
+        a.user_submission = a.student_submissions[0] if a.student_submissions else None
+
     # Process POST actions
     if request.method == "POST":
         # 1. Handle Student Assignment Upload
@@ -393,3 +403,32 @@ def edit_assignment(request, assignment_id):
         'lecture': lecture,
         'editing': True,       # lets the template show "Edit" vs "Create"
     })
+
+@login_required
+def review_assignment(request,assignment_id):
+    assignment = get_object_or_404(Assignment,id=assignment_id)
+    lecture = assignment.lecture
+    if request.user != lecture.module.course.teacher:
+        return HttpResponseForbiddden()
+    submissions = assignment.submissions.select_related("student").all()
+    return render(request,"courses/review_assignment.html",{
+        "assignment":assignment,
+        "lecture":lecture,
+        "submissions":submissions,
+        })
+
+
+@login_required
+def grade_submission(request, submission_id):
+    submission = get_object_or_404(Submission, id=submission_id)
+    assignment = submission.assignment
+    if request.user != assignment.lecture.module.course.teacher:
+        return HttpResponseForbidden()
+    if request.method == "POST":
+        grade = request.POST.get("grade")
+        feedback = request.POST.get("feedback", "")
+        if grade is not None:
+            submission.grade = int(grade)
+            submission.feedback = feedback
+            submission.save()
+    return redirect("courses:review_assignment", assignment_id=assignment.id)

@@ -150,7 +150,8 @@ class Submission(models.Model):
 
     student = models.ForeignKey(
         User,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="submissions"
         )
     file = models.FileField(upload_to="assignments/")
     submitted_at = models.DateTimeField(auto_now_add=True)

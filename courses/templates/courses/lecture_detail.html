@@ -141,11 +141,24 @@
                         </span>
                     {% endif %}
                 </div>
+		{% if assignment.user_submission.grade is not None %}
+<div class="mt-2">
+    <span class="due-badge" style="background: #dcfce7; color: #166534;">
+        <i class="bi bi-star-fill me-1"></i>
+        Grade: {{ assignment.user_submission.grade }} / {{ assignment.max_points }}
+    </span>
+    {% if assignment.user_submission.feedback %}
+    <p class="text-muted small mt-1 mb-0">
+        <i class="bi bi-chat-left-text me-1"></i> {{ assignment.user_submission.feedback }}
+    </p>
+    {% endif %}
+</div>
+{% endif %}
             </div>
             <div class="assignment-actions">
                 {% if is_teacher %}
 		    <a href="{% url 'courses:edit_assignment' assignment.id %}" class="btn-dir">Edit</a>
-                    <a href="#" class="btn-dir">Review Log</a>
+                    <a href="{% url 'courses:review_assignment' assignment.id %}" class="btn-dir">Review Log</a>
                 {% else %}
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
