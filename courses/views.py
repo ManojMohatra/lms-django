@@ -374,4 +374,22 @@ def create_assignment(request, lecture_id):
         'form':form,
         'lecture':lecture
         })
-            
+     
+@login_required
+def edit_assignment(request, assignment_id):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    lecture = assignment.lecture
+    if request.user != lecture.module.course.teacher:
+        return HttpResponseForbidden()
+    if request.method == "POST":
+        form = AssignmentForm(request.POST, instance=assignment)
+        if form.is_valid():
+            form.save()
+            return redirect("courses:lecture_detail", lecture_id=lecture.id)
+    else:
+        form = AssignmentForm(instance=assignment)
+    return render(request, 'courses/assignment_form.html', {
+        'form': form,
+        'lecture': lecture,
+        'editing': True,       # lets the template show "Edit" vs "Create"
+    })
