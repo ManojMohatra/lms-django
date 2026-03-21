@@ -95,8 +95,9 @@ def unenroll_course(request, course_id):
     if request.method == "POST":
         # 3. Perform the deletion
         enrollment.delete()
-        # 4. Redirect specifically to the course list
-        return redirect("courses:course_list")
+        next_page = request.GET.get("next") or "courses:course_list"
+        return redirect(next_page)
+
 
     # 5. If GET, show the confirmation page
     return render(request, "courses/confirm_unenroll.html", {
