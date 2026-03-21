@@ -120,7 +120,7 @@
             <div class="p-3 mb-3 border rounded-3 bg-light text-center">
                 <p class="mb-1 fw-semibold">You are viewing a preview of this course.</p>
                 <p class="text-muted small mb-2">Enroll to unlock all {{ modules.count }} modules.</p>
-                <a href="{% url 'courses:enroll_course' course.id %}" class="btn-minimal btn-blue">Enroll Now</a>
+                <a href="{% url 'courses:enroll_course' course.id %}?next={{ request.path }}" class="btn-minimal btn-blue">Enroll Now</a>
             </div>
 
             {% with modules.first as preview_module %}
