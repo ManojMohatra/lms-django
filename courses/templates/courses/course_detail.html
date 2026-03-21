@@ -31,22 +31,15 @@
         <h1>{{ course.title }}</h1>
         <p class="course-desc">{{ course.description }}</p>
 
-        <!-- ── New: badges row ─────────────────────────────────────────── -->
         <div class="course-badges">
-
-            <!-- Difficulty -->
             <span class="badge badge-difficulty badge-{{ course.difficulty }}">
                 <i class="bi bi-bar-chart-fill me-1"></i>
                 {{ course.get_difficulty_display }}
             </span>
-
-            <!-- Language -->
             <span class="badge badge-language">
                 <i class="bi bi-translate me-1"></i>
                 {{ course.language }}
             </span>
-
-            <!-- Price -->
             {% if course.is_free %}
                 <span class="badge badge-free">
                     <i class="bi bi-gift me-1"></i> Free
@@ -56,16 +49,12 @@
                     <i class="bi bi-tag me-1"></i> ${{ course.price }}
                 </span>
             {% endif %}
-
-            <!-- Tags -->
             {% for tag in course.tags.all %}
                 <span class="badge badge-tag">
                     <i class="bi bi-hash"></i>{{ tag.name }}
                 </span>
             {% endfor %}
-
         </div>
-        <!-- ─────────────────────────────────────────────────────────────── -->
 
         <div class="course-meta">
             <span>Instructor: <strong>{{ course.teacher.username }}</strong></span>
@@ -88,44 +77,84 @@
     <main class="content-area">
         <h2 class="curriculum-title">Curriculum</h2>
 
-        {% for module in modules %}
-            <section class="module-group">
-                <div class="module-label">
-                    <span>{{ module.title }}</span>
-                    {% if role == "teacher" and course.teacher == request.user %}
-                        <div>
-                            <a href="{% url 'courses:add_lecture' module.id %}" class="edit-text action-text">+ Add Lecture</a>
-                            <a href="{% url 'courses:edit_module' module.id %}" class="edit-text action-text">Edit</a>
-                            <a href="{% url 'courses:delete_module' module.id %}" class="delete-text action-text">Delete Module</a>
-                        </div>
-                    {% endif %}
-                </div>
-
-                <div class="lecture-list">
-                    {% for lecture in module.lectures.all %}
-                    <div class="lecture-item">
-                        <div class="d-flex align-items-center">
-                            <a href="{% url 'courses:lecture_detail' lecture.id %}" class="lecture-link">
-                                <i class="bi bi-play-circle"></i> {{ lecture.title }}
-                            </a>
-                        </div>
+        {% if has_full_access %}
+            {% for module in modules %}
+                <section class="module-group">
+                    <div class="module-label">
+                        <span>{{ module.title }}</span>
                         {% if role == "teacher" and course.teacher == request.user %}
-                        <div class="item-actions">
-                            <a href="{% url 'courses:edit_lecture' lecture.id %}" class="edit-text action-text">Edit</a>
-                            <a href="{% url 'courses:delete_lecture' lecture.id %}" class="delete-text action-text">Delete</a>
-                        </div>
+                            <div>
+                                <a href="{% url 'courses:add_lecture' module.id %}" class="edit-text action-text">+ Add Lecture</a>
+                                <a href="{% url 'courses:edit_module' module.id %}" class="edit-text action-text">Edit</a>
+                                <a href="{% url 'courses:delete_module' module.id %}" class="delete-text action-text">Delete Module</a>
+                            </div>
                         {% endif %}
                     </div>
-                    {% empty %}
-                    <div class="p-3 text-center text-muted small">No lectures added yet.</div>
-                    {% endfor %}
+                    <div class="lecture-list">
+                        {% for lecture in module.lectures.all %}
+                        <div class="lecture-item">
+                            <div class="d-flex align-items-center">
+                                <a href="{% url 'courses:lecture_detail' lecture.id %}" class="lecture-link">
+                                    <i class="bi bi-play-circle"></i> {{ lecture.title }}
+                                </a>
+                            </div>
+                            {% if role == "teacher" and course.teacher == request.user %}
+                            <div class="item-actions">
+                                <a href="{% url 'courses:edit_lecture' lecture.id %}" class="edit-text action-text">Edit</a>
+                                <a href="{% url 'courses:delete_lecture' lecture.id %}" class="delete-text action-text">Delete</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% empty %}
+                        <div class="p-3 text-center text-muted small">No lectures added yet.</div>
+                        {% endfor %}
+                    </div>
+                </section>
+            {% empty %}
+                <div class="p-5 text-center border rounded">
+                    <p class="text-muted">This course curriculum is currently empty.</p>
+                </div>
+            {% endfor %}
+
+        {% else %}
+            <div class="p-3 mb-3 border rounded-3 bg-light text-center">
+                <p class="mb-1 fw-semibold">You are viewing a preview of this course.</p>
+                <p class="text-muted small mb-2">Enroll to unlock all {{ modules.count }} modules.</p>
+                <a href="{% url 'courses:enroll_course' course.id %}" class="btn-minimal btn-blue">Enroll Now</a>
+            </div>
+
+            {% with modules.first as preview_module %}
+            {% if preview_module %}
+            <section class="module-group mt-4"  style="opacity: 0.85;">
+                <div class="module-label">
+                    <span>{{ preview_module.title }} <span class="text-muted small">(Preview)</span></span>
+                </div>
+                <div class="lecture-list">
+                    {% with preview_module.lectures.first as preview_lecture %}
+                    {% if preview_lecture %}
+                    <div class="lecture-item">
+                        <div class="d-flex align-items-center">
+                            <span class="lecture-link" style="cursor: default;">
+                                <i class="bi bi-play-circle"></i> {{ preview_lecture.title }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endwith %}
                 </div>
             </section>
-        {% empty %}
-            <div class="p-5 text-center border rounded">
-                <p class="text-muted">This course curriculum is currently empty.</p>
-            </div>
-        {% endfor %}
+
+            {% for module in modules %}
+            {% if not forloop.first %}
+            <section class="module-group" style="filter: blur(3px); pointer-events: none; user-select: none;">
+                <div class="module-label"><span>{{ module.title }}</span></div>
+            </section>
+            {% endif %}
+            {% endfor %}
+
+            {% endif %}
+            {% endwith %}
+        {% endif %}
     </main>
 
     <div class="discussion-box">

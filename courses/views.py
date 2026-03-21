@@ -137,26 +137,21 @@ def course_detail(request,course_id):
     progress_percent = 0
     if total_lectures > 0:
         progress_percent = int((completed_lectures / total_lectures) * 100)
-        
-    if role == "student":
-        if not Enrollment.objects.filter(student=request.user,course=course).exists():
-            return HttpResponseForbidden("You are not enrolled in this course.")
-    elif role == "teacher":
-        if course.teacher != request.user:
-            return HttpResponseForbidden("You can only view your own courses.")
-    else:
-        #Maybe something for admin later
-        pass
-    #Basic info for enrollment count
-    enrolled_students_count = course.enrollments.count()
+    is_teacher = role == "teacher" and course.teacher == request.user
+    is_enrolled = Enrollment.objects.filter(student=request.user,course=course).exists()
+    has_full_access = is_teacher or is_enrolled
+
+    if role == "teacher" and not is_teacher:
+        has_full_access = False
 
     return render(request,"courses/course_detail.html",{
         "course":course,
         "role":role,
         "modules":modules,
-        "enrolled_students_count":enrolled_students_count,
+        "enrolled_students_count":course.enrollments.count(),
         "comment_count":comment_count,
-        "progress_percent": progress_percent
+        "progress_percent": progress_percent,
+        "has_full_access": has_full_access,
     })
 
 
