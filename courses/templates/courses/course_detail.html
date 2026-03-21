@@ -35,20 +35,20 @@
 
         <div class="course-badges">
             <span class="badge badge-difficulty badge-{{ course.difficulty }}">
-                <i class="bi bi-bar-chart-fill me-1"></i>
+                <i class="bi bi-bar-chart-fill"></i>
                 {{ course.get_difficulty_display }}
             </span>
             <span class="badge badge-language">
-                <i class="bi bi-translate me-1"></i>
+                <i class="bi bi-translate"></i>
                 {{ course.language }}
             </span>
             {% if course.is_free %}
                 <span class="badge badge-free">
-                    <i class="bi bi-gift me-1"></i> Free
+                    <i class="bi bi-gift"></i> Free
                 </span>
             {% else %}
                 <span class="badge badge-paid">
-                    <i class="bi bi-tag me-1"></i> ${{ course.price }}
+                    <i class="bi bi-tag"></i> ${{ course.price }}
                 </span>
             {% endif %}
             {% for tag in course.tags.all %}
@@ -58,23 +58,25 @@
             {% endfor %}
         </div>
 
-
         <div class="course-meta">
             <span>Instructor: <strong>{{ course.teacher.username }}</strong></span>
             <span>Enrolled: <strong>{{ enrolled_students_count }} students</strong></span>
-            
-            <span>
+            <span style="display:inline-flex; align-items:center; gap:4px;">
                 Rating:
-                <div class="star-display">
+                <span class="star-display">
                     {% for i in "12345" %}
-                    {% if forloop.counter <= rounded_rating|default:0 %} <span class="filled">★
+                        {% if forloop.counter <= rounded_rating|default:0 %}
+                            <span class="filled">★</span>
+                        {% else %}
+                            <span class="empty">★</span>
+                        {% endif %}
+                    {% endfor %}
+                </span>
+                <strong style="margin-left:2px;">{{ avg_rating|floatformat:1 }}</strong>
             </span>
-            {% else %}
-            <span class="empty">★</span>
-            {% endif %}
-            {% endfor %}
         </div>
-        {% if role == "student" %}
+
+        {% if role == "student" and is_enrolled %}
         <div class="progress-section">
             <div class="progress-text">
                 <span>Completion</span>
@@ -83,8 +85,13 @@
             <div class="progress-track">
                 <div class="progress-fill" style="width: {{ progress_percent }}%;"></div>
             </div>
+            <a href="{% url 'courses:unenroll_course' course.id %}?next={{ request.path }}"
+               class="unenroll-link">
+                Unenroll from course
+            </a>
         </div>
         {% endif %}
+
     </header>
 
     <main class="content-area">
@@ -130,17 +137,17 @@
             {% endfor %}
 
         {% else %}
-	{% if role != "teacher" %}
+            {% if role != "teacher" %}
             <div class="p-3 mb-3 border rounded-3 bg-light text-center">
                 <p class="mb-1 fw-semibold">You are viewing a preview of this course.</p>
                 <p class="text-muted small mb-2">Enroll to unlock all {{ modules.count }} modules.</p>
                 <a href="{% url 'courses:enroll_course' course.id %}?next={{ request.path }}" class="btn-minimal btn-blue">Enroll Now</a>
             </div>
-	{% endif %}
+            {% endif %}
 
             {% with modules.first as preview_module %}
             {% if preview_module %}
-            <section class="module-group mt-4"  style="opacity: 0.85;">
+            <section class="module-group mt-4" style="opacity: 0.85;">
                 <div class="module-label">
                     <span>{{ preview_module.title }} <span class="text-muted small">(Preview)</span></span>
                 </div>
@@ -180,156 +187,62 @@
         </a>
     </div>
 
-    <footer class="mt-5 pt-4 border-top d-flex justify-content-between">
-        {% if role == "student" %}
-        <a href="{% url 'courses:unenroll_course' course.id %}?next={{ request.path }}" class="delete-text action-text" style="margin:0">
-            Unenroll from course
-        </a>
-        {% endif %}
-    </footer>
-</div>
-
-{% if role == "student" %}
-<div class="progress-section">
-    <div class="progress-text">
-        <span>Completion</span>
-        <span>{{ progress_percent }}%</span>
-    </div>
-    <div class="progress-track">
-        <div class="progress-fill" style="width: {{ progress_percent }}%;"></div>
-    </div>
-</div>
-{% endif %}
-</header>
-
-<main class="content-area">
-    <h2 class="curriculum-title">Curriculum</h2>
-
-    {% for module in modules %}
-    <section class="module-group">
-        <div class="module-label">
-            <span>{{ module.title }}</span>
-            {% if role == "teacher" and course.teacher == request.user %}
-            <div>
-                <a href="{% url 'courses:add_lecture' module.id %}" class="edit-text action-text">+ Add Lecture</a>
-                <a href="{% url 'courses:edit_module' module.id %}" class="edit-text action-text">Edit</a>
-                <a href="{% url 'courses:delete_module' module.id %}" class="delete-text action-text">Delete Module</a>
-            </div>
-            {% endif %}
-        </div>
-
-        <div class="lecture-list">
-            {% for lecture in module.lectures.all %}
-            <div class="lecture-item">
-                <div class="d-flex align-items-center">
-                    <a href="{% url 'courses:lecture_detail' lecture.id %}" class="lecture-link">
-                        <i class="bi bi-play-circle"></i> {{ lecture.title }}
-                    </a>
-                </div>
-
-                {% if role == "teacher" and course.teacher == request.user %}
-                <div class="item-actions">
-                    <a href="{% url 'courses:edit_lecture' lecture.id %}" class="edit-text action-text">Edit</a>
-                    <a href="{% url 'courses:delete_lecture' lecture.id %}" class="delete-text action-text">Delete</a>
-                </div>
-                {% endif %}
-            </div>
-            {% empty %}
-            <div class="p-3 text-center text-muted small">No lectures added yet.</div>
-            {% endfor %}
-        </div>
-    </section>
-    {% empty %}
-    <div class="p-5 text-center border rounded">
-        <p class="text-muted">This course curriculum is currently empty.</p>
-    </div>
-    {% endfor %}
-</main>
-
-<div class="discussion-box">
-    <h4 class="fw-bold mb-2">Discussion Board</h4>
-    <p class="text-muted small mb-3">Have a question? Join the {{ comment_count }} comments in the course community.</p>
-    <a href="{% url 'discussion:course_discussion' course.id %}" class="btn-minimal btn-dark px-4 py-2">
-        Open Discussion
-    </a>
-</div>
-
-<footer class="mt-5 pt-4 border-top d-flex justify-content-between">
-    {% if role == "student" %}
-    <a href="{% url 'courses:unenroll_course' course.id %}?next={{ request.path }}" class="delete-text action-text"
-        style="margin:0">
-        Unenroll from course
-    </a>
-    {% endif %}
-</footer>
-</div>
 
 
-<!-- review part -->
-<div class="review-section mt-5">
-    <!-- <h3>Course Reviews</h3> -->
+    <!-- ── Leave a review (students who haven't reviewed yet) ── -->
     {% if role == "student" and not user_review %}
-    <form method="POST" id="reviewForm">
-        {% csrf_token %}
-        <div class="star-rating mb-3">
-            <span class="star" data-value="1">★</span>
-            <span class="star" data-value="2">★</span>
-            <span class="star" data-value="3">★</span>
-            <span class="star" data-value="4">★</span>
-            <span class="star" data-value="5">★</span>
+    <div class="review-section">
+        <p class="section-title">Leave a Review</p>
+        <div class="review-form-wrap">
+            <p class="review-form-label">Your Rating</p>
+            <form method="POST" id="reviewForm">
+                {% csrf_token %}
+                <div class="star-rating mb-3">
+                    <span class="star" data-value="1">★</span>
+                    <span class="star" data-value="2">★</span>
+                    <span class="star" data-value="3">★</span>
+                    <span class="star" data-value="4">★</span>
+                    <span class="star" data-value="5">★</span>
+                </div>
+                <input type="hidden" name="rating" id="ratingInput">
+                <textarea name="comment" rows="3" placeholder="Share what you thought about this course…"></textarea>
+                <button type="submit" class="btn-submit">Submit Review</button>
+            </form>
         </div>
-
-        <!-- Hidden input (IMPORTANT) -->
-        <input type="hidden" name="rating" id="ratingInput">
-
-        <textarea name="comment" class="form-control mb-2" placeholder="Write your review"></textarea>
-
-        <button type="submit" class="btn btn-primary">Submit Review</button>
-    </form>
-    {% endif %}
-</div>
-
-
-
-
-<div class="review-section mt-5">
-    <h3>Student Reviews</h3>
-    <p>
-        ⭐ Average Rating:
-        <strong>{{ avg_rating|floatformat:1 }}/5</strong>
-        ({{ reviews.count }} reviews)
-    </p>
-
-    <hr>
-
-    <!-- 📝 Reviews List -->
-    {% for review in reviews %}
-    <div class="border rounded p-3 mb-3">
-
-        <div class="d-flex justify-content-between">
-            <strong>{{ review.student.username }}</strong>
-            <small class="text-muted">{{ review.created_at|date:"M d, Y" }}</small>
-        </div>
-
-        <div>
-            {% for i in "12345" %}
-            {% if forloop.counter <= review.rating %} <span style="color: gold;">★</span>
-                {% else %}
-                <span style="color: #ccc;">★</span>
-                {% endif %}
-                {% endfor %}
-        </div>
-
-        <p class="mt-2">{{ review.comment }}</p>
-
     </div>
-    {% empty %}
-    <p class="text-muted">No reviews yet. Be the first to review!</p>
-    {% endfor %}
+    {% endif %}
+
+    <!-- ── Student Reviews list ── -->
+    <div class="review-section">
+        <p class="section-title">Student Reviews</p>
+        <p class="review-summary">
+            Average rating: <strong>{{ avg_rating|floatformat:1 }} / 5</strong>
+            &nbsp;·&nbsp; {{ reviews.count }} review{{ reviews.count|pluralize }}
+        </p>
+
+        {% for review in reviews %}
+        <div class="review-card">
+            <div class="review-card-header">
+                <span class="review-author">{{ review.student.username }}</span>
+                <span class="review-date">{{ review.created_at|date:"M d, Y" }}</span>
+            </div>
+            <div class="review-stars">
+                {% for i in "12345" %}
+                    {% if forloop.counter <= review.rating %}
+                        <span class="star-filled">★</span>
+                    {% else %}
+                        <span class="star-empty">★</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <p class="review-comment">{{ review.comment }}</p>
+        </div>
+        {% empty %}
+        <p class="empty-state">No reviews yet. Be the first to share your thoughts!</p>
+        {% endfor %}
+    </div>
+
 </div>
-
-
-
 
 {% block extra_js %}
 <script src="{% static 'js/course.js' %}"></script>

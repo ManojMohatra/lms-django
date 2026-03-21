@@ -181,6 +181,7 @@ def course_detail(request,course_id):
         "avg_rating": avg_rating,
         "rounded_rating": rounded_rating,
         "user_review": user_review,
+        "is_enrolled": is_enrolled,
     })
 
 
