@@ -1,6 +1,5 @@
 from django import forms
-from .models import Course, Assignment, Submission, Tag
-
+from .models import Course, Assignment, Submission, Tag,Review
 
 class CourseForm(forms.ModelForm):
     tags = forms.ModelMultipleChoiceField(
@@ -46,3 +45,9 @@ class SubmissionForm(forms.ModelForm):
     class Meta:
         model  = Submission
         fields = ["file"]
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ["rating", "comment"]

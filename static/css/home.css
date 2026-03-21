@@ -292,3 +292,17 @@
     justify-content: center;
     color: #94a3b8;
 }
+
+/* Star display */
+.star-display {
+    font-size: 18px;
+    margin-top: 5px;
+}
+
+.star-display .filled {
+    color: gold;
+}
+
+.star-display .empty {
+    color: #ccc;
+}

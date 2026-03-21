@@ -164,3 +164,15 @@ class Submission(models.Model):
         return f"{self.student.username} - {self.assignment.title}"
 
     
+class Review(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="reviews")
+    student = models.ForeignKey(User, on_delete=models.CASCADE)  
+    rating = models.IntegerField()  # 1 to 5
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('course', 'student')  # one review per student
+
+    def __str__(self):
+        return f"{self.student.username} - {self.course.title}"
