@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Grading: {{ submission.student.username }}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/lecture.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+        <div>
+            <h1 class="h3 mb-0">Grade Submission</h1>
+            <p class="text-muted mb-0">
+                Student: <span class="badge bg-secondary">{{ submission.student.username }}</span> |
+                Quiz: <strong>{{ submission.quiz.title }}</strong>
+            </p>
+        </div>
+        <a href="{% url 'quiz:manage_results' submission.quiz.id %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Results
+        </a>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {% for ans in para_answers %}
+        <div class="card mb-5 shadow-sm border-0">
+            <div class="card-header bg-dark text-white p-3">
+                <h5 class="mb-0 fs-6">Question {{ forloop.counter }}: {{ ans.question.text }}</h5>
+            </div>
+
+            <div class="card-body bg-light p-4">
+                <div class="row">
+                    <div class="col-md-7 border-end">
+                        <h6 class="text-uppercase text-muted small fw-bold mb-3 text-primary">Student's Response:</h6>
+                        <div class="p-3 border rounded bg-white shadow-sm"
+                            style="white-space: pre-wrap; min-height: 100px;">
+                            {{ ans.answer_text|default:"[No answer provided]" }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-5 ps-4">
+                        {% if ans.question.correct_answer %}
+                        <div class="mb-4">
+                            <h6 class="text-uppercase text-muted small fw-bold mb-2 text-success">Reference / Model
+                                Answer:</h6>
+                            <div class="p-2 border rounded bg-success-subtle small italic">
+                                {{ ans.question.correct_answer }}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <label for="points_{{ ans.id }}" class="form-label fw-bold text-dark">
+                            <i class="bi bi-star-fill text-warning me-1"></i> Assign Score
+                        </label>
+                        <div class="input-group input-group-lg">
+                            <input type="number" name="points_{{ ans.id }}" id="points_{{ ans.id }}"
+                                class="form-control" value="{{ ans.points_earned|default:0 }}" min="0"
+                                max="{{ ans.question.max_points }}" step="1" required>
+                            <span class="input-group-text bg-white fw-bold">/ {{ ans.question.max_points }}</span>
+                        </div>
+                        <div class="form-text mt-2 text-muted italic">Max allowed: {{ ans.question.max_points }} points.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-info shadow-sm p-4 text-center">
+            <i class="bi bi-info-circle fs-3 d-block mb-2"></i>
+            This quiz only contained MCQs, which have been automatically graded.
+            <br>
+            <strong>Current Score: {{ submission.score }}</strong>
+        </div>
+        {% endfor %}
+
+        <div class="d-flex justify-content-end gap-3 mb-5 pt-4 border-top">
+            <a href="{% url 'quiz:manage_results' submission.quiz.id %}" class="btn btn-light btn-lg px-4">Cancel</a>
+            <button type="submit" class="btn btn-success btn-lg px-5 shadow">
+                <i class="bi bi-check-circle-fill me-2"></i>Save & Finalize Grade
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

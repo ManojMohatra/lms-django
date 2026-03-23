@@ -17,55 +17,70 @@
     <div class="quiz-header">
         <span class="dir-label">Unit Assessment</span>
         <h1 class="dir-title">{{ quiz.title }}</h1>
+
+        {% if is_teacher %}
+        <div class="alert alert-warning border-0 shadow-sm">
+            <i class="bi bi-shield-lock-fill me-2"></i>
+            <strong>Teacher Preview:</strong> You can view the questions, but you cannot submit answers.
+        </div>
+        {% endif %}
+
         {% if quiz.description %}
-            <p class="quiz-description">{{ quiz.description }}</p>
+        <p class="quiz-description">{{ quiz.description }}</p>
         {% endif %}
     </div>
 
     <form method="post" class="quiz-form">
         {% csrf_token %}
-        
+
         {% for question in quiz.questions.all %}
-            <div class="question-card">
-                <div class="question-header">
+        <div class="question-card">
+            <div class="question-header d-flex justify-content-between align-items-center">
+                <div>
                     <span class="question-number">#{{ forloop.counter }}</span>
-                    <h3 class="question-text">{{ question.text }}</h3>
+                    <h3 class="question-text d-inline ms-2">{{ question.text }}</h3>
                 </div>
-                
-                {% if question.question_type == "MCQ" %}
-                    <div class="mcq-options">
-                        <label class="mcq-option">
-                            <input type="radio" name="q_{{ question.id }}" value="1" required>
-                            <span class="option-label">{{ question.option_1 }}</span>
-                        </label>
-                        <label class="mcq-option">
-                            <input type="radio" name="q_{{ question.id }}" value="2">
-                            <span class="option-label">{{ question.option_2 }}</span>
-                        </label>
-                        <label class="mcq-option">
-                            <input type="radio" name="q_{{ question.id }}" value="3">
-                            <span class="option-label">{{ question.option_3 }}</span>
-                        </label>
-                        <label class="mcq-option">
-                            <input type="radio" name="q_{{ question.id }}" value="4">
-                            <span class="option-label">{{ question.option_4 }}</span>
-                        </label>
-                    </div>
-                {% else %}
-                    <div class="paragraph-answer">
-                        <textarea name="q_{{ question.id }}" 
-                                  class="answer-textarea" 
-                                  placeholder="Type your answer here..." 
-                                  required></textarea>
-                    </div>
-                {% endif %}
+                <span class="badge rounded-pill bg-light text-dark border fw-normal" style="font-size: 0.8rem;">
+                    {{ question.max_points }} Marks
+                </span>
             </div>
+
+            {% if question.question_type == "MCQ" %}
+            <div class="mcq-options">
+                <label class="mcq-option">
+                    <input type="radio" name="q_{{ question.id }}" value="1" required>
+                    <span class="option-label">{{ question.option_1 }}</span>
+                </label>
+                <label class="mcq-option">
+                    <input type="radio" name="q_{{ question.id }}" value="2">
+                    <span class="option-label">{{ question.option_2 }}</span>
+                </label>
+                <label class="mcq-option">
+                    <input type="radio" name="q_{{ question.id }}" value="3">
+                    <span class="option-label">{{ question.option_3 }}</span>
+                </label>
+                <label class="mcq-option">
+                    <input type="radio" name="q_{{ question.id }}" value="4">
+                    <span class="option-label">{{ question.option_4 }}</span>
+                </label>
+            </div>
+            {% else %}
+            <div class="paragraph-answer">
+                <textarea name="q_{{ question.id }}" class="answer-textarea" placeholder="Type your answer here..."
+                    required></textarea>
+            </div>
+            {% endif %}
+        </div>
         {% endfor %}
-        
+
         <div class="quiz-actions">
+            {% if not is_teacher %}
             <button type="submit" class="btn-dir btn-dir-dark">
                 <i class="bi bi-check-lg me-1"></i> Submit Assessment
             </button>
+            {% else %}
+            <span class="text-muted small"><i class="bi bi-info-circle"></i> Submission disabled for teachers</span>
+            {% endif %}
             <a href="{% url 'courses:lecture_detail' quiz.lecture.id %}" class="btn-dir">
                 Cancel
             </a>
@@ -74,167 +89,176 @@
 </div>
 
 <style>
-.quiz-header {
-    margin-bottom: 2.5rem;
-}
-
-.quiz-description {
-    font-size: 0.95rem;
-    color: #64748b;
-    line-height: 1.6;
-    margin-top: 0.5rem;
-}
-
-.quiz-form {
-    margin-top: 2rem;
-}
-
-.question-card {
-    background: #fff;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 1.75rem;
-    margin-bottom: 1.5rem;
-}
-
-.question-header {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-.question-number {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #cbd5e1;
-    min-width: 40px;
-}
-
-.question-text {
-    font-size: 1rem;
-    font-weight: 600;
-    line-height: 1.5;
-    margin: 0;
-    color: var(--text-main);
-}
-
-/* MCQ Options */
-.mcq-options {
-    display: flex;
-    flex-direction: column;
-    gap: 0.875rem;
-    margin-left: 3rem;
-}
-
-.mcq-option {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.875rem 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    background: #fff;
-}
-
-.mcq-option:hover {
-    background: #f8fafc;
-    border-color: #94a3b8;
-}
-
-.mcq-option input[type="radio"] {
-    cursor: pointer;
-    width: 18px;
-    height: 18px;
-    margin: 0;
-}
-
-.mcq-option input[type="radio"]:checked + .option-label {
-    font-weight: 600;
-    color: var(--text-main);
-}
-
-.mcq-option:has(input[type="radio"]:checked) {
-    background: #f1f5f9;
-    border-color: var(--text-main);
-}
-
-.option-label {
-    flex: 1;
-    font-size: 0.9rem;
-    color: #475569;
-    line-height: 1.5;
-}
-
-/* Paragraph Answer */
-.paragraph-answer {
-    margin-left: 3rem;
-}
-
-.answer-textarea {
-    width: 100%;
-    min-height: 150px;
-    padding: 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 0.9rem;
-    line-height: 1.6;
-    resize: vertical;
-    transition: border-color 0.2s ease;
-}
-
-.answer-textarea:focus {
-    outline: none;
-    border-color: var(--text-main);
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
-}
-
-.answer-textarea::placeholder {
-    color: #94a3b8;
-}
-
-/* Quiz Actions */
-.quiz-actions {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    margin-top: 2.5rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--border-color);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .question-header {
-        flex-direction: column;
-        gap: 0.5rem;
+    .quiz-header {
+        margin-bottom: 2.5rem;
     }
-    
-    .question-number {
-        font-size: 1rem;
+
+    .quiz-description {
+        font-size: 0.95rem;
+        color: #64748b;
+        line-height: 1.6;
+        margin-top: 0.5rem;
     }
-    
-    .mcq-options,
-    .paragraph-answer {
-        margin-left: 0;
+
+    .quiz-form {
+        margin-top: 2rem;
     }
-    
+
     .question-card {
-        padding: 1.25rem;
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 1.75rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        margin-bottom: 1.5rem;
     }
-    
-    .quiz-actions {
+
+    .question-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+
+    .question-header .badge {
+        white-space: nowrap;
+        color: #6c757d !important;
+        background-color: #f8f9fa !important;
+        border: 1px solid #dee2e6 !important;
+        padding: 5px 12px;
+    }
+
+    .question-number {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #cbd5e1;
+        min-width: 40px;
+    }
+
+    .question-text {
+        font-size: 1rem;
+        font-weight: 600;
+        line-height: 1.5;
+        margin: 0;
+        color: var(--text-main);
+    }
+
+    /* MCQ Options */
+    .mcq-options {
+        display: flex;
         flex-direction: column;
-        align-items: stretch;
+        gap: 0.875rem;
+        margin-left: 3rem;
     }
-    
-    .quiz-actions .btn-dir {
+
+    .mcq-option {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.875rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: #fff;
+    }
+
+    .mcq-option:hover {
+        background: #f8fafc;
+        border-color: #94a3b8;
+    }
+
+    .mcq-option input[type="radio"] {
+        cursor: pointer;
+        width: 18px;
+        height: 18px;
+        margin: 0;
+    }
+
+    .mcq-option input[type="radio"]:checked+.option-label {
+        font-weight: 600;
+        color: var(--text-main);
+    }
+
+    .mcq-option:has(input[type="radio"]:checked) {
+        background: #f1f5f9;
+        border-color: var(--text-main);
+    }
+
+    .option-label {
+        flex: 1;
+        font-size: 0.9rem;
+        color: #475569;
+        line-height: 1.5;
+    }
+
+    /* Paragraph Answer */
+    .paragraph-answer {
+        margin-left: 3rem;
+    }
+
+    .answer-textarea {
         width: 100%;
-        text-align: center;
+        min-height: 150px;
+        padding: 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        font-family: inherit;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        resize: vertical;
+        transition: border-color 0.2s ease;
     }
-}
+
+    .answer-textarea:focus {
+        outline: none;
+        border-color: var(--text-main);
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .answer-textarea::placeholder {
+        color: #94a3b8;
+    }
+
+    /* Quiz Actions */
+    .quiz-actions {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        margin-top: 2.5rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .question-header {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .question-number {
+            font-size: 1rem;
+        }
+
+        .mcq-options,
+        .paragraph-answer {
+            margin-left: 0;
+        }
+
+        .question-card {
+            padding: 1.25rem;
+        }
+
+        .quiz-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .quiz-actions .btn-dir {
+            width: 100%;
+            text-align: center;
+        }
+    }
 </style>
 {% endblock %}

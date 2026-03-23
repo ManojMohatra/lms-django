@@ -75,7 +75,7 @@
             <div class="resource-box">
                 {% for quiz in lecture.quizzes.all %}
                 <div class="resource-item">
-                    <a href="{% url 'quiz:take_quiz' quiz.id %}" class="text-decoration-none fw-semibold small" style="color: var(--dir-accent);">
+                    <a href="{% url 'quiz:submit_quiz' quiz.id %}" class="text-decoration-none fw-semibold small" style="color: var(--dir-accent);">
                         <i class="bi bi-patch-question-fill me-1"></i> {{ quiz.title }}
                     </a>
                     {% if is_teacher %}
