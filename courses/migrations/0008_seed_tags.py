@@ -27,7 +27,7 @@ def unseed_tags(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("courses", "0001_initial"),  # ← change this to your latest migration
+        ("courses", "0007_tag_course_difficulty_course_is_free_course_language_and_more"),  # ← change this to your latest migration
     ]
 
     operations = [

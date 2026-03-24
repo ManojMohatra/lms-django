@@ -8,4 +8,3 @@ admin.site.register(Lecture)
 admin.site.register(Tag)
 
 
-
