@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from courses.models import Lecture
+from django.db.models import Sum
 
 class Quiz(models.Model):
     lecture = models.ForeignKey(Lecture, on_delete=models.CASCADE, related_name="quizzes",null=True, blank=True)
@@ -13,6 +14,9 @@ class Quiz(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.lecture.title}"
+    @property
+    def total_points(self):
+        return self.questions.aggregate(total=Sum('max_points'))['total'] or 0
 
 class Question(models.Model):
     QUESTION_TYPES = (
@@ -22,6 +26,7 @@ class Question(models.Model):
     
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="questions")
     text = models.TextField()
+    max_points = models.IntegerField(default=1)
     question_type = models.CharField(max_length=4, choices=QUESTION_TYPES)
     
     # MCQ Fields: Nullable to accommodate Paragraph questions
@@ -39,8 +44,20 @@ class Question(models.Model):
 class QuizSubmission(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
-    score = models.IntegerField()
+    score = models.IntegerField(default=0)
+    is_graded = models.BooleanField(default=False)
     submitted_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.student.username} - {self.quiz.title} ({self.score})"
+    
+
+class StudentAnswer(models.Model):
+    submission = models.ForeignKey(QuizSubmission, on_delete=models.CASCADE, related_name="answers")
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    answer_text = models.TextField()
+    points_earned = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"Answer by {self.submission.student.username} to {self.question.text[:20]}"
+    

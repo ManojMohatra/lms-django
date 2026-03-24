@@ -29,13 +29,10 @@
 
         <form method="post" class="question-form">
             {% csrf_token %}
-            
+
             <div class="form-group">
                 <label class="form-label">Question Type</label>
-                <select name="type" 
-                        id="qType" 
-                        class="form-select" 
-                        onchange="toggleFields()">
+                <select name="type" id="qType" class="form-select" onchange="toggleFields()">
                     <option value="MCQ">Multiple Choice (4 Options)</option>
                     <option value="PARA">Paragraph / Open Ended</option>
                 </select>
@@ -43,52 +40,38 @@
 
             <div class="form-group">
                 <label class="form-label">Question Text</label>
-                <textarea name="text" 
-                          class="form-textarea" 
-                          rows="3"
-                          placeholder="Enter your question here..."
-                          required></textarea>
+                <textarea name="text" class="form-textarea" rows="3" placeholder="Enter your question here..."
+                    required></textarea>
+            </div>
+            <div class="form-group mb-4">
+                <label class="form-label">Points for this Question</label>
+                <div class="d-flex align-items-center">
+                    <input type="number" name="max_points" class="form-input-small" value="1" min="1"
+                        style="width: 100px;" required>
+                    <span class="ms-2 text-muted small">Points awarded for a correct answer.</span>
+                </div>
             </div>
 
             <div id="mcq-section" class="mcq-section">
                 <label class="form-label">Answer Options</label>
                 <div class="options-grid">
-                    <input type="text" 
-                           name="opt1" 
-                           class="form-input" 
-                           placeholder="Option 1">
-                    <input type="text" 
-                           name="opt2" 
-                           class="form-input" 
-                           placeholder="Option 2">
-                    <input type="text" 
-                           name="opt3" 
-                           class="form-input" 
-                           placeholder="Option 3">
-                    <input type="text" 
-                           name="opt4" 
-                           class="form-input" 
-                           placeholder="Option 4">
+                    <input type="text" name="opt1" class="form-input" placeholder="Option 1">
+                    <input type="text" name="opt2" class="form-input" placeholder="Option 2">
+                    <input type="text" name="opt3" class="form-input" placeholder="Option 3">
+                    <input type="text" name="opt4" class="form-input" placeholder="Option 4">
                 </div>
-                
+
                 <div class="form-group" style="margin-top: 1.5rem;">
                     <label class="form-label">Correct Option Number</label>
-                    <input type="number" 
-                           name="correct" 
-                           min="1" 
-                           max="4" 
-                           class="form-input-small" 
-                           placeholder="1-4">
+                    <input type="number" name="correct" min="1" max="4" class="form-input-small" placeholder="1-4">
                 </div>
             </div>
 
             <div id="para-section" class="para-section" style="display: none;">
                 <div class="form-group">
                     <label class="form-label">Answer Key / Reference</label>
-                    <textarea name="correct" 
-                              class="form-textarea" 
-                              rows="4"
-                              placeholder="Enter keywords or a model answer for reference..."></textarea>
+                    <textarea name="correct" class="form-textarea" rows="4"
+                        placeholder="Enter keywords or a model answer for reference..."></textarea>
                 </div>
             </div>
 
@@ -105,218 +88,218 @@
 </div>
 
 <style>
-.question-count-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.5rem 1rem;
-    background: #f1f5f9;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--text-main);
-}
+    .question-count-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        background: #f1f5f9;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-main);
+    }
 
-.quiz-questions-container {
-    max-width: 700px;
-    margin: 0 auto;
-}
+    .quiz-questions-container {
+        max-width: 700px;
+        margin: 0 auto;
+    }
 
-.quiz-questions-header {
-    margin-bottom: 2.5rem;
-}
+    .quiz-questions-header {
+        margin-bottom: 2.5rem;
+    }
 
-.quiz-questions-subtitle {
-    font-size: 0.95rem;
-    color: #64748b;
-    margin-top: 0.5rem;
-}
+    .quiz-questions-subtitle {
+        font-size: 0.95rem;
+        color: #64748b;
+        margin-top: 0.5rem;
+    }
 
-.quiz-questions-subtitle strong {
-    color: var(--text-main);
-    font-weight: 600;
-}
+    .quiz-questions-subtitle strong {
+        color: var(--text-main);
+        font-weight: 600;
+    }
 
-/* Question Form */
-.question-form {
-    background: #fff;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 2rem;
-}
-
-.form-group {
-    margin-bottom: 1.75rem;
-}
-
-.form-label {
-    display: block;
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--text-muted);
-    margin-bottom: 0.5rem;
-}
-
-.form-input,
-.form-textarea,
-.form-select {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 0.9rem;
-    transition: border-color 0.2s ease;
-    background: white;
-}
-
-.form-input:focus,
-.form-textarea:focus,
-.form-select:focus {
-    outline: none;
-    border-color: var(--text-main);
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
-}
-
-.form-input::placeholder,
-.form-textarea::placeholder {
-    color: #94a3b8;
-}
-
-.form-textarea {
-    resize: vertical;
-    line-height: 1.6;
-}
-
-.form-select {
-    cursor: pointer;
-}
-
-.form-input-small {
-    width: 120px;
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 0.9rem;
-    transition: border-color 0.2s ease;
-}
-
-.form-input-small:focus {
-    outline: none;
-    border-color: var(--text-main);
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
-}
-
-/* MCQ Section */
-.mcq-section {
-    padding: 1.5rem;
-    background: #f8fafc;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    margin-bottom: 1.75rem;
-}
-
-.options-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-}
-
-/* Para Section */
-.para-section {
-    padding: 1.5rem;
-    background: #f8fafc;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    margin-bottom: 1.75rem;
-}
-
-.para-section .form-group {
-    margin-bottom: 0;
-}
-
-/* Form Actions */
-.form-actions {
-    display: flex;
-    gap: 1rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border-color);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
+    /* Question Form */
     .question-form {
-        padding: 1.5rem;
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 2rem;
     }
-    
-    .options-grid {
-        grid-template-columns: 1fr;
+
+    .form-group {
+        margin-bottom: 1.75rem;
     }
-    
-    .form-actions {
-        flex-direction: column;
+
+    .form-label {
+        display: block;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--text-muted);
+        margin-bottom: 0.5rem;
     }
-    
-    .form-actions .btn-dir {
+
+    .form-input,
+    .form-textarea,
+    .form-select {
         width: 100%;
-        text-align: center;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        font-family: inherit;
+        font-size: 0.9rem;
+        transition: border-color 0.2s ease;
+        background: white;
     }
-    
-    nav.border-bottom {
-        flex-direction: column;
-        align-items: flex-start;
+
+    .form-input:focus,
+    .form-textarea:focus,
+    .form-select:focus {
+        outline: none;
+        border-color: var(--text-main);
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+        color: #94a3b8;
+    }
+
+    .form-textarea {
+        resize: vertical;
+        line-height: 1.6;
+    }
+
+    .form-select {
+        cursor: pointer;
+    }
+
+    .form-input-small {
+        width: 120px;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        font-family: inherit;
+        font-size: 0.9rem;
+        transition: border-color 0.2s ease;
+    }
+
+    .form-input-small:focus {
+        outline: none;
+        border-color: var(--text-main);
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+    }
+
+    /* MCQ Section */
+    .mcq-section {
+        padding: 1.5rem;
+        background: #f8fafc;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        margin-bottom: 1.75rem;
+    }
+
+    .options-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 1rem;
     }
-    
-    .question-count-badge {
-        width: 100%;
-        justify-content: center;
-    }
-}
 
-@media (max-width: 576px) {
-    .quiz-questions-container {
-        padding: 0;
-    }
-    
-    .question-form {
-        padding: 1.25rem;
-    }
-    
-    .mcq-section,
+    /* Para Section */
     .para-section {
-        padding: 1rem;
+        padding: 1.5rem;
+        background: #f8fafc;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        margin-bottom: 1.75rem;
     }
-}
+
+    .para-section .form-group {
+        margin-bottom: 0;
+    }
+
+    /* Form Actions */
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .question-form {
+            padding: 1.5rem;
+        }
+
+        .options-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .form-actions .btn-dir {
+            width: 100%;
+            text-align: center;
+        }
+
+        nav.border-bottom {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .question-count-badge {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .quiz-questions-container {
+            padding: 0;
+        }
+
+        .question-form {
+            padding: 1.25rem;
+        }
+
+        .mcq-section,
+        .para-section {
+            padding: 1rem;
+        }
+    }
 </style>
 
 <script>
-function toggleFields() {
-    const type = document.getElementById('qType').value;
-    const mcqSection = document.getElementById('mcq-section');
-    const paraSection = document.getElementById('para-section');
-    
-    // Get the actual input elements
-    const mcqInput = mcqSection.querySelector('input[name="correct"]');
-    const paraInput = paraSection.querySelector('textarea[name="correct"]');
-    
-    if (type === 'MCQ') {
-        mcqSection.style.display = 'block';
-        paraSection.style.display = 'none';
-        mcqInput.disabled = false;  // Send this one
-        paraInput.disabled = true;   // Don't send this one
-    } else {
-        mcqSection.style.display = 'none';
-        paraSection.style.display = 'block';
-        mcqInput.disabled = true;    // Don't send this one
-        paraInput.disabled = false;  // Send this one
-    }
-}
+    function toggleFields() {
+        const type = document.getElementById('qType').value;
+        const mcqSection = document.getElementById('mcq-section');
+        const paraSection = document.getElementById('para-section');
 
-// Run once on page load to set initial state
-window.onload = toggleFields;
+        // Get the actual input elements
+        const mcqInput = mcqSection.querySelector('input[name="correct"]');
+        const paraInput = paraSection.querySelector('textarea[name="correct"]');
+
+        if (type === 'MCQ') {
+            mcqSection.style.display = 'block';
+            paraSection.style.display = 'none';
+            mcqInput.disabled = false;  // Send this one
+            paraInput.disabled = true;   // Don't send this one
+        } else {
+            mcqSection.style.display = 'none';
+            paraSection.style.display = 'block';
+            mcqInput.disabled = true;    // Don't send this one
+            paraInput.disabled = false;  // Send this one
+        }
+    }
+
+    // Run once on page load to set initial state
+    window.onload = toggleFields;
 </script>
 {% endblock %}

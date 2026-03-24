@@ -5,201 +5,286 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/lecture.css' %}">
 {% endblock %}
-
 {% block content %}
 <div class="lecture-wrapper">
     <div class="quiz-result-container">
-        <div class="result-icon">
-            {% if score == total %}
-                <i class="bi bi-trophy"></i>
-            {% else %}
-                <i class="bi bi-check-circle"></i>
-            {% endif %}
-        </div>
-        
+
         <span class="dir-label">Assessment Complete</span>
-        <h1 class="dir-title" style="text-align: center; margin-bottom: 1rem;">Quiz Submitted</h1>
-        
+        <h1 class="dir-title" style="text-align: center; margin-bottom: 1rem;">
+            {% if submission.is_graded %}Quiz Results{% else %}Submission Received{% endif %}
+        </h1>
+
         <p class="result-description">
-            You have successfully completed <strong>{{ quiz.title }}</strong>.
+            You have successfully completed <strong>{{ submission.quiz.title }}</strong>.
         </p>
-        
+
         <div class="score-display">
+            {% if submission.is_graded %}
             <span class="score-label">Your Score</span>
             <div class="score-value">
-                <span class="score-earned">{{ score }}</span>
+                <span class="score-earned text-success">{{ submission.score }}</span>
                 <span class="score-divider">/</span>
-                <span class="score-total">{{ total }}</span>
+                <span class="score-total">{{ submission.quiz.total_points }}</span>
             </div>
+            {% else %}
+            <div class="alert alert-info border-0 shadow-sm text-start mb-0">
+                <i class="bi bi-info-circle-fill me-2 fs-5 text-primary"></i>
+                <strong>Pending Review:</strong> Your MCQ answers are recorded, but your final score will be updated
+                once your teacher grades the open-ended questions.
+            </div>
+            {% endif %}
         </div>
-        
-        <div class="result-actions">
-            <a href="{% url 'courses:lecture_detail' quiz.lecture.id %}" class="btn-dir btn-dir-dark">
+
+        <div class="result-actions mb-5 pb-4 border-bottom">
+            <a href="{% url 'courses:lecture_detail' submission.quiz.lecture.id %}" class="btn-dir btn-dir-dark">
                 <i class="bi bi-arrow-left me-1"></i> Back to Unit
             </a>
-            
             {% if request.user.profile.role == "student" %}
             <a href="{% url 'accounts:dashboard' %}" class="btn-dir">
                 View Dashboard <i class="bi bi-arrow-right ms-1"></i>
             </a>
             {% endif %}
+            <button onclick="toggleReview()" class="btn-dir"
+                style="background-color: #f8f9fa; color: #0d6efd; border: 1px solid #0d6efd;" id="reviewBtn">
+                <i class="bi bi-journal-text me-1"></i> Show Detailed Review
+            </button>
         </div>
-        
-        {% if quiz.questions.all %}
-            {% for q in quiz.questions.all %}
-                {% if q.question_type == "PARA" and forloop.first %}
-                    <div class="result-note">
-                        <i class="bi bi-info-circle me-2"></i>
-                        Paragraph answers are saved for teacher review and are not included in the auto-calculated score.
-                    </div>
-                {% endif %}
-            {% endfor %}
+    </div>
+
+    <div id="detailedReviewSection" class="detailed-review text-start mt-5" style="display: none;">
+        <h3 class="mb-4 pb-2 fs-5 fw-bold text-secondary text-uppercase letter-spacing-1">
+            <i class="bi bi-journal-text me-2"></i>Detailed Review
+        </h3>
+
+        {% for ans in answers %}
+        <div class="answer-card mb-4 p-4 border rounded shadow-sm bg-white">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <h5 class="question-text fw-bold mb-0 text-dark" style="font-size: 1.05rem;">
+                    <span class="text-primary me-2">Q{{ forloop.counter }}.</span>
+                    {{ ans.question.text }}
+                </h5>
+            </div>
+
+            <div class="student-response mt-3 pt-3 border-top">
+                <span class="text-muted small text-uppercase fw-bold">
+                    <i class="bi bi-pencil me-1"></i>Your Answer:
+                    {% if submission.is_graded %}
+                    <span
+                        class="badge {% if ans.points_earned == ans.question.max_points %}bg-success{% elif ans.points_earned > 0 %}bg-warning text-dark{% else %}bg-danger{% endif %} fs-6 px-3 py-2 ms-3 flex-shrink-0">
+                        {{ ans.points_earned }} / {{ ans.question.max_points }}
+                    </span>
+                    {% else %}
+                    <span class="badge bg-secondary fs-6 px-3 py-2 ms-3 flex-shrink-0">
+                        <i class="bi bi-hourglass-split"></i>
+                    </span>
+                    {% endif %}
+                </span>
+                <div class="p-3 bg-light border rounded mt-2 text-dark"
+                    style="white-space: pre-wrap; font-size: 0.95rem;">
+         
+{% if ans.question.question_type == "MCQ" %}
+
+    <!-- Student Answer -->
+    <div class="p-3 border rounded mt-2 
+        {% if ans.answer_text == ans.question.correct_answer %}
+            bg-success-subtle border-success
+        {% else %}
+            bg-danger-subtle border-danger
+        {% endif %}
+    ">
+        <strong>Your Answer:</strong><br>
+
+        {% if ans.answer_text == "1" %} {{ ans.question.option_1 }}
+        {% elif ans.answer_text == "2" %} {{ ans.question.option_2 }}
+        {% elif ans.answer_text == "3" %} {{ ans.question.option_3 }}
+        {% elif ans.answer_text == "4" %} {{ ans.question.option_4 }}
+        {% else %}
+            No answer provided.
         {% endif %}
     </div>
+
+    <!-- Show correct answer ONLY if wrong -->
+    {% if ans.answer_text != ans.question.correct_answer %}
+    <div class="mt-2 p-3 bg-success-subtle border border-success rounded">
+        <strong>Correct Answer:</strong><br>
+
+        {% if ans.question.correct_answer == "1" %} {{ ans.question.option_1 }}
+        {% elif ans.question.correct_answer == "2" %} {{ ans.question.option_2 }}
+        {% elif ans.question.correct_answer == "3" %} {{ ans.question.option_3 }}
+        {% elif ans.question.correct_answer == "4" %} {{ ans.question.option_4 }}
+        {% endif %}
+    </div>
+    {% endif %}
+
+{% else %}
+    <!-- Paragraph Answer -->
+    <div class="p-3 bg-light border rounded mt-2 text-dark">
+        {{ ans.answer_text|default_if_none:"No answer provided." }}
+    </div>
+
+{% endif %}
+
+
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-warning">No answers found for this submission.</div>
+        {% endfor %}
+    </div>
 </div>
+</div>
+<script>
+    function toggleReview() {
+        const reviewSection = document.getElementById('detailedReviewSection');
+        const btn = document.getElementById('reviewBtn');
 
+        if (!reviewSection) return;
+
+        const isHidden = reviewSection.style.display === 'none' || reviewSection.style.display === '';
+
+        if (isHidden) {
+            reviewSection.style.display = 'block';
+            btn.innerHTML = '<i class="bi bi-eye-slash me-1"></i> Hide Detailed Review';
+            window.scrollBy({ top: 200, behavior: 'smooth' });
+        } else {
+            reviewSection.style.display = 'none';
+            btn.innerHTML = '<i class="bi bi-journal-text me-1"></i> Show Detailed Review';
+        }
+    }
+</script>
 <style>
-.quiz-result-container {
-    max-width: 600px;
-    margin: 4rem auto;
-    text-align: center;
-}
 
-.result-icon {
-    margin-bottom: 1.5rem;
-}
-
-.result-icon i {
-    font-size: 4rem;
-}
-
-.result-icon .bi-trophy {
-    color: #fbbf24;
-}
-
-.result-icon .bi-check-circle {
-    color: #10b981;
-}
-
-.quiz-result-container .dir-label {
-    display: inline-block;
-    margin-bottom: 0.5rem;
-}
-
-.result-description {
-    font-size: 0.95rem;
-    color: #64748b;
-    line-height: 1.6;
-    margin-bottom: 2.5rem;
-}
-
-.result-description strong {
-    color: var(--text-main);
-    font-weight: 600;
-}
-
-/* Score Display */
-.score-display {
-    background: #f8fafc;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 2rem 3rem;
-    margin-bottom: 2.5rem;
-    display: inline-block;
-}
-
-.score-label {
-    display: block;
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--text-muted);
-    margin-bottom: 0.75rem;
-}
-
-.score-value {
-    font-size: 3rem;
-    font-weight: 800;
-    color: var(--text-main);
-    line-height: 1;
-}
-
-.score-divider {
-    color: #cbd5e1;
-    font-weight: 300;
-    margin: 0 0.25rem;
-}
-
-.score-total {
-    color: #94a3b8;
-}
-
-/* Result Actions */
-.result-actions {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-/* Result Note */
-.result-note {
-    margin-top: 2.5rem;
-    padding: 1rem 1.5rem;
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    color: #1e40af;
-    line-height: 1.5;
-    text-align: left;
-    display: flex;
-    align-items: flex-start;
-}
-
-.result-note i {
-    margin-top: 0.125rem;
-    flex-shrink: 0;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
+    /* Container widened slightly to accommodate long text answers */
     .quiz-result-container {
-        margin: 2rem auto;
-        padding: 0 1rem;
+        max-width: 800px;
+        margin: 4rem auto;
+        text-align: center;
     }
-    
-    .result-icon i {
-        font-size: 3rem;
-    }
-    
-    .score-display {
-        padding: 1.5rem 2rem;
-    }
-    
-    .score-value {
-        font-size: 2.5rem;
-    }
-    
-    .result-actions {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .result-actions .btn-dir {
-        width: 100%;
-    }
-}
 
-@media (max-width: 576px) {
+    .result-icon {
+        margin-bottom: 1.5rem;
+    }
+
+    .result-icon i {
+        font-size: 4rem;
+    }
+
+    .result-icon .bi-trophy {
+        color: #fbbf24;
+    }
+
+    .result-icon .bi-check-circle {
+        color: #10b981;
+    }
+
+    .quiz-result-container .dir-label {
+        display: inline-block;
+        margin-bottom: 0.5rem;
+    }
+
+    .result-description {
+        font-size: 0.95rem;
+        color: #64748b;
+        line-height: 1.6;
+        margin-bottom: 2.5rem;
+    }
+
+    .result-description strong {
+        color: var(--text-main);
+        font-weight: 600;
+    }
+
+    /* Score Display (Consolidated) */
     .score-display {
-        padding: 1.25rem 1.5rem;
+        background: #ffffff;
+        border: 2px solid #eef0f2;
+        border-radius: 12px;
+        padding: 2rem 3rem;
+        margin-bottom: 2.5rem;
+        display: inline-block;
+        width: 100%;
+        max-width: 500px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     }
-    
+
+    .score-label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #6c757d;
+        margin-bottom: 0.75rem;
+    }
+
     .score-value {
-        font-size: 2rem;
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: #212529;
+        line-height: 1;
     }
-}
+
+    .score-divider {
+        color: #dee2e6;
+        font-weight: 300;
+        margin: 0 0.5rem;
+    }
+
+    .score-total {
+        color: #adb5bd;
+    }
+
+    /* Result Actions */
+    .result-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .quiz-result-container {
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .score-display {
+            padding: 1.5rem 2rem;
+        }
+
+        .score-value {
+            font-size: 2.5rem;
+        }
+
+        .result-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .result-actions .btn-dir {
+            width: 100%;
+        }
+    }
+
+    .animation-fade-in {
+        animation: fadeIn 0.4s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+
+    
 </style>
 {% endblock %}
