@@ -2,12 +2,15 @@ from django.db.models import Q,Prefetch
 from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpResponseForbidden
 from .forms import CourseForm,AssignmentForm,ReviewForm
-from django.db.models import Avg
-from django.db.models.functions import Round
+from django.db.models import Avg,Count, F, FloatField, ExpressionWrapper
+from quiz.models import QuizSubmission
+from .models import Assignment,Submission
+from django.db.models.functions import Round,TruncDate
 from .models import Course, Enrollment,Module,Lecture,LectureProgress,Assignment,Submission,Review,Tag
 from django.contrib.auth.decorators import login_required
 from discussion.models import Comment
 from django.utils import timezone
+import json
 
 def create_course(request):
     if request.user.profile.role != "teacher":
@@ -182,7 +185,6 @@ def course_detail(request,course_id):
         "avg_rating": avg_rating,
         "rounded_rating": rounded_rating,
         "user_review": user_review,
-        "is_enrolled": is_enrolled,
     })
 
 
@@ -458,3 +460,96 @@ def grade_submission(request, submission_id):
             submission.feedback = feedback
             submission.save()
     return redirect("courses:review_assignment", assignment_id=assignment.id)
+
+
+
+@login_required
+def course_analytics(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+
+    if request.user != course.teacher:
+        raise PermissionDenied("You do not have permission to view these analytics.")
+
+    total_lectures = Lecture.objects.filter(module__course=course).count()
+    total_students = Enrollment.objects.filter(course=course).count()
+            
+    students_completed = LectureProgress.objects.filter(
+    lecture__module__course=course,completed=True).values('student').annotate(
+    completed_count=Count('lecture')).filter(
+    completed_count=total_lectures).count()
+
+    completion_rate = 0
+    if total_students > 0:
+            completion_rate = (students_completed / total_students) * 100
+        
+    avg_quiz_score = QuizSubmission.objects.filter(
+            quiz__lecture__module__course=course,
+            score__isnull=False
+        ).aggregate(avg=Avg('score'))['avg'] or 0
+
+    submissions = Submission.objects.filter(assignment__lecture__module__course=course,
+        grade__isnull=False
+        ).annotate(percentage=ExpressionWrapper(
+        (F('grade') * 100.0) / F('assignment__max_points'),
+        output_field=FloatField()
+    )
+)
+
+    avg_assignment_score = submissions.aggregate(avg=Avg('percentage'))['avg'] or 0
+    total_comments = Comment.objects.filter(course=course).count()
+    avg_rating = course.reviews.aggregate(avg=Avg('rating'))['avg'] or 0
+        
+    analytics = {
+        'total_students': total_students,
+        'completion_rate': round(completion_rate, 2),
+        'avg_quiz_score': round(avg_quiz_score, 2),
+        'avg_assignment_score': round(avg_assignment_score, 2),
+        'total_comments': total_comments,
+        'avg_rating': round(avg_rating, 1),
+    }
+
+
+    # Charts data
+    enrollment_data = (
+        Enrollment.objects.filter(course=course)
+        .annotate(date=TruncDate('enrolled_at'))
+        .values('date')
+        .annotate(count=Count('id'))
+        .order_by('date')
+    )
+    
+    enrolled_students = Enrollment.objects.filter(course=course).select_related('student')
+    progress_counts = LectureProgress.objects.filter(
+        lecture__module__course=course,
+        completed=True
+    ).values('student').annotate(count=Count('lecture'))
+    progress_map = {item['student']: item['count'] for item in progress_counts}
+    student_progress_data = []
+
+    for enrollment in enrolled_students:
+        student = enrollment.student
+        completed_count = progress_map.get(student.id, 0)
+        
+        progress = 0
+        if total_lectures > 0:
+            progress = int((completed_count / total_lectures) * 100)
+            
+        student_progress_data.append({
+            'username': student.username,
+            'email': student.email,
+            'progress': progress,
+            'date_joined': enrollment.enrolled_at
+        })
+
+    context = {
+        'course': course,
+        'analytics': analytics,
+        'enroll_dates': json.dumps([str(e['date']) for e in enrollment_data]),
+        'enroll_counts': json.dumps([e['count'] for e in enrollment_data]),
+        'quiz_avg': round(avg_quiz_score, 2),
+        'assignment_avg': round(avg_assignment_score, 2),
+        'avg_rating': round(avg_rating, 1),
+        'student_progress': student_progress_data,
+    }
+
+    return render(request, "courses/course_analytics.html", context)

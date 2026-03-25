@@ -1,0 +1,448 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Analytics | {{ course.title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/course.css' %}">
+<style>
+    .analytics-container {
+        padding: 2rem 0;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .analytics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .analytics-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    /* Colors for the icons/cards */
+    .blue {
+        border-left: 4px solid #3b82f6;
+    }
+
+    .green {
+        border-left: 4px solid #10b981;
+    }
+
+    .purple {
+        border-left: 4px solid #8b5cf6;
+    }
+
+    .orange {
+        border-left: 4px solid #f59e0b;
+    }
+
+    .teal {
+        border-left: 4px solid #14b8a6;
+    }
+
+    .red {
+        border-left: 4px solid #ef4444;
+    }
+
+    .back-nav {
+        margin-bottom: 1.5rem;
+    }
+
+    .dashboard-header {
+        margin-bottom: 2rem;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 1rem;
+    }
+
+    .stat-label {
+        color: #64748b;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .big-num {
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin: 0.5rem 0;
+    }
+
+    /* Ensuring charts have enough height on a full page */
+    .chart-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 1.5rem;
+        border: 1px solid #e2e8f0;
+        height: 100%;
+    }
+
+    canvas {
+        width: 100% !important;
+        height: 300px !important;
+    }
+
+    /* Container for the table card */
+    .chart-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 1.5rem;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Table Styling */
+    .table {
+        margin-bottom: 0;
+    }
+
+    .table thead th {
+        background-color: #f8fafc;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 700;
+        color: #64748b;
+        border-top: none;
+        padding: 12px 15px;
+    }
+
+    .table tbody td {
+        padding: 16px 15px;
+        vertical-align: middle;
+        color: #334155;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    /* Student Info Styling */
+    .fw-bold {
+        color: #1e293b;
+        font-size: 0.95rem;
+    }
+
+    .text-muted {
+        color: #94a3b8 !important;
+        font-size: 0.85rem;
+    }
+
+    /* Custom Progress Bar */
+    .progress {
+        background-color: #f1f5f9;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        transition: width 0.6s ease;
+        border-radius: 10px;
+    }
+
+    .bg-primary {
+        background-color: #3b82f6 !important;
+        /* Professional Blue */
+    }
+
+    .bg-success {
+        background-color: #10b981 !important;
+        /* Success Green */
+    }
+
+    /* Modern Soft Badges */
+    .badge {
+        padding: 6px 12px;
+        font-weight: 600;
+        font-size: 0.75rem;
+        border-radius: 6px;
+        display: inline-block;
+    }
+
+    .bg-success-soft {
+        background-color: #d1fae5 !important;
+        color: #065f46 !important;
+    }
+
+    .bg-primary-soft {
+        background-color: #dbeafe !important;
+        color: #1e40af !important;
+    }
+
+    .bg-secondary-soft {
+        background-color: #f1f5f9 !important;
+        color: #475569 !important;
+    }
+
+    /* Table Hover Effect */
+    .table-hover tbody tr:hover {
+        background-color: #fbfcfe;
+        transition: background-color 0.2s ease;
+    }
+
+    /* Responsive fix for small screens */
+    @media (max-width: 768px) {
+        .table thead {
+            display: none;
+            /* Optional: Hide headers on mobile for a card-like feel */
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container analytics-container">
+
+    <div class="back-nav">
+        <a href="{% url 'courses:course_detail' course.id %}" class="btn-minimal">
+            <i class="bi bi-arrow-left"></i> Back to Course
+        </a>
+    </div>
+
+    <header class="dashboard-header d-flex justify-content-between align-items-end">
+        <div>
+            <h1 class="fw-bold">Course Performance</h1>
+            <p class="text-muted mb-0">Insights for <strong>{{ course.title }}</strong></p>
+        </div>
+        <div class="text-end">
+            <span class="badge bg-light text-dark border">Data updated: Just now</span>
+        </div>
+    </header>
+
+    <div class="analytics-grid mb-4">
+        <div class="analytics-card blue">
+            <div class="card-icon"><i class="bi bi-people-fill"></i></div>
+            <div class="card-info">
+                <p class="stat-label">Total Students</p>
+                <h4 class="big-num">{{ analytics.total_students }}</h4>
+            </div>
+        </div>
+
+        <div class="analytics-card green">
+            <div class="card-icon"><i class="bi bi-graph-up-arrow"></i></div>
+            <div class="card-info">
+                <p class="stat-label">Completion Rate</p>
+                <h4 class="big-num">{{ analytics.completion_rate }}%</h4>
+            </div>
+        </div>
+
+        <div class="analytics-card purple">
+            <div class="card-icon"><i class="bi bi-star-fill"></i></div>
+            <div class="card-info">
+                <p class="stat-label">Avg. Rating</p>
+                <h4 class="big-num">{{ analytics.avg_rating|default:"0.0" }}</h4>
+            </div>
+        </div>
+
+        <div class="analytics-card orange">
+            <div class="card-icon"><i class="bi bi-chat-dots-fill"></i></div>
+            <div class="card-info">
+                <p class="stat-label">Discussions</p>
+                <h4 class="big-num">{{ analytics.total_comments }}</h4>
+            </div>
+        </div>
+
+        <div class="analytics-card teal">
+            <div class="card-icon"><i class="bi bi-patch-check-fill"></i></div>
+            <div class="card-info">
+                <p class="stat-label">Avg. Quiz Score</p>
+                <h4 class="big-num">{{ analytics.avg_quiz_score }}%</h4>
+            </div>
+        </div>
+
+        <div class="analytics-card red">
+            <div class="card-icon"><i class="bi bi-journal-check"></i></div>
+            <div class="card-info">
+                <p class="stat-label">Assignment Avg.</p>
+                <h4 class="big-num">{{ analytics.avg_assignment_score }}%</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-lg-8">
+            <div class="chart-card">
+                <h5 class="fw-bold mb-4"><i class="bi bi-graph-up text-primary"></i> Enrollment Growth</h5>
+                <canvas id="enrollmentChart"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="chart-card">
+                <h5 class="fw-bold mb-4"><i class="bi bi-pie-chart text-success"></i> Score Distribution</h5>
+                <canvas id="performanceChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="chart-card">
+            <h5 class="fw-bold mb-4"><i class="bi bi-people text-info"></i> Student Progress Tracker</h5>
+            <div class="table-responsive">
+
+                <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mb-3">
+                    <div class="input-group" style="max-width: 300px;">
+                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                        <input type="text" id="studentSearch" class="form-control border-start-0"
+                            placeholder="Search student name...">
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-secondary btn-sm filter-btn active"
+                            data-filter="all">All</button>
+                        <button class="btn btn-outline-success btn-sm filter-btn"
+                            data-filter="Completed">Completed</button>
+                        <button class="btn btn-outline-primary btn-sm filter-btn" data-filter="In Progress">In
+                            Progress</button>
+                    </div>
+                </div>
+
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Student</th>
+                            <th>Enrolled On</th>
+                            <th>Progress</th>
+                            <th class="text-end">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in student_progress %}
+                        <tr>
+                            <td>
+                                <div class="fw-bold">{{ item.username }}</div>
+                                <small class="text-muted">{{ item.email }}</small>
+                            </td>
+                            <td>{{ item.date_joined|date:"M d, Y" }}</td>
+                            <td style="width: 30%;">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="progress w-100" style="height: 8px;">
+                                        <div class="progress-bar {% if item.progress == 100 %}bg-success{% else %}bg-primary{% endif %}"
+                                            role="progressbar" style="width: {{ item.progress }}%"></div>
+                                    </div>
+                                    <small class="fw-bold">{{ item.progress }}%</small>
+                                </div>
+                            </td>
+                            <td class="text-end">
+                                {% if item.progress == 100 %}
+                                <span class="badge bg-success-soft text-success">Completed</span>
+                                {% elif item.progress > 0 %}
+                                <span class="badge bg-primary-soft text-primary">In Progress</span>
+                                {% else %}
+                                <span class="badge bg-secondary-soft text-secondary">Not Started</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center py-4 text-muted">No students enrolled yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="application/json" id="enroll-labels">{{ enroll_dates|safe }}</script>
+<script type="application/json" id="enroll-data">{{ enroll_counts|safe }}</script>
+<script type="application/json" id="quiz-avg">{{ quiz_avg|safe }}</script>
+<script type="application/json" id="assignment-avg">{{ assignment_avg|safe }}</script>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Enrollment Trend Chart (Line)
+    const enrollLabels = JSON.parse(document.getElementById('enroll-labels').textContent);
+    const enrollData = JSON.parse(document.getElementById('enroll-data').textContent);
+
+    new Chart(document.getElementById('enrollmentChart'), {
+        type: 'line',
+        data: {
+            labels: enrollLabels,
+            datasets: [{
+                label: 'New Enrollments',
+                data: enrollData,
+                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    // Performance Overview (Radar or Bar)
+    const quizAvg = JSON.parse(document.getElementById('quiz-avg').textContent);
+    const assignAvg = JSON.parse(document.getElementById('assignment-avg').textContent);
+
+    new Chart(document.getElementById('performanceChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Quizzes', 'Assignments'],
+            datasets: [{
+                label: 'Average Score %',
+                data: [quizAvg, assignAvg],
+                backgroundColor: ['#14b8a6', '#ef4444'],
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true, max: 100 } },
+            plugins: { legend: { display: false } }
+        }
+    });
+    
+    document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('studentSearch');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const tableRows = document.querySelectorAll('tbody tr');
+
+    function filterTable() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const activeFilter = document.querySelector('.filter-btn.active').getAttribute('data-filter');
+
+        tableRows.forEach(row => {
+            const studentName = row.querySelector('td:first-child').textContent.toLowerCase();
+            const statusBadge = row.querySelector('.badge').textContent.trim();
+            
+            const matchesSearch = studentName.includes(searchTerm);
+            const matchesFilter = activeFilter === 'all' || statusBadge === activeFilter;
+
+            if (matchesSearch && matchesFilter) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    // Search input listener
+    searchInput.addEventListener('input', filterTable);
+
+    // Filter button listeners
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            filterButtons.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            filterTable();
+        });
+    });
+});
+
+</script>
+{% endblock %}

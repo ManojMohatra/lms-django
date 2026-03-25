@@ -61,3 +61,37 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 });
+
+
+// ===== Enrollment Chart =====
+const enrollLabels = JSON.parse(document.getElementById('enroll-labels').textContent);
+const enrollData = JSON.parse(document.getElementById('enroll-data').textContent);
+
+new Chart(document.getElementById('enrollmentChart'), {
+    type: 'line',
+    data: {
+        labels: enrollLabels,
+        datasets: [{
+            label: 'Enrollments',
+            data: enrollData,
+            fill: true,
+            tension: 0.3
+        }]
+    }
+});
+
+
+// ===== Performance Chart =====
+const quizAvg = JSON.parse(document.getElementById('quiz-avg').textContent);
+const assignmentAvg = JSON.parse(document.getElementById('assignment-avg').textContent);
+
+new Chart(document.getElementById('performanceChart'), {
+    type: 'bar',
+    data: {
+        labels: ['Quiz', 'Assignment'],
+        datasets: [{
+            label: 'Average Score',
+            data: [quizAvg, assignmentAvg]
+        }]
+    }
+});
