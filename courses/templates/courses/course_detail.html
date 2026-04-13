@@ -5,7 +5,9 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/course.css' %}">
 {% endblock %}
+
 {% block content %}
+
 <div class="course-page-container">
 
     {% if role == "teacher" and course.teacher == request.user %}

@@ -1,8 +1,6 @@
 .lecture-wrapper {
-    max-width: 1000px;
-    margin: 2rem auto;
-    padding: 0 1.5rem;
-    color: var(--text-main);
+    width: 100%;
+    margin: 0;
 }
 
 /* Navigation */
@@ -154,6 +152,7 @@ nav.border-bottom {
     border-radius: 8px;
     overflow: hidden;
     background: #fff;
+    margin-bottom: 3rem;
 }
 
 .registry-header {
@@ -333,10 +332,6 @@ nav.border-bottom {
     }
 
 
-
-
-/* manage result */
-    /* Container for the results registry */
 .results-registry {
     background: #ffffff;
     border-radius: 12px;
@@ -462,11 +457,6 @@ nav.border-bottom {
 
 
 /* grade submission */
-/* Container and Header */
-.container {
-    max-width: 1000px;
-}
-
 .border-bottom {
     border-color: #eef0f2 !important;
 }

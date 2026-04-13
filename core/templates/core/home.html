@@ -54,16 +54,17 @@
     {% endif %}
 
  <!-- SHOW RATING -->
-      <div class="star-display">
-    {% for i in "12345" %}
-        {% if forloop.counter <= course.rounded_rating|default:0 %}
-            <span class="filled">★</span>
-        {% else %}
-            <span class="empty">★</span>
-        {% endif %}
-    {% endfor %}
-</div>
-                            <div class="course-card-content">
+    <div class="stars">
+        {% for i in "12345" %}
+            {% if forloop.counter <= course.rounded_rating|default:0 %}
+                <span class="star filled">★</span>
+            {% else %}
+                <span class="star">★</span>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+<div class="course-card-content">
                                 <h3 class="course-title">{{ course.title }}</h3>
                                 <p class="course-description">{{ course.description|truncatewords:20 }}</p>
                                 {% if course.instructor %}
