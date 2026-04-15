@@ -30,23 +30,37 @@
             class="search-input search-input--wide"
         >
 
-        <select name="difficulty" class="search-select">
-            <option value="">All Levels</option>
-            {% for value, label in difficulty_choices %}
-                <option value="{{ value }}" {% if current_difficulty == value %}selected{% endif %}>
-                    {{ label }}
-                </option>
-            {% endfor %}
-        </select>
+        <!-- Difficulty chips (multi-select) -->
+<div class="filter-group">
+    <span class="filter-group-label">Difficulty</span>
+    {% for value, label in difficulty_choices %}
+        <label class="chip-label {% if value in current_difficulty %}chip-active{% endif %}">
+            <input
+                type="checkbox"
+                name="difficulty"
+                value="{{ value }}"
+                {% if value in current_difficulty %}checked{% endif %}
+            >
+            {{ label }}
+        </label>
+    {% endfor %}
+</div>
 
-        <select name="tag" class="search-select">
-            <option value="">All Topics</option>
-            {% for tag in all_tags %}
-                <option value="{{ tag.slug }}" {% if current_tag == tag.slug %}selected{% endif %}>
-                    {{ tag.name }}
-                </option>
-            {% endfor %}
-        </select>
+<!-- Tag chips (multi-select) -->
+<div class="filter-group">
+    <span class="filter-group-label">Topics</span>
+    {% for tag in all_tags %}
+        <label class="chip-label {% if tag.slug in current_tag %}chip-active{% endif %}">
+            <input
+                type="checkbox"
+                name="tag"
+                value="{{ tag.slug }}"
+                {% if tag.slug in current_tag %}checked{% endif %}
+            >
+            #{{ tag.name }}
+        </label>
+    {% endfor %}
+</div>
 
         <input
             type="text"
@@ -68,9 +82,12 @@
         {% if current_search %}
             <span class="filter-chip">{{ current_search }}</span>
         {% endif %}
-        {% if current_difficulty %}
-            <span class="filter-chip">{{ current_difficulty|capfirst }}</span>
-        {% endif %}
+        {% for d in current_difficulty %}
+    <span class="filter-chip">{{ d|capfirst }}</span>
+{% endfor %}
+{% for t in current_tag %}
+    <span class="filter-chip">#{{ t }}</span>
+{% endfor %}
         {% if current_tag %}
             <span class="filter-chip">#{{ current_tag }}</span>
         {% endif %}

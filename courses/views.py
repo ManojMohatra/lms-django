@@ -39,18 +39,19 @@ def course_list(request):
         ).values_list("course_id",flat=True)
        
     search     = request.GET.get("search", "").strip()
-    difficulty = request.GET.get("difficulty", "")
-    tag_slug   = request.GET.get("tag", "")
+    difficulties = request.GET.getlist("difficulty")
+    tags = request.GET.getlist("tag")
     teacher    = request.GET.get("teacher", "").strip()
 
     if search:
         courses = courses.filter(
             Q(title__icontains=search) | Q(description__icontains=search)
         )
-    if difficulty:
-        courses = courses.filter(difficulty=difficulty)
-    if tag_slug:
-        courses = courses.filter(tags__slug=tag_slug)
+    if difficulties:
+        courses = courses.filter(difficulty__in=difficulties)
+
+    if tags:
+        courses = courses.filter(tags__slug__in=tags).distinct()    
     if teacher:
         courses = courses.filter(teacher__username__icontains=teacher)
 
@@ -63,8 +64,8 @@ def course_list(request):
         "difficulty_choices": Course.Difficulty.choices,
         # Pass back current filters so the form stays filled
         "current_search":     search,
-        "current_difficulty": difficulty,
-        "current_tag":        tag_slug,
+        "current_difficulty": difficulties,
+        "current_tag":        tags,
         "current_teacher":    teacher,
     })
 

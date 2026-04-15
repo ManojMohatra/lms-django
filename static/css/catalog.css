@@ -1,136 +1,34 @@
-   .courses-wrapper { max-width: 900px; margin: 2rem auto; font-family: sans-serif; }
-    
-    /* Header Sync */
-    .catalog-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        padding-bottom: 1.5rem;
-        border-bottom: 1px solid #e2e8f0;
-        margin-bottom: 1.5rem;
-    }
+  /* ── Wrapper ──────────────────────────────────────────────────────────────── */
+.courses-wrapper {
+    max-width: 900px;
+    margin: 2rem auto;
+    font-family: sans-serif;
+}
 
-    .catalog-info h2 { font-weight: 800; color: #1e293b; margin: 0; font-size: 1.75rem; }
-    .catalog-subtext { color: #94a3b8; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+/* ── Header ───────────────────────────────────────────────────────────────── */
+.catalog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 1.5rem;
+}
 
-    /* Compact List Styling */
-    .catalog-list { border-top: 1px solid #f1f5f9; }
-
-    .catalog-item {
-        display: flex;
-        align-items: center;
-        padding: 14px 0;
-        border-bottom: 1px solid #f1f5f9;
-        transition: background-color 0.1s;
-	min-height: 52px;
-    }
-
-    .catalog-item:hover { background-color: #f8fafc; margin-left: -10px; padding-left: 10px; border-radius: 4px; }
-
-    /* Column 1: Numbering (Fixed Width) */
-    .item-number {
-        flex: 0 0 40px;
-        font-family: monospace;
-        font-size: 0.75rem;
-        color: #cbd5e1;
-    }
-
-    /* Column 2: Title (Fixed Width - Ensures descriptions align) */
-    .item-title-box {
-        flex: 0 0 220px; /* Adjust this width based on your average title length */
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: normal;
-        padding-right: 15px;
-    }
-
- .item-title {
-    display: block;           /* makes title its own line */
-    font-weight: 700;
+.catalog-info h2 {
+    font-weight: 800;
     color: #1e293b;
-    text-decoration: none;
-    font-size: 0.95rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    margin: 0;
+    font-size: 1.75rem;
 }
 
-    .item-title:hover { color: #0d6efd; }
-
-    /* Column 3: Description (Starts at same place) */
-    .item-desc {
-        flex: 1;
-        color: #64748b;
-        font-size: 0.85rem;
-        margin: 0;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        border-left: 1px solid #e2e8f0;
-        padding-left: 15px;
-    }
-
-    /* Column 4: Actions (Fixed Width) */
-    .item-actions {
-        flex: 0 0 220px;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        padding-left: 20px;
-    }
-
-    .instructor-name {
-    flex: 0 0 60px;           /* fixed width so longer names don't push badge */
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: #64748b;           /* darker than #94a3b8 — easier to read */
-    text-transform: uppercase;
-    text-align: right;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-.diff-badge {
-    flex: 0 0 80px;           /* fixed width — INTERMEDIATE and ADVANCED same space */
-    font-size: 0.65rem;
-    font-weight: 700;
+.catalog-subtext {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: #64748b;           /* darker — easier to read */
-    font-family: monospace;
-    text-align: right;
 }
-
-.diff-badge--advanced { color: #475569; }
-
-    .btn-minimal {
-        padding: 4px 12px;
-        font-size: 0.8rem;
-        font-weight: 700;
-        border-radius: 4px;
-        text-decoration: none;
-        transition: 0.2s;
-    }
-
-    .btn-blue { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
-    .btn-blue:hover { background: #dbeafe; }
-
-    .btn-dark { background: #1e293b; color: white; border: none; }
-
-    .unenroll-text {
-        font-size: 0.75rem;
-        font-weight: 700;
-        color: #fca5a5;
-        text-decoration: none;
-    }
-    .unenroll-text:hover { color: #dc2626; text-decoration: underline; }
-
-    .status-enrolled {
-        color: #10b981;
-        font-size: 0.75rem;
-        font-weight: 800;
-        text-transform: uppercase;
-    }
 
 /* ── Search Bar ───────────────────────────────────────────────────────────── */
 .search-bar {
@@ -139,12 +37,11 @@
     flex-wrap: wrap;
     gap: 8px;
     padding-bottom: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     border-bottom: 1px solid #f1f5f9;
 }
 
-.search-input,
-.search-select {
+.search-input {
     height: 30px;
     padding: 0 10px;
     font-size: 0.78rem;
@@ -161,12 +58,8 @@
 }
 
 .search-input::placeholder { color: #cbd5e1; }
-
-.search-input:focus,
-.search-select:focus { border-bottom-color: #1e293b; }
-
+.search-input:focus { border-bottom-color: #1e293b; }
 .search-input--wide { flex: 1; min-width: 160px; }
-.search-select      { min-width: 110px; cursor: pointer; }
 
 .search-clear {
     font-size: 0.72rem;
@@ -177,7 +70,70 @@
 }
 .search-clear:hover { color: #94a3b8; }
 
-/* ── Active filter chips ──────────────────────────────────────────────────── */
+/* ── Multi-select filter chip rows ───────────────────────────────────────── */
+.filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.filter-group:last-of-type {
+    margin-bottom: 0.75rem;
+}
+
+.filter-group-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #cbd5e1;
+    min-width: 60px;
+    margin-right: 4px;
+}
+
+/* Hide the real checkbox; the <label> is the clickable chip */
+.chip-label input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+.chip-label {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 3px;
+    border: 1px solid #e2e8f0;
+    background: transparent;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #94a3b8;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+    letter-spacing: 0.02em;
+}
+
+.chip-label:hover {
+    background: #f8fafc;
+    color: #475569;
+    border-color: #cbd5e1;
+}
+
+/* Active state — checked chip */
+.chip-label:has(input:checked),
+.chip-label.chip-active {
+    background: #1e293b;
+    color: #fff;
+    border-color: #1e293b;
+}
+
+/* ── Active filter summary ────────────────────────────────────────────────── */
 .active-filters {
     display: flex;
     align-items: center;
@@ -211,24 +167,148 @@
     font-family: monospace;
 }
 
-/* ── Difficulty badge (in list row) ──────────────────────────────────────── */
+/* ── Catalog List ─────────────────────────────────────────────────────────── */
+.catalog-list { border-top: 1px solid #f1f5f9; }
+
+.catalog-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background-color 0.1s;
+    min-height: 52px;
+}
+
+.catalog-item:hover {
+    background-color: #f8fafc;
+    margin-left: -10px;
+    padding-left: 10px;
+    border-radius: 4px;
+}
+
+/* Column 1: Number */
+.item-number {
+    flex: 0 0 40px;
+    font-family: monospace;
+    font-size: 0.75rem;
+    color: #cbd5e1;
+}
+
+/* Column 2: Title */
+.item-title-box {
+    flex: 0 0 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    padding-right: 15px;
+}
+
+.item-title {
+    display: block;
+    font-weight: 700;
+    color: #1e293b;
+    text-decoration: none;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.item-title:hover { color: #0d6efd; }
+
+/* Column 3: Description */
+.item-desc {
+    flex: 1;
+    color: #64748b;
+    font-size: 0.85rem;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-left: 1px solid #e2e8f0;
+    padding-left: 15px;
+}
+
+/* Column 4: Actions */
+.item-actions {
+    flex: 0 0 220px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding-left: 20px;
+}
+
+.instructor-name {
+    flex: 0 0 60px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ── Difficulty badge ─────────────────────────────────────────────────────── */
 .diff-badge {
+    flex: 0 0 80px;
     font-size: 0.65rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: #94a3b8;        /* same muted tone as instructor-name */
+    color: #94a3b8;
     font-family: monospace;
+    text-align: right;
 }
 
-/* no color per level — just dim the advanced ones slightly */
 .diff-badge--advanced { color: #64748b; }
 
-/* ── Tag chips ───────────────────────────────────────────────────────────── */
-.item-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px;min-height: 16px;}
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
+.btn-minimal {
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-blue { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+.btn-blue:hover { background: #dbeafe; }
+
+.btn-dark { background: #1e293b; color: white; }
+.btn-dark:hover { background: #334155; }
+
+/* ── Enrollment states ────────────────────────────────────────────────────── */
+.unenroll-text {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #fca5a5;
+    text-decoration: none;
+}
+.unenroll-text:hover { color: #dc2626; text-decoration: underline; }
+
+.status-enrolled {
+    color: #10b981;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+/* ── Tag chips (in list rows) ─────────────────────────────────────────────── */
+.item-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 3px;
+    min-height: 16px;
+}
 
 .tag-chip {
     font-size: 0.65rem;
     font-weight: 700;
-    color: #94a3b8;           /* slightly darker than before */
+    color: #94a3b8;
 }
