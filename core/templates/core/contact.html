@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Contact{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/static_pages.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="static-wrapper">
+
+    <div class="static-header">
+        <h1 class="static-title">Get in Touch</h1>
+        <p class="static-subtext">
+            Have questions, feedback, or suggestions? We’d love to hear from you.
+        </p>
+    </div>
+
+    <div class="contact-grid">
+
+        <div class="contact-info">
+            <h4>Contact Information</h4>
+
+            <p><strong>Email:</strong><br> support@yourplatform.com</p>
+            <p><strong>Phone:</strong><br> +977-XXXXXXXXXX</p>
+            <p><strong>Location:</strong><br> Nepal</p>
+
+        </div>
+
+        <div class="contact-form-box">
+            <h4>Send Message</h4>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <input type="text" name="name" placeholder="Your Name" class="static-input" required>
+                <input type="email" name="email" placeholder="Email Address" class="static-input" required>
+
+                <textarea name="message" rows="5" placeholder="Your Message" class="static-input" required></textarea>
+
+                <button type="submit" class="btn-minimal btn-dark">
+                    Send Message
+                </button>
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

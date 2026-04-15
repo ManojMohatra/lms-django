@@ -1,14 +1,13 @@
 .lecture-wrapper {
-    width: 100%;
-    margin: 0;
+    max-width: 900px;      /* same as course_detail */
+    margin: 2rem auto;     /* centers horizontally */
+    padding: 0 1rem;       /* breathing space on small screens */
 }
-
-/* Navigation */
 nav.border-bottom {
     padding-bottom: 1rem;
     margin-bottom: 2rem;
+    border-color: #f1f5f9 !important;
 }
-
 /* Labels */
 .dir-label {
     font-size: 0.65rem;
@@ -546,4 +545,3 @@ nav.border-bottom {
         padding-left: 0.75rem !important;
     }
 }
-

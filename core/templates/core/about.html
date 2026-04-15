@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}About{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/static_pages.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="static-wrapper">
+
+    <div class="static-header">
+        <h1 class="static-title">A Better Way to Learn</h1>
+        <p class="static-subtext">
+            Our platform is built to simplify learning, track progress, and provide a structured environment for both students and instructors.
+        </p>
+    </div>
+
+    <div class="static-section">
+        <h3>What We Do</h3>
+        <p>
+            We provide a unified learning system where students can explore courses,
+            complete assignments, take quizzes, and track their progress — all in one place.
+        </p>
+    </div>
+
+    <div class="static-section">
+        <h3>For Students</h3>
+        <ul>
+            <li>Structured course content</li>
+            <li>Track learning progress</li>
+            <li>Submit assignments and quizzes</li>
+            <li>Get performance insights</li>
+        </ul>
+    </div>
+
+    <div class="static-section">
+        <h3>For Instructors</h3>
+        <ul>
+            <li>Create and manage courses</li>
+            <li>Upload lectures and materials</li>
+            <li>Monitor student performance</li>
+            <li>Access analytics dashboard</li>
+        </ul>
+    </div>
+
+    <div class="static-section">
+        <h3>Our Goal</h3>
+        <p>
+            To make learning simple, structured, and effective — without unnecessary complexity.
+        </p>
+    </div>
+
+</div>
+{% endblock %}

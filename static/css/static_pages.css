@@ -1,0 +1,93 @@
+/* ── Wrapper (same width as course pages) ───────────────────────── */
+.static-wrapper {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* ── Header ────────────────────────────────────────────────────── */
+.static-header {
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 1.5rem;
+}
+
+.static-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0.5rem 0;
+    color: #1e293b;
+}
+
+.static-subtext {
+    color: #64748b;
+    font-size: 0.95rem;
+    max-width: 600px;
+}
+
+/* ── Sections ─────────────────────────────────────────────────── */
+.static-section {
+    margin-bottom: 2rem;
+}
+
+.static-section h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #1e293b;
+}
+
+.static-section p {
+    color: #64748b;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.static-section ul {
+    padding-left: 1.2rem;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.static-section li {
+    margin-bottom: 0.4rem;
+}
+
+/* ── Contact Layout ───────────────────────────────────────────── */
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 2rem;
+}
+
+.contact-info h4,
+.contact-form-box h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #1e293b;
+}
+
+/* ── Form ─────────────────────────────────────────────────────── */
+.static-input {
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 8px 0;
+    border: none;
+    border-bottom: 1.5px solid #e2e8f0;
+    font-size: 0.85rem;
+    background: transparent;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.static-input:focus {
+    border-bottom-color: #1e293b;
+}
+
+/* ── Responsive ───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+}
