@@ -1,0 +1,420 @@
+# Nepali translation for LMS Platform
+# Copyright (C) 2026
+# This file is distributed under the same license as the LMS package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LMS 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-16 06:37+0000\n"
+"PO-Revision-Date: 2026-04-16 06:45+0000\n"
+"Last-Translator: LMS Team\n"
+"Language-Team: Nepali\n"
+"Language: ne\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: core/templates/core/home.html:4
+msgid "Home"
+msgstr "गृहपृष्ठ"
+
+#: core/templates/core/home.html:13
+msgid "Education Platform"
+msgstr "शिक्षा मञ्च"
+
+#: core/templates/core/home.html:14
+msgid "Learn. Grow. Succeed."
+msgstr "सिक्नुस्। बढ्नुस्। सफल हुनुस्।"
+
+#: core/templates/core/home.html:16
+msgid ""
+"Access high-quality modules, track your progress, and master new skills with "
+"our unified Learning Management System."
+msgstr ""
+"उच्च गुणस्तरका पाठ्यसामग्रीहरू पहुँच गर्नुस्, आफ्नो प्रगति ट्र्याक गर्नुस्, र हाम्रो एकीकृत "
+"शिक्षण व्यवस्थापन प्रणालीद्वारा नयाँ सीपहरू हासिल गर्नुस्।"
+
+#: core/templates/core/home.html:21
+msgid "Create Account"
+msgstr "खाता बनाउनुस्"
+
+#: core/templates/core/home.html:24
+msgid "Sign In"
+msgstr "साइन इन गर्नुस्"
+
+#: core/templates/core/home.html:28
+msgid "Explore All Courses"
+msgstr "सबै पाठ्यक्रमहरू हेर्नुस्"
+
+#: core/templates/core/home.html:40
+msgid "Recommended for You"
+msgstr "तपाईंका लागि सिफारिस गरिएका"
+
+#: core/templates/core/home.html:83 core/templates/core/home.html:130
+msgid "View Course"
+msgstr "पाठ्यक्रम हेर्नुस्"
+
+#: core/templates/core/home.html:90 templates/base.html:37
+msgid "Get Started"
+msgstr "सुरु गर्नुस्"
+
+#: core/templates/core/home.html:91
+msgid "Browse our course catalog to begin your learning journey"
+msgstr "आफ्नो सिकाइ यात्रा सुरु गर्न हाम्रो पाठ्यक्रम सूची हेर्नुस्"
+
+#: core/templates/core/home.html:98
+msgid ""
+"No recommendations yet. Start exploring courses to get personalized "
+"suggestions!"
+msgstr "अहिलेसम्म कुनै सिफारिस छैन। व्यक्तिगत सुझावहरू पाउन पाठ्यक्रमहरू हेर्न सुरु गर्नुस्!"
+
+#: core/templates/core/home.html:100
+msgid "Browse Courses"
+msgstr "पाठ्यक्रमहरू हेर्नुस्"
+
+#: core/templates/core/home.html:106
+msgid "Featured Courses"
+msgstr "विशेष पाठ्यक्रमहरू"
+
+#: core/templates/core/home.html:107
+msgid "Explore our most popular courses and start learning today"
+msgstr "हाम्रा सबैभन्दा लोकप्रिय पाठ्यक्रमहरू हेर्नुस् र आज नै सिक्न सुरु गर्नुस्"
+
+#: core/templates/core/home.html:141
+msgid "No featured courses available yet. Check back soon!"
+msgstr "अहिलेसम्म कुनै विशेष पाठ्यक्रम उपलब्ध छैन। चाँडै फेरि हेर्नुस्!"
+
+#: courses/templates/courses/course_detail.html:17
+msgid "Instructor Mode"
+msgstr "प्रशिक्षक मोड"
+
+#: courses/templates/courses/course_detail.html:20
+msgid "+ Add Module"
+msgstr "+ मोड्युल थप्नुस्"
+
+#: courses/templates/courses/course_detail.html:21
+msgid "Settings"
+msgstr "सेटिङहरू"
+
+#: courses/templates/courses/course_detail.html:22
+msgid "Delete Course"
+msgstr "पाठ्यक्रम हटाउनुस्"
+
+#: courses/templates/courses/course_detail.html:49
+msgid "Free"
+msgstr "नि:शुल्क"
+
+#: courses/templates/courses/course_detail.html:64
+#, python-format
+msgid ""
+"\n"
+"                <span>Instructor: <strong>%(teacher)s</strong></span>\n"
+"            "
+msgstr ""
+"\n"
+"                <span>प्रशिक्षक: <strong>%(teacher)s</strong></span>\n"
+"            "
+
+#: courses/templates/courses/course_detail.html:67
+#, python-format
+msgid ""
+"\n"
+"                <span>Enrolled: <strong>%(count)s students</strong></span>\n"
+"            "
+msgstr ""
+"\n"
+"                <span>भर्ना भएका: <strong>%(count)s विद्यार्थीहरू</strong></span>\n"
+"            "
+
+#: courses/templates/courses/course_detail.html:71
+msgid "Rating:"
+msgstr "रेटिङ:"
+
+#: courses/templates/courses/course_detail.html:89
+msgid "View Analytics"
+msgstr "विश्लेषण हेर्नुस्"
+
+#: courses/templates/courses/course_detail.html:98
+msgid "Completion"
+msgstr "पूर्णता"
+
+#: courses/templates/courses/course_detail.html:105
+msgid "Unenroll from course"
+msgstr "पाठ्यक्रमबाट नाम हटाउनुस्"
+
+#: courses/templates/courses/course_detail.html:113
+#: courses/templates/courses/lecture_detail.html:13
+msgid "Curriculum"
+msgstr "पाठ्यचर्या"
+
+#: courses/templates/courses/course_detail.html:122
+msgid "+ Add Lecture"
+msgstr "+ पाठ (लेक्चर) थप्नुस्"
+
+#: courses/templates/courses/course_detail.html:123
+#: courses/templates/courses/course_detail.html:138
+#: courses/templates/courses/lecture_detail.html:128
+msgid "Edit"
+msgstr "सम्पादन गर्नुस्"
+
+#: courses/templates/courses/course_detail.html:124
+msgid "Delete Module"
+msgstr "मोड्युल हटाउनुस्"
+
+#: courses/templates/courses/course_detail.html:139
+#: courses/templates/courses/lecture_detail.html:101
+msgid "Delete"
+msgstr "हटाउनुस्"
+
+#: courses/templates/courses/course_detail.html:144
+msgid "No lectures added yet."
+msgstr "अहिलेसम्म कुनै पाठहरू थपिएका छैनन्।"
+
+#: courses/templates/courses/course_detail.html:150
+msgid "This course curriculum is currently empty."
+msgstr "यो पाठ्यक्रमको पाठ्यचर्या हाल खाली छ।"
+
+#: courses/templates/courses/course_detail.html:157
+msgid "You are viewing a preview of this course."
+msgstr "तपाईं यस पाठ्यक्रमको पूर्वावलोकन हेर्दै हुनुहुन्छ।"
+
+#: courses/templates/courses/course_detail.html:158
+#, python-format
+msgid ""
+"\n"
+"                <p class=\"text-muted small mb-2\">Enroll to unlock all %(count)s modules.</p>\n"
+"                "
+msgstr ""
+"\n"
+"                <p class=\"text-muted small mb-2\">सबै %(count)s मोड्युलहरू खोल्न भर्ना हुनुहोस्।</p>\n"
+"                "
+
+#: courses/templates/courses/course_detail.html:162
+msgid "Enroll Now"
+msgstr "अहिले नै भर्ना हुनुहोस्"
+
+#: courses/templates/courses/course_detail.html:170
+#: courses/templates/courses/lecture_detail.html:109
+msgid "Preview"
+msgstr "पूर्वावलोकन"
+
+#: courses/templates/courses/course_detail.html:201
+msgid "Discussion Board"
+msgstr "छलफल बोर्ड"
+
+#: courses/templates/courses/course_detail.html:202
+#, python-format
+msgid ""
+"\n"
+"        <p class=\"text-muted small mb-3\">Have a question? Join the %(count)s comments in the course community.</p>\n"
+"        "
+msgstr ""
+"\n"
+"        <p class=\"text-muted small mb-3\">केही प्रश्न छ? पाठ्यक्रम समुदायमा रहेका %(count)s टिप्पणीहरूमा सामेल हुनुहोस्।</p>\n"
+"        "
+
+#: courses/templates/courses/course_detail.html:206
+msgid "Open Discussion"
+msgstr "छलफल खोल्नुहोस्"
+
+#: courses/templates/courses/course_detail.html:212
+msgid "Leave a Review"
+msgstr "समीक्षा छोड्नुहोस्"
+
+#: courses/templates/courses/course_detail.html:214
+msgid "Your Rating"
+msgstr "तपाईंको रेटिङ"
+
+#: courses/templates/courses/course_detail.html:226
+msgid "Share what you thought about this course…"
+msgstr "यस पाठ्यक्रमको बारेमा आफ्ना विचारहरू साझा गर्नुहोस्…"
+
+#: courses/templates/courses/course_detail.html:227
+msgid "Submit Review"
+msgstr "समीक्षा बुझाउनुस्"
+
+#: courses/templates/courses/course_detail.html:234
+msgid "Student Reviews"
+msgstr "विद्यार्थी समीक्षाहरू"
+
+#: courses/templates/courses/course_detail.html:235
+#, python-format
+msgid ""
+"\n"
+"        <p class=\"review-summary\">Average rating: <strong>%(rating)s / 5</strong> &nbsp;·&nbsp; %(count)s reviews</p>\n"
+"        "
+msgstr ""
+"\n"
+"        <p class=\"review-summary\">औसत रेटिङ: <strong>%(rating)s / ५</strong> &nbsp;·&nbsp; %(count)s समीक्षाहरू</p>\n"
+"        "
+
+#: courses/templates/courses/course_detail.html:257
+msgid "No reviews yet. Be the first to share your thoughts!"
+msgstr "अहिलेसम्म कुनै समीक्षा छैन। आफ्नो विचार साझा गर्ने पहिलो व्यक्ति बन्नुहोस्!"
+
+#: courses/templates/courses/lecture_detail.html:16
+msgid "Edit Unit"
+msgstr "एकाइ सम्पादन गर्नुस्"
+
+#: courses/templates/courses/lecture_detail.html:21
+msgid "Current Unit"
+msgstr "हालको एकाइ"
+
+#: courses/templates/courses/lecture_detail.html:27
+msgid "Play Instructional Video"
+msgstr "शिक्षण भिडियो चलाउनुस्"
+
+#: courses/templates/courses/lecture_detail.html:33
+msgid "Unit Description"
+msgstr "एकाइ विवरण"
+
+#: courses/templates/courses/lecture_detail.html:36
+msgid "System: No instructional notes provided for this module."
+msgstr "प्रणाली: यस मोड्युलको लागि कुनै शिक्षण नोटहरू उपलब्ध छैनन्।"
+
+#: courses/templates/courses/lecture_detail.html:41
+msgid "Supplementary Files"
+msgstr "पूरक फाइलहरू"
+
+#: courses/templates/courses/lecture_detail.html:56
+msgid "No files indexed in directory."
+msgstr "निर्देशिकामा कुनै फाइलहरू सूचीकृत छैनन्।"
+
+#: courses/templates/courses/lecture_detail.html:62
+msgid "Material Indexing"
+msgstr "सामग्री अनुक्रमण"
+
+#: courses/templates/courses/lecture_detail.html:65
+msgid "Resource Title"
+msgstr "स्रोतको शीर्षक"
+
+#: courses/templates/courses/lecture_detail.html:67
+msgid "URL"
+msgstr "यूआरएल (URL)"
+
+#: courses/templates/courses/lecture_detail.html:68
+#: courses/templates/courses/lecture_detail.html:132
+msgid "Upload"
+msgstr "अपलोड गर्नुस्"
+
+#: courses/templates/courses/lecture_detail.html:73
+msgid "Unit Assessment"
+msgstr "एकाइ मूल्याङ्कन"
+
+#: courses/templates/courses/lecture_detail.html:100
+msgid "Delete Quiz"
+msgstr "क्विज हटाउनुस्"
+
+#: courses/templates/courses/lecture_detail.html:104
+msgid "Check Results"
+msgstr "नतिजा जाँच गर्नुस्"
+
+#: courses/templates/courses/lecture_detail.html:110
+msgid "No automated quiz indexed."
+msgstr "कुनै पनि स्वचालित क्विज सूचीकृत छैन।"
+
+#: courses/templates/courses/lecture_detail.html:115
+msgid "+ Initialize Quiz"
+msgstr "+ क्विज सुरु गर्नुस्"
+
+#: courses/templates/courses/lecture_detail.html:123
+msgid "Assignments"
+msgstr "असाइनमेन्टहरू"
+
+#: courses/templates/courses/lecture_detail.html:138
+#, python-format
+msgid "Logged: %(file_name)s"
+msgstr "दर्ता भएको: %(file_name)s"
+
+#: courses/templates/courses/lecture_detail.html:143
+#, python-format
+msgid "Due %(due_date)s"
+msgstr "बुझाउने मिति: %(due_date)s"
+
+#: courses/templates/courses/lecture_detail.html:151
+#, python-format
+msgid "Grade: %(grade)s / %(max)s"
+msgstr "अङ्क: %(grade)s / %(max)s"
+
+#: courses/templates/courses/lecture_detail.html:129
+msgid "Review Log"
+msgstr "समीक्षा लग"
+
+#: courses/templates/courses/lecture_detail.html:132
+msgid "Replace"
+msgstr "बदल्नुस्"
+
+#: courses/templates/courses/lecture_detail.html:164
+msgid "No active assignments found."
+msgstr "कुनै सक्रिय असाइनमेन्टहरू भेटिएनन्।"
+
+#: courses/templates/courses/lecture_detail.html:169
+msgid "Initialize New Assignment"
+msgstr "नयाँ असाइनमेन्ट सुरु गर्नुस्"
+
+#: courses/templates/courses/lecture_detail.html:178
+msgid "Registry Status: Completed"
+msgstr "दर्ता स्थिति: पूरा भएको"
+
+#: courses/templates/courses/lecture_detail.html:180
+msgid "Registry Status: Pending"
+msgstr "दर्ता स्थिति: बाँकी"
+
+#: courses/templates/courses/lecture_detail.html:187
+msgid "Reset Progress"
+msgstr "प्रगति रिसेट गर्नुस्"
+
+#: courses/templates/courses/lecture_detail.html:187
+msgid "Mark Complete"
+msgstr "पूरा भएको चिन्ह लगाउनुस्"
+
+#: templates/base.html:8
+msgid "LMS Platform"
+msgstr "शिक्षण व्यवस्थापन प्रणाली"
+
+#: templates/base.html:18
+msgid "LMS"
+msgstr "शि.व्य.प्र."
+
+#: templates/base.html:20
+msgid "Catalog"
+msgstr "पाठ्यक्रम सूची"
+
+#: templates/base.html:21
+msgid "About"
+msgstr "हाम्रोबारे"
+
+#: templates/base.html:22
+msgid "Contact"
+msgstr "सम्पर्क"
+
+#: templates/base.html:32
+msgid "Logout"
+msgstr "बाहिर निस्कनुस्"
+
+#: templates/base.html:36
+msgid "Login"
+msgstr "लगइन गर्नुस्"
+
+#: templates/base.html:58
+#, python-format
+msgid "© %(year)s LMS"
+msgstr "© %(year)s शि.व्य.प्र."
+
+#: templates/base.html:61
+msgid "Built for focused learning"
+msgstr "केन्द्रित सिकाइका लागि निर्मित"
+
+#: templates/base.html:64
+msgid "GitHub"
+msgstr "गिटहब"
+
+#: templates/base.html:65
+msgid "LinkedIn"
+msgstr "लिंक्डइन"
+
+#: templates/base.html:66
+msgid "Twitter"
+msgstr "ट्विटर"

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% block title %}{{ lecture.title }}{% endblock %}
 
 {% block extra_css %}
@@ -11,34 +12,37 @@
 <div class="lecture-wrapper">
     <nav class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
         <a href="{% url 'courses:course_detail' course.id %}" class="btn-dir">
-            <i class="bi bi-arrow-left"></i> Curriculum
+            <i class="bi bi-arrow-left"></i> {% trans "Curriculum" %}
         </a>
         {% if is_teacher %}
-            <a href="{% url 'courses:edit_lecture' lecture.id %}" class="btn-dir">Edit Unit</a>
+            <a href="{% url 'courses:edit_lecture' lecture.id %}" class="btn-dir">{% trans "Edit Unit" %}</a>
         {% endif %}
     </nav>
 
     <div class="row g-4 mb-4">
         <div class="col-lg-8">
-            <span class="dir-label">Current Unit</span>
+            <span class="dir-label">{% trans "Current Unit" %}</span>
             <h1 class="dir-title">{{ lecture.title }}</h1>
             
             {% if lecture.video_url %}
             <div class="d-flex align-items-center justify-content-between p-3 mb-4 bg-light border rounded-3">
                 <a href="{{ lecture.video_url }}" target="_blank" class="btn-dir btn-dir-dark">
-                    <i class="bi bi-play-fill"></i> Play Instructional Video
+                    <i class="bi bi-play-fill"></i> {% trans "Play Instructional Video" %}
                 </a>
             </div>
             {% endif %}
 
             <div class="lecture-body">
-                <span class="dir-label">Unit Description</span>
-                {{ lecture.notes|linebreaks|default:"<p class='text-muted fst-italic'>System: No instructional notes provided for this module.</p>" }}
+                <span class="dir-label">{% trans "Unit Description" %}</span>
+                {{ lecture.notes|linebreaks|default_if_none:"" }}
+                {% if not lecture.notes %}
+                    <p class='text-muted fst-italic'>{% trans "System: No instructional notes provided for this module." %}</p>
+                {% endif %}
             </div>
         </div>
 
         <div class="col-lg-4">
-            <span class="dir-label">Supplementary Files</span>
+            <span class="dir-label">{% trans "Supplementary Files" %}</span>
             <div class="resource-box">
                 {% for material in lecture.materials.all %}
                 <div class="resource-item">
@@ -53,25 +57,25 @@
                     {% endif %}
                 </div>
                 {% empty %}
-                <p class="text-muted small mb-0">No files indexed in directory.</p>
+                <p class="text-muted small mb-0">{% trans "No files indexed in directory." %}</p>
                 {% endfor %}
             </div>
 
             {% if is_teacher %}
             <div class="mt-3 p-3 border rounded-3 bg-light">
-                <span class="dir-label mb-2 d-block">Material Indexing</span>
+                <span class="dir-label mb-2 d-block">{% trans "Material Indexing" %}</span>
                 <form action="{% url 'materials:lecture_materials' lecture.id %}" method="POST">
                     {% csrf_token %}
-                    <input type="text" name="title" class="dir-input mb-2 w-100" placeholder="Resource Title" required>
+                    <input type="text" name="title" class="dir-input mb-2 w-100" placeholder="{% trans 'Resource Title' %}" required>
                     <div class="d-flex align-items-center">
-                        <input type="url" name="link" class="dir-input" placeholder="URL" required style="flex: 1; margin-right: 10px;">
-                        <button type="submit" class="btn-dir btn-dir-dark" style="white-space: nowrap;">Upload</button>
+                        <input type="url" name="link" class="dir-input" placeholder="{% trans 'URL' %}" required style="flex: 1; margin-right: 10px;">
+                        <button type="submit" class="btn-dir btn-dir-dark" style="white-space: nowrap;">{% trans "Upload" %}</button>
                     </div>
                 </form>
             </div>
             {% endif %}
 
-            <span class="dir-label mt-4">Unit Assessment</span>
+            <span class="dir-label mt-4">{% trans "Unit Assessment" %}</span>
             <div class="resource-box">
                 {% for quiz in lecture.quizzes.all %}
                 <div class="resource-item">
@@ -79,39 +83,30 @@
                         <i class="bi bi-patch-question-fill me-1"></i> {{ quiz.title }}
                     </a>
                     {% if is_teacher %}
-		    
-		    <div class="d-flex justify-content-end align-items-center gap-4">
-    
-   
-
-    <a href="{% url 'quiz:delete_quiz' quiz.id %}" 
-       class="text-muted small-delete" 
-       title="Delete Quiz">
-       Delete
-    </a>
-
-     <a href="{% url 'quiz:manage_results' quiz.id %}" 
-       class="text-muted" 
-       title="View Results">
-       Check Results 
-    </a>
-
-</div>
-
-
-				     {% endif %}
+                    <div class="d-flex justify-content-end align-items-center gap-4">
+                        <a href="{% url 'quiz:delete_quiz' quiz.id %}" 
+                           class="text-muted small-delete" 
+                           title="{% trans 'Delete Quiz' %}">
+                            {% trans "Delete" %}
+                        </a>
+                        <a href="{% url 'quiz:manage_results' quiz.id %}" 
+                           class="text-muted" 
+                           title="{% trans 'View Results' %}">
+                            {% trans "Check Results" %}
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
                 {% empty %}
-                <p class="text-muted small mb-0">No automated quiz indexed.</p>
+                <p class="text-muted small mb-0">{% trans "No automated quiz indexed." %}</p>
                 {% endfor %}
                 
                 {% if is_teacher %}
                 <div class="mt-2 pt-2 border-top">
                     <a href="{% url 'quiz:create_quiz' lecture.id %}" class="dir-nav-link text-primary">
-                        + Initialize Quiz
+                        {% trans "+ Initialize Quiz" %}
                     </a>
-	            </div> 
-		 
+                </div> 
                 {% endif %}
             </div>
         </div>
@@ -119,7 +114,7 @@
 
     <div class="assignment-registry">
         <div class="registry-header">
-            <i class="bi bi-list-check me-2"></i>Assignments
+            <i class="bi bi-list-check me-2"></i>{% trans "Assignments" %}
         </div>
 
         {% for assignment in assignments %}
@@ -132,39 +127,41 @@
                 <div class="assignment-meta">
                     {% if assignment.user_submission %}
                         <span class="submission-status">
-                            <i class="bi bi-check-all"></i> Logged: {{ assignment.user_submission.file.name|truncatechars:20 }}
+                            <i class="bi bi-check-all"></i> 
+                            {% blocktrans with file_name=assignment.user_submission.file.name|truncatechars:20 %}Logged: {{ file_name }}{% endblocktrans %}
                         </span>
                     {% endif %}
                     {% if assignment.due_date %}
                         <span class="due-badge">
-                            <i class="bi bi-calendar3"></i> Due {{ assignment.due_date|date:"d M Y" }}
+                            <i class="bi bi-calendar3"></i> 
+                            {% blocktrans with due_date=assignment.due_date|date:"d M Y" %}Due {{ due_date }}{% endblocktrans %}
                         </span>
                     {% endif %}
                 </div>
-		{% if assignment.user_submission.grade is not None %}
-<div class="mt-2">
-    <span class="due-badge" style="background: #dcfce7; color: #166534;">
-        <i class="bi bi-star-fill me-1"></i>
-        Grade: {{ assignment.user_submission.grade }} / {{ assignment.max_points }}
-    </span>
-    {% if assignment.user_submission.feedback %}
-    <p class="text-muted small mt-1 mb-0">
-        <i class="bi bi-chat-left-text me-1"></i> {{ assignment.user_submission.feedback }}
-    </p>
-    {% endif %}
-</div>
-{% endif %}
+                {% if assignment.user_submission.grade is not None %}
+                <div class="mt-2">
+                    <span class="due-badge" style="background: #dcfce7; color: #166534;">
+                        <i class="bi bi-star-fill me-1"></i>
+                        {% blocktrans with grade=assignment.user_submission.grade max=assignment.max_points %}Grade: {{ grade }} / {{ max }}{% endblocktrans %}
+                    </span>
+                    {% if assignment.user_submission.feedback %}
+                    <p class="text-muted small mt-1 mb-0">
+                        <i class="bi bi-chat-left-text me-1"></i> {{ assignment.user_submission.feedback }}
+                    </p>
+                    {% endif %}
+                </div>
+                {% endif %}
             </div>
             <div class="assignment-actions">
                 {% if is_teacher %}
-		    <a href="{% url 'courses:edit_assignment' assignment.id %}" class="btn-dir">Edit</a>
-                    <a href="{% url 'courses:review_assignment' assignment.id %}" class="btn-dir">Review Log</a>
+                    <a href="{% url 'courses:edit_assignment' assignment.id %}" class="btn-dir">{% trans "Edit" %}</a>
+                    <a href="{% url 'courses:review_assignment' assignment.id %}" class="btn-dir">{% trans "Review Log" %}</a>
                 {% else %}
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <input type="hidden" name="assignment_id" value="{{ assignment.id }}">
                         <label for="file_{{ assignment.id }}" class="btn-dir btn-dir-dark">
-                            {% if assignment.user_submission %}Replace{% else %}Upload{% endif %}
+                            {% if assignment.user_submission %}{% trans "Replace" %}{% else %}{% trans "Upload" %}{% endif %}
                         </label>
                         <input type="file" name="file" id="file_{{ assignment.id }}" hidden onchange="this.form.submit()">
                     </form>
@@ -172,13 +169,13 @@
             </div>
         </div>
         {% empty %}
-        <div class="p-4 text-center text-muted small">No active assignments found.</div>
+        <div class="p-4 text-center text-muted small">{% trans "No active assignments found." %}</div>
         {% endfor %}
 
         {% if is_teacher %}
         <div class="p-3 text-center border-top bg-light">
             <a href="{% url 'courses:create_assignment' lecture.id %}" class="btn-dir">
-                <i class="bi bi-plus-lg me-1"></i> Initialize New Assignment
+                <i class="bi bi-plus-lg me-1"></i> {% trans "Initialize New Assignment" %}
             </a>
         </div>
         {% endif %}
@@ -187,16 +184,16 @@
         <div class="status-row">
             <span class="fw-semibold text-uppercase small">
                 {% if completed %}
-                    <span class="text-success"><i class="bi bi-check-circle-fill me-1"></i> Registry Status: Completed</span>
+                    <span class="text-success"><i class="bi bi-check-circle-fill me-1"></i> {% trans "Registry Status: Completed" %}</span>
                 {% else %}
-                    <span class="text-secondary">Registry Status: Pending</span>
+                    <span class="text-secondary">{% trans "Registry Status: Pending" %}</span>
                 {% endif %}
             </span>
             <form method="post">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="{% if completed %}unmark{% else %}mark{% endif %}">
                 <button type="submit" class="btn-dir {% if not completed %}btn-dir-dark{% endif %}">
-                    {% if completed %}Reset Progress{% else %}Mark Complete{% endif %}
+                    {% if completed %}{% trans "Reset Progress" %}{% else %}{% trans "Mark Complete" %}{% endif %}
                 </button>
             </form>
         </div>

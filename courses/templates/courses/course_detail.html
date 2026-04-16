@@ -1,24 +1,25 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
-{% block title %} {{ course.title }} {% endblock %}
+{% block title %}{{ course.title }}{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/course.css' %}">
 {% endblock %}
 
 {% block content %}
-
 <div class="course-page-container">
 
     {% if role == "teacher" and course.teacher == request.user %}
     <div class="management-bar">
         <span class="role-text"
-            style="color: #f59e0b; font-weight: 700; font-size: 0.8rem; text-transform: uppercase;">Instructor
-            Mode</span>
+            style="color: #f59e0b; font-weight: 700; font-size: 0.8rem; text-transform: uppercase;">
+            {% trans "Instructor Mode" %}
+        </span>
         <div class="d-flex gap-2">
-            <a href="{% url 'courses:add_module' course.id %}" class="btn-minimal btn-blue">+ Add Module</a>
-            <a href="{% url 'courses:edit_course' course.id %}" class="btn-minimal btn-blue">Settings</a>
-            <a href="{% url 'courses:delete_course' course.id %}" class="btn-minimal text-danger">Delete Course</a>
+            <a href="{% url 'courses:add_module' course.id %}" class="btn-minimal btn-blue">{% trans "+ Add Module" %}</a>
+            <a href="{% url 'courses:edit_course' course.id %}" class="btn-minimal btn-blue">{% trans "Settings" %}</a>
+            <a href="{% url 'courses:delete_course' course.id %}" class="btn-minimal text-danger">{% trans "Delete Course" %}</a>
         </div>
     </div>
     {% endif %}
@@ -45,7 +46,7 @@
             </span>
             {% if course.is_free %}
             <span class="badge badge-free">
-                <i class="bi bi-gift"></i> Free
+                <i class="bi bi-gift"></i> {% trans "Free" %}
             </span>
             {% else %}
             <span class="badge badge-paid">
@@ -60,30 +61,33 @@
         </div>
 
         <div class="course-meta">
-            <span>Instructor: <strong>{{ course.teacher.username }}</strong></span>
-            <span>Enrolled: <strong>{{ enrolled_students_count }} students</strong></span>
+            {% blocktrans with teacher=course.teacher.username %}
+                <span>Instructor: <strong>{{ teacher }}</strong></span>
+            {% endblocktrans %}
+            {% blocktrans with count=enrolled_students_count %}
+                <span>Enrolled: <strong>{{ count }} students</strong></span>
+            {% endblocktrans %}
             <span style="display:inline-flex; align-items:center; gap:4px;">
-                Rating:
+                {% trans "Rating:" %}
                 <span class="star-display">
                     {% for i in "12345" %}
-                    {% if forloop.counter <= rounded_rating|default:0 %} <span class="filled">★</span>
-                {% else %}
-                <span class="empty">★</span>
-                {% endif %}
-                {% endfor %}
-            </span>
-            <strong style="margin-left:2px;">{{ avg_rating|floatformat:1 }}</strong>
+                        {% if forloop.counter <= rounded_rating|default:0 %}
+                            <span class="filled">★</span>
+                        {% else %}
+                            <span class="empty">★</span>
+                        {% endif %}
+                    {% endfor %}
+                </span>
+                <strong style="margin-left:2px;">{{ avg_rating|floatformat:1 }}</strong>
             </span>
         </div>
 
-        <!-- analytic part -->
         {% if role == "teacher" and course.teacher == request.user %}
         <div class="management-bar">
             <div class="d-flex gap-2">
                 <a href="{% url 'courses:course_analytics' course.id %}" class="btn-minimal btn-purple">
-                    <i class="bi bi-graph-up"></i> View Analytics
+                    <i class="bi bi-graph-up"></i> {% trans "View Analytics" %}
                 </a>
-              
             </div>
         </div>
         {% endif %}
@@ -91,14 +95,14 @@
         {% if role == "student" and is_enrolled %}
         <div class="progress-section">
             <div class="progress-text">
-                <span>Completion</span>
+                <span>{% trans "Completion" %}</span>
                 <span>{{ progress_percent }}%</span>
             </div>
             <div class="progress-track">
                 <div class="progress-fill" style="width: {{ progress_percent }}%;"></div>
             </div>
             <a href="{% url 'courses:unenroll_course' course.id %}?next={{ request.path }}" class="unenroll-link">
-                Unenroll from course
+                {% trans "Unenroll from course" %}
             </a>
         </div>
         {% endif %}
@@ -106,110 +110,108 @@
     </header>
 
     <main class="content-area">
-        <h2 class="curriculum-title">Curriculum</h2>
+        <h2 class="curriculum-title">{% trans "Curriculum" %}</h2>
 
         {% if has_full_access %}
-        {% for module in modules %}
-        <section class="module-group">
-            <div class="module-label">
-                <span>{{ module.title }}</span>
-                {% if role == "teacher" and course.teacher == request.user %}
-                <div>
-                    <a href="{% url 'courses:add_lecture' module.id %}" class="edit-text action-text">+ Add Lecture</a>
-                    <a href="{% url 'courses:edit_module' module.id %}" class="edit-text action-text">Edit</a>
-                    <a href="{% url 'courses:delete_module' module.id %}" class="delete-text action-text">Delete
-                        Module</a>
-                </div>
-                {% endif %}
-            </div>
-            <div class="lecture-list">
-                {% for lecture in module.lectures.all %}
-                <div class="lecture-item">
-                    <div class="d-flex align-items-center">
-                        <a href="{% url 'courses:lecture_detail' lecture.id %}" class="lecture-link">
-                            <i class="bi bi-play-circle"></i> {{ lecture.title }}
-                        </a>
-                    </div>
+            {% for module in modules %}
+            <section class="module-group">
+                <div class="module-label">
+                    <span>{{ module.title }}</span>
                     {% if role == "teacher" and course.teacher == request.user %}
-                    <div class="item-actions">
-                        <a href="{% url 'courses:edit_lecture' lecture.id %}" class="edit-text action-text">Edit</a>
-                        <a href="{% url 'courses:delete_lecture' lecture.id %}"
-                            class="delete-text action-text">Delete</a>
+                    <div>
+                        <a href="{% url 'courses:add_lecture' module.id %}" class="edit-text action-text">{% trans "+ Add Lecture" %}</a>
+                        <a href="{% url 'courses:edit_module' module.id %}" class="edit-text action-text">{% trans "Edit" %}</a>
+                        <a href="{% url 'courses:delete_module' module.id %}" class="delete-text action-text">{% trans "Delete Module" %}</a>
                     </div>
                     {% endif %}
                 </div>
-                {% empty %}
-                <div class="p-3 text-center text-muted small">No lectures added yet.</div>
-                {% endfor %}
+                <div class="lecture-list">
+                    {% for lecture in module.lectures.all %}
+                    <div class="lecture-item">
+                        <div class="d-flex align-items-center">
+                            <a href="{% url 'courses:lecture_detail' lecture.id %}" class="lecture-link">
+                                <i class="bi bi-play-circle"></i> {{ lecture.title }}
+                            </a>
+                        </div>
+                        {% if role == "teacher" and course.teacher == request.user %}
+                        <div class="item-actions">
+                            <a href="{% url 'courses:edit_lecture' lecture.id %}" class="edit-text action-text">{% trans "Edit" %}</a>
+                            <a href="{% url 'courses:delete_lecture' lecture.id %}" class="delete-text action-text">{% trans "Delete" %}</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% empty %}
+                    <div class="p-3 text-center text-muted small">{% trans "No lectures added yet." %}</div>
+                    {% endfor %}
+                </div>
+            </section>
+            {% empty %}
+            <div class="p-5 text-center border rounded">
+                <p class="text-muted">{% trans "This course curriculum is currently empty." %}</p>
             </div>
-        </section>
-        {% empty %}
-        <div class="p-5 text-center border rounded">
-            <p class="text-muted">This course curriculum is currently empty.</p>
-        </div>
-        {% endfor %}
+            {% endfor %}
 
         {% else %}
-        {% if role != "teacher" %}
-        <div class="p-3 mb-3 border rounded-3 bg-light text-center">
-            <p class="mb-1 fw-semibold">You are viewing a preview of this course.</p>
-            <p class="text-muted small mb-2">Enroll to unlock all {{ modules.count }} modules.</p>
-            <a href="{% url 'courses:enroll_course' course.id %}?next={{ request.path }}"
-                class="btn-minimal btn-blue">Enroll Now</a>
-        </div>
-        {% endif %}
-
-        {% with modules.first as preview_module %}
-        {% if preview_module %}
-        <section class="module-group mt-4" style="opacity: 0.85;">
-            <div class="module-label">
-                <span>{{ preview_module.title }} <span class="text-muted small">(Preview)</span></span>
+            {% if role != "teacher" %}
+            <div class="p-3 mb-3 border rounded-3 bg-light text-center">
+                <p class="mb-1 fw-semibold">{% trans "You are viewing a preview of this course." %}</p>
+                {% blocktrans with count=modules.count %}
+                <p class="text-muted small mb-2">Enroll to unlock all {{ count }} modules.</p>
+                {% endblocktrans %}
+                <a href="{% url 'courses:enroll_course' course.id %}?next={{ request.path }}"
+                    class="btn-minimal btn-blue">{% trans "Enroll Now" %}</a>
             </div>
-            <div class="lecture-list">
-                {% with preview_module.lectures.first as preview_lecture %}
-                {% if preview_lecture %}
-                <div class="lecture-item">
-                    <div class="d-flex align-items-center">
-                        <span class="lecture-link" style="cursor: default;">
-                            <i class="bi bi-play-circle"></i> {{ preview_lecture.title }}
-                        </span>
-                    </div>
+            {% endif %}
+
+            {% with modules.first as preview_module %}
+            {% if preview_module %}
+            <section class="module-group mt-4" style="opacity: 0.85;">
+                <div class="module-label">
+                    <span>{{ preview_module.title }} <span class="text-muted small">({% trans "Preview" %})</span></span>
                 </div>
-                {% endif %}
-                {% endwith %}
-            </div>
-        </section>
+                <div class="lecture-list">
+                    {% with preview_module.lectures.first as preview_lecture %}
+                    {% if preview_lecture %}
+                    <div class="lecture-item">
+                        <div class="d-flex align-items-center">
+                            <span class="lecture-link" style="cursor: default;">
+                                <i class="bi bi-play-circle"></i> {{ preview_lecture.title }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+            </section>
 
-        {% for module in modules %}
-        {% if not forloop.first %}
-        <section class="module-group" style="filter: blur(3px); pointer-events: none; user-select: none;">
-            <div class="module-label"><span>{{ module.title }}</span></div>
-        </section>
-        {% endif %}
-        {% endfor %}
+            {% for module in modules %}
+            {% if not forloop.first %}
+            <section class="module-group" style="filter: blur(3px); pointer-events: none; user-select: none;">
+                <div class="module-label"><span>{{ module.title }}</span></div>
+            </section>
+            {% endif %}
+            {% endfor %}
 
-        {% endif %}
-        {% endwith %}
+            {% endif %}
+            {% endwith %}
         {% endif %}
     </main>
 
     <div class="discussion-box">
-        <h4 class="fw-bold mb-2">Discussion Board</h4>
-        <p class="text-muted small mb-3">Have a question? Join the {{ comment_count }} comments in the course community.
-        </p>
+        <h4 class="fw-bold mb-2">{% trans "Discussion Board" %}</h4>
+        {% blocktrans with count=comment_count %}
+        <p class="text-muted small mb-3">Have a question? Join the {{ count }} comments in the course community.</p>
+        {% endblocktrans %}
         <a href="{% url 'discussion:course_discussion' course.id %}" class="btn-minimal btn-dark px-4 py-2">
-            Open Discussion
+            {% trans "Open Discussion" %}
         </a>
     </div>
 
-
-
-    <!-- ── Leave a review (students who haven't reviewed yet) ── -->
     {% if role == "student" and not user_review %}
     <div class="review-section">
-        <p class="section-title">Leave a Review</p>
+        <p class="section-title">{% trans "Leave a Review" %}</p>
         <div class="review-form-wrap">
-            <p class="review-form-label">Your Rating</p>
+            <p class="review-form-label">{% trans "Your Rating" %}</p>
             <form method="POST" id="reviewForm">
                 {% csrf_token %}
                 <div class="star-rating mb-3">
@@ -220,20 +222,19 @@
                     <span class="star" data-value="5">★</span>
                 </div>
                 <input type="hidden" name="rating" id="ratingInput">
-                <textarea name="comment" rows="3" placeholder="Share what you thought about this course…"></textarea>
-                <button type="submit" class="btn-submit">Submit Review</button>
+                <textarea name="comment" rows="3" 
+                    placeholder="{% trans "Share what you thought about this course…" %}"></textarea>
+                <button type="submit" class="btn-submit">{% trans "Submit Review" %}</button>
             </form>
         </div>
     </div>
     {% endif %}
 
-    <!-- ── Student Reviews list ── -->
     <div class="review-section">
-        <p class="section-title">Student Reviews</p>
-        <p class="review-summary">
-            Average rating: <strong>{{ avg_rating|floatformat:1 }} / 5</strong>
-            &nbsp;·&nbsp; {{ reviews.count }} review{{ reviews.count|pluralize }}
-        </p>
+        <p class="section-title">{% trans "Student Reviews" %}</p>
+        {% blocktrans with rating=avg_rating|floatformat:1 count=reviews.count %}
+        <p class="review-summary">Average rating: <strong>{{ rating }} / 5</strong> &nbsp;·&nbsp; {{ count }} reviews</p>
+        {% endblocktrans %}
 
         {% for review in reviews %}
         <div class="review-card">
@@ -243,16 +244,17 @@
             </div>
             <div class="review-stars">
                 {% for i in "12345" %}
-                {% if forloop.counter <= review.rating %} <span class="star-filled">★</span>
+                    {% if forloop.counter <= review.rating %}
+                        <span class="star-filled">★</span>
                     {% else %}
-                    <span class="star-empty">★</span>
+                        <span class="star-empty">★</span>
                     {% endif %}
-                    {% endfor %}
+                {% endfor %}
             </div>
             <p class="review-comment">{{ review.comment }}</p>
         </div>
         {% empty %}
-        <p class="empty-state">No reviews yet. Be the first to share your thoughts!</p>
+        <p class="empty-state">{% trans "No reviews yet. Be the first to share your thoughts!" %}</p>
         {% endfor %}
     </div>
 

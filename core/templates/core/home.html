@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Home{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Home" %}{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 {% endblock %}
@@ -9,22 +10,22 @@
     <!-- Hero Section -->
     <div class="hero-section">
         <div class="hero-content">
-            <span class="section-label">Education Platform</span>
-            <h1 class="hero-title">Learn. Grow. Succeed.</h1>
+            <span class="section-label">{% trans "Education Platform" %}</span>
+            <h1 class="hero-title">{% trans "Learn. Grow. Succeed." %}</h1>
             <p class="hero-subtext">
-                Access high-quality modules, track your progress, and master new skills with our unified Learning Management System.
+                {% trans "Access high-quality modules, track your progress, and master new skills with our unified Learning Management System." %}
             </p>
             <div class="hero-actions">
                 {% if not request.user.is_authenticated %}
                     <a href="{% url 'accounts:register' %}" class="btn-minimal btn-dark">
-                        Create Account
+                        {% trans "Create Account" %}
                     </a>
                     <a href="{% url 'accounts:login' %}" class="btn-minimal btn-blue-outline">
-                        Sign In
+                        {% trans "Sign In" %}
                     </a>
                 {% else %}
                     <a href="{% url 'courses:course_list' %}" class="btn-minimal btn-dark">
-                        Explore All Courses
+                        {% trans "Explore All Courses" %}
                     </a>
                 {% endif %}
             </div>
@@ -34,37 +35,35 @@
     <!-- Courses Section -->
     <div class="courses-section">
         {% if request.user.is_authenticated %}
-            <!-- Authenticated: Show Recommended Courses -->
             {% if recommended_courses %}
                 <div class="section-header">
-                    <span class="section-label">Recommended for You</span>
+                    <span class="section-label">{% trans "Recommended for You" %}</span>
                 </div>
                 <div class="course-grid">
                     {% for course in recommended_courses %}
                         <div class="course-card">
-				 {% if course.thumbnail %}
-        <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="course-thumbnail">
-    {% else %}
-        <div class="course-thumbnail-placeholder">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
-                <polyline points="21 15 16 10 5 21"/>
-            </svg>
-        </div>
-    {% endif %}
+                            {% if course.thumbnail %}
+                                <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="course-thumbnail">
+                            {% else %}
+                                <div class="course-thumbnail-placeholder">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+                                        <polyline points="21 15 16 10 5 21"/>
+                                    </svg>
+                                </div>
+                            {% endif %}
 
- <!-- SHOW RATING -->
-    <div class="stars">
-        {% for i in "12345" %}
-            {% if forloop.counter <= course.rounded_rating|default:0 %}
-                <span class="star filled">★</span>
-            {% else %}
-                <span class="star">★</span>
-            {% endif %}
-        {% endfor %}
-    </div>
+                            <div class="stars">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= course.rounded_rating|default:0 %}
+                                        <span class="star filled">★</span>
+                                    {% else %}
+                                        <span class="star">★</span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
 
-<div class="course-card-content">
+                            <div class="course-card-content">
                                 <h3 class="course-title">{{ course.title }}</h3>
                                 <p class="course-description">{{ course.description|truncatewords:20 }}</p>
                                 {% if course.instructor %}
@@ -81,32 +80,31 @@
                             </div>
                             <a href="{% url 'courses:course_detail' course.id %}" 
                                class="btn-minimal btn-blue-outline course-btn">
-                                View Course
+                                {% trans "View Course" %}
                             </a>
                         </div>
                     {% endfor %}
                 </div>
             {% else %}
                 <div class="section-header">
-                    <span class="section-label">Get Started</span>
-                    <p class="section-description">Browse our course catalog to begin your learning journey</p>
+                    <span class="section-label">{% trans "Get Started" %}</span>
+                    <p class="section-description">{% trans "Browse our course catalog to begin your learning journey" %}</p>
                 </div>
                 <div class="empty-state">
                     <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                         <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
                     </svg>
-                    <p class="empty-message">No recommendations yet. Start exploring courses to get personalized suggestions!</p>
+                    <p class="empty-message">{% trans "No recommendations yet. Start exploring courses to get personalized suggestions!" %}</p>
                     <a href="{% url 'courses:course_list' %}" class="btn-minimal btn-dark">
-                        Browse Courses
+                        {% trans "Browse Courses" %}
                     </a>
                 </div>
             {% endif %}
         {% else %}
-            <!-- Not Authenticated: Show Featured Courses -->
             <div class="section-header">
-                <span class="section-label">Featured Courses</span>
-                <p class="section-description">Explore our most popular courses and start learning today</p>
+                <span class="section-label">{% trans "Featured Courses" %}</span>
+                <p class="section-description">{% trans "Explore our most popular courses and start learning today" %}</p>
             </div>
             {% if courses %}
                 <div class="course-grid">
@@ -129,7 +127,7 @@
                             </div>
                             <a href="{% url 'courses:course_detail' course.id %}" 
                                class="btn-minimal btn-blue-outline course-btn">
-                                View Course
+                                {% trans "View Course" %}
                             </a>
                         </div>
                     {% endfor %}
@@ -140,7 +138,7 @@
                         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                         <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
                     </svg>
-                    <p class="empty-message">No featured courses available yet. Check back soon!</p>
+                    <p class="empty-message">{% trans "No featured courses available yet. Check back soon!" %}</p>
                 </div>
             {% endif %}
         {% endif %}

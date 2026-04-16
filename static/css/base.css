@@ -163,3 +163,66 @@
     padding: 2rem 20px;
     width: 100%;
 }
+
+/* Language Selector Aesthetics */
+.lang-form {
+    display: flex;
+    align-items: center;
+}
+
+.lang-select-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0 8px;
+    transition: all 0.2s ease;
+}
+
+.lang-select-wrapper:hover {
+    border-color: var(--text-muted);
+    background: #f8fafc;
+}
+
+.lang-icon {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-right: 4px;
+    pointer-events: none;
+}
+
+.lang-select {
+    appearance: none; /* Removes default browser styling */
+    -webkit-appearance: none;
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 6px 4px;
+    padding-right: 18px; /* Space for the custom arrow */
+    cursor: pointer;
+    outline: none;
+    font-family: inherit;
+}
+
+/* Custom indicator arrow */
+.lang-select-wrapper::after {
+    content: "";
+    width: 0.6em;
+    height: 0.4em;
+    background-color: var(--text-muted);
+    clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+    position: absolute;
+    right: 10px;
+    pointer-events: none;
+}
+
+/* Match focus state to your primary blue */
+.lang-select-wrapper:focus-within {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 2px rgba(30, 64, 175, 0.1);
+}
