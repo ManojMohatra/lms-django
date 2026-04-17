@@ -1,13 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
+
 {% block title %}{% trans "Home" %}{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 {% endblock %}
+
 {% block content %}
 <div class="home-wrapper">
-    <!-- Hero Section -->
     <div class="hero-section">
         <div class="hero-content">
             <span class="section-label">{% trans "Education Platform" %}</span>
@@ -32,13 +34,19 @@
         </div>
     </div>
 
-    <!-- Courses Section -->
     <div class="courses-section">
         {% if request.user.is_authenticated %}
             {% if recommended_courses %}
                 <div class="section-header">
-                    <span class="section-label">{% trans "Recommended for You" %}</span>
+                    <span class="section-label">
+                        {% if request.user.profile.role == "teacher" %}
+                            {% trans "Explore Courses" %}
+                        {% else %}
+                            {% trans "Recommended for You" %}
+                        {% endif %}
+                    </span>
                 </div>
+
                 <div class="course-grid">
                     {% for course in recommended_courses %}
                         <div class="course-card">
@@ -66,14 +74,15 @@
                             <div class="course-card-content">
                                 <h3 class="course-title">{{ course.title }}</h3>
                                 <p class="course-description">{{ course.description|truncatewords:20 }}</p>
-                                {% if course.instructor %}
+                                
+                                {% if course.teacher %}
                                     <div class="course-meta">
                                         <span class="meta-item">
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                                 <circle cx="12" cy="7" r="4"></circle>
                                             </svg>
-                                            {{ course.instructor.get_full_name|default:course.instructor.username }}
+                                            {{ course.teacher.get_full_name|default:course.teacher.username }}
                                         </span>
                                     </div>
                                 {% endif %}
@@ -87,40 +96,80 @@
                 </div>
             {% else %}
                 <div class="section-header">
-                    <span class="section-label">{% trans "Get Started" %}</span>
-                    <p class="section-description">{% trans "Browse our course catalog to begin your learning journey" %}</p>
+                    <span class="section-label">
+                        {% if request.user.profile.role == "teacher" %}
+                            {% trans "Quick Actions" %}
+                        {% else %}
+                            {% trans "Get Started" %}
+                        {% endif %}
+                    </span>
+                    <p class="section-description">
+                        {% if request.user.profile.role == "teacher" %}
+                            {% trans "Manage your curriculum or explore other teaching materials." %}
+                        {% else %}
+                            {% trans "Browse our course catalog to begin your learning journey." %}
+                        {% endif %}
+                    </p>
                 </div>
                 <div class="empty-state">
                     <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                         <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
                     </svg>
-                    <p class="empty-message">{% trans "No recommendations yet. Start exploring courses to get personalized suggestions!" %}</p>
+                    <p class="empty-message">
+                        {% if request.user.profile.role == "teacher" %}
+                            {% trans "No courses found in the directory." %}
+                        {% else %}
+                            {% trans "No recommendations yet. Start exploring courses to get personalized suggestions!" %}
+                        {% endif %}
+                    </p>
                     <a href="{% url 'courses:course_list' %}" class="btn-minimal btn-dark">
-                        {% trans "Browse Courses" %}
+                        {% trans "Browse Catalog" %}
                     </a>
                 </div>
             {% endif %}
         {% else %}
             <div class="section-header">
                 <span class="section-label">{% trans "Featured Courses" %}</span>
-                <p class="section-description">{% trans "Explore our most popular courses and start learning today" %}</p>
             </div>
+
             {% if courses %}
                 <div class="course-grid">
                     {% for course in courses %}
                         <div class="course-card">
+                            {% if course.thumbnail %}
+                                <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="course-thumbnail">
+                            {% else %}
+                                <div class="course-thumbnail-placeholder">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+                                        <polyline points="21 15 16 10 5 21"/>
+                                    </svg>
+                                </div>
+                            {% endif %}
+
+                            <div class="stars">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= course.rounded_rating|default:0 %}
+                                        <span class="star filled">★</span>
+                                    {% else %}
+                                        <span class="star">★</span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+
                             <div class="course-card-content">
                                 <h3 class="course-title">{{ course.title }}</h3>
                                 <p class="course-description">{{ course.description|truncatewords:20 }}</p>
-                                {% if course.instructor %}
+                                
+                                {% if course.teacher %}
                                     <div class="course-meta">
                                         <span class="meta-item">
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                                 <circle cx="12" cy="7" r="4"></circle>
                                             </svg>
-                                            {{ course.instructor.get_full_name|default:course.instructor.username }}
+                                            {{ course.teacher.get_full_name|default:course.teacher.username }}
                                         </span>
                                     </div>
                                 {% endif %}
