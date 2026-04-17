@@ -1,7 +1,7 @@
-  /* ── Wrapper ──────────────────────────────────────────────────────────────── */
+/* ── Wrapper ──────────────────────────────────────────────────────────────── */
 .courses-wrapper {
-    max-width: 900px;
-    margin: 2rem auto;
+    max-width: 950px;
+    margin: 2.5rem auto;
     font-family: sans-serif;
 }
 
@@ -10,24 +10,25 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    padding-bottom: 1.5rem;
+    padding-bottom: 1.75rem;
     border-bottom: 1px solid #e2e8f0;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
 }
 
 .catalog-info h2 {
     font-weight: 800;
-    color: #1e293b;
+    color: #0f172a;
     margin: 0;
-    font-size: 1.75rem;
+    font-size: 1.9rem;
+    letter-spacing: -0.02em;
 }
 
 .catalog-subtext {
     color: #94a3b8;
-    font-size: 0.85rem;
-    font-weight: 600;
+    font-size: 0.75rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
 }
 
 /* ── Search Bar ───────────────────────────────────────────────────────────── */
@@ -35,276 +36,314 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 8px;
-    padding-bottom: 1rem;
-    margin-bottom: 0.5rem;
+    gap: 10px;
+    padding: 0.75rem 0;
+    margin-bottom: 1rem;
     border-bottom: 1px solid #f1f5f9;
 }
 
 .search-input {
-    height: 30px;
-    padding: 0 10px;
-    font-size: 0.78rem;
+    height: 34px;
+    padding: 0 12px;
+    font-size: 0.8rem;
     font-weight: 600;
-    color: #1e293b;
-    background: transparent;
-    border: none;
-    border-bottom: 1.5px solid #e2e8f0;
-    border-radius: 0;
+    color: #0f172a; 
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
     outline: none;
-    transition: border-color 0.15s;
-    appearance: none;
-    -webkit-appearance: none;
+    transition: all 0.2s ease;
 }
 
-.search-input::placeholder { color: #cbd5e1; }
-.search-input:focus { border-bottom-color: #1e293b; }
-.search-input--wide { flex: 1; min-width: 160px; }
+.search-input::placeholder {
+  color: #64748b;   
+    font-weight: 500;
+}
+
+.search-input:focus {
+    border-color: #0f172a;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.05);
+}
+
+.search-input--wide { flex: 1; min-width: 180px; }
 
 .search-clear {
-    font-size: 0.72rem;
+     font-size: 0.78rem;
     font-weight: 700;
-    color: #cbd5e1;
-    text-decoration: none;
-    letter-spacing: 0.03em;
+    color: #475569; /* darker */
+    text-decoration: none;`
 }
-.search-clear:hover { color: #94a3b8; }
+.search-clear:hover { 
+ color: #0f172a;
+    text-decoration: underline;
+}
 
-/* ── Multi-select filter chip rows ───────────────────────────────────────── */
+/* ── Filter Chips ─────────────────────────────────────────────────────────── */
 .filter-group {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 5px;
-    padding: 0.5rem 0;
+    gap: 6px;
+    padding: 0.6rem 0;
     border-bottom: 1px solid #f1f5f9;
 }
 
-.filter-group:last-of-type {
-    margin-bottom: 0.75rem;
-}
-
 .filter-group-label {
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: #cbd5e1;
-    min-width: 60px;
-    margin-right: 4px;
+    letter-spacing: 0.08em;
+    margin-right: 6px;
+    color: #64748b;
 }
 
-/* Hide the real checkbox; the <label> is the clickable chip */
 .chip-label input[type="checkbox"] {
     position: absolute;
     opacity: 0;
-    width: 0;
-    height: 0;
-    pointer-events: none;
 }
 
 .chip-label {
-    display: inline-flex;
-    align-items: center;
-    padding: 3px 10px;
-    border-radius: 3px;
-    border: 1px solid #e2e8f0;
-    background: transparent;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: #f8fafc;
     font-size: 0.7rem;
     font-weight: 700;
-    color: #94a3b8;
     cursor: pointer;
-    user-select: none;
-    transition: background 0.12s, color 0.12s, border-color 0.12s;
-    letter-spacing: 0.02em;
+    transition: all 0.2s ease;
+    color: #475569; /* darker text */
+    border: 1px solid #cbd5e1;
 }
 
 .chip-label:hover {
-    background: #f8fafc;
-    color: #475569;
-    border-color: #cbd5e1;
+    background: #eef2ff;
+    color: #1e293b;
 }
 
-/* Active state — checked chip */
 .chip-label:has(input:checked),
 .chip-label.chip-active {
-    background: #1e293b;
-    color: #fff;
+    background: #0f172a;
+    color: #ffffff;
     border-color: #1e293b;
 }
 
-/* ── Active filter summary ────────────────────────────────────────────────── */
+/* ── Active Filters ───────────────────────────────────────────────────────── */
 .active-filters {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 1rem;
-    font-size: 0.72rem;
-}
-
-.active-filters-label {
-    color: #cbd5e1;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    gap: 8px;
+    margin: 1rem 0;
+    font-size: 0.75rem;
 }
 
 .filter-chip {
-    background: #f1f5f9;
-    color: #475569;
-    padding: 2px 8px;
-    border-radius: 3px;
+    background: #e2e8f0;
+    color: #1e293b;
+    padding: 4px 10px;
+    border-radius: 999px;
     font-weight: 700;
-    font-size: 0.7rem;
 }
 
 .result-count {
     margin-left: auto;
-    color: #cbd5e1;
+    color: #475569;
     font-weight: 700;
-    font-size: 0.72rem;
-    font-family: monospace;
+    font-size: 0.75rem;
 }
 
-/* ── Catalog List ─────────────────────────────────────────────────────────── */
-.catalog-list { border-top: 1px solid #f1f5f9; }
+/* ── Catalog List (Clean aligned list) ─────────────────────────── */
+.catalog-list {
+    border-top: 1px solid #e2e8f0;
+}
 
+/* ROW */
 .catalog-item {
-    display: flex;
+    display: grid;
+    grid-template-columns: 40px 2fr 2.5fr 260px; /* FIXED proportions */
     align-items: center;
-    padding: 14px 0;
+    padding: 12px 8px;
     border-bottom: 1px solid #f1f5f9;
-    transition: background-color 0.1s;
-    min-height: 52px;
+    transition: background 0.15s ease;
+    font-size: 0.9rem;
 }
 
+/* Hover */
 .catalog-item:hover {
-    background-color: #f8fafc;
-    margin-left: -10px;
-    padding-left: 10px;
-    border-radius: 4px;
+    background: #f8fafc;
 }
 
-/* Column 1: Number */
+/* Number */
 .item-number {
-    flex: 0 0 40px;
     font-family: monospace;
     font-size: 0.75rem;
-    color: #cbd5e1;
+    color: #94a3b8; /* darker */
 }
 
-/* Column 2: Title */
+/* Title */
 .item-title-box {
-    flex: 0 0 220px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: normal;
-    padding-right: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .item-title {
-    display: block;
-    font-weight: 700;
-    color: #1e293b;
+    font-weight: 600;
+    color: #0f172a;
     text-decoration: none;
     font-size: 0.95rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
-.item-title:hover { color: #0d6efd; }
+.item-title:hover {
+    color: #2563eb;
+}
 
-/* Column 3: Description */
+/* Description (FIXED readability) */
 .item-desc {
-    flex: 1;
-    color: #64748b;
+    color: #475569; /* MUCH better contrast */
     font-size: 0.85rem;
-    margin: 0;
-    white-space: nowrap;
+    line-height: 1.4;
     overflow: hidden;
     text-overflow: ellipsis;
-    border-left: 1px solid #e2e8f0;
-    padding-left: 15px;
+    white-space: nowrap;
 }
 
-/* Column 4: Actions */
+/* Right Section (aligned properly) */
 .item-actions {
-    flex: 0 0 220px;
     display: flex;
     align-items: center;
-    gap: 15px;
-    padding-left: 20px;
+    justify-content: flex-end;
+    gap: 12px;
 }
 
+/* Instructor */
 .instructor-name {
-    flex: 0 0 60px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: #64748b;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #334155; /* darker */
     text-transform: uppercase;
+    min-width: 70px;
     text-align: right;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
-/* ── Difficulty badge ─────────────────────────────────────────────────────── */
+/* Difficulty */
 .diff-badge {
-    flex: 0 0 80px;
-    font-size: 0.65rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #94a3b8;
-    font-family: monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #475569;
+    min-width: 80px;
     text-align: right;
 }
 
-.diff-badge--advanced { color: #64748b; }
-
-/* ── Buttons ──────────────────────────────────────────────────────────────── */
+/* Buttons */
 .btn-minimal {
     padding: 4px 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+}
+
+/* Primary */
+.btn-dark {
+    background: #0f172a;
+    color: white;
+    box-shadow: 0 3px 8px rgba(15, 23, 42, 0.15);
+}
+
+.btn-dark:hover {
+    background: #1e293b;
+    transform: translateY(-1px);
+}
+
+/* Secondary */
+.btn-blue {
+    background: #eff6ff;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+.btn-blue:hover {
+    background: #dbeafe;
+}
+
+/* Status */
+.status-enrolled {
+    color: #059669;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.unenroll-text {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #dc2626;
+}
+
+.unenroll-text:hover {
+    text-decoration: underline;
+}
+
+/* Remove tag clutter */
+.item-tags {
+    display: none;
+}
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
+.btn-minimal {
+    padding: 5px 14px;
     font-size: 0.8rem;
     font-weight: 700;
-    border-radius: 4px;
-    text-decoration: none;
-    transition: 0.2s;
-    border: none;
+    border-radius: 6px;
+    transition: all 0.2s ease;
     cursor: pointer;
 }
 
-.btn-blue { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
-.btn-blue:hover { background: #dbeafe; }
-
-.btn-dark { background: #1e293b; color: white; }
-.btn-dark:hover { background: #334155; }
-
-/* ── Enrollment states ────────────────────────────────────────────────────── */
-.unenroll-text {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #fca5a5;
-    text-decoration: none;
+/* Primary button pop */
+.btn-dark {
+    background: #0f172a;
+    color: white;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2);
 }
-.unenroll-text:hover { color: #dc2626; text-decoration: underline; }
 
+.btn-dark:hover {
+    background: #1e293b;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(15, 23, 42, 0.25);
+}
+
+/* Secondary */
+.btn-blue {
+    background: #eff6ff;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+.btn-blue:hover {
+    background: #dbeafe;
+}
+
+/* ── Enrollment ───────────────────────────────────────────────────────────── */
 .status-enrolled {
     color: #10b981;
     font-size: 0.75rem;
     font-weight: 800;
-    text-transform: uppercase;
 }
 
-/* ── Tag chips (in list rows) ─────────────────────────────────────────────── */
+.unenroll-text {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #f87171;
+}
+.unenroll-text:hover {
+    color: #dc2626;
+}
+
+/* ── Tags ─────────────────────────────────────────────────────────────────── */
 .item-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px;
-    margin-top: 3px;
-    min-height: 16px;
+    gap: 5px;
+    margin-top: 4px;
 }
 
 .tag-chip {

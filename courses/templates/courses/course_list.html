@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block title %} All Courses {% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/catalog.css' %}">
 {% endblock %}
+
 {% block content %}
 <div class="courses-wrapper">
 
@@ -19,7 +22,6 @@
         {% endif %}
     </div>
 
-    <!-- Search & Filter Bar -->
     <form method="GET" action="{% url 'courses:course_list' %}" class="search-bar">
 
         <input
@@ -30,37 +32,35 @@
             class="search-input search-input--wide"
         >
 
-        <!-- Difficulty chips (multi-select) -->
-<div class="filter-group">
-    <span class="filter-group-label">Difficulty</span>
-    {% for value, label in difficulty_choices %}
-        <label class="chip-label {% if value in current_difficulty %}chip-active{% endif %}">
-            <input
-                type="checkbox"
-                name="difficulty"
-                value="{{ value }}"
-                {% if value in current_difficulty %}checked{% endif %}
-            >
-            {{ label }}
-        </label>
-    {% endfor %}
-</div>
+        <div class="filter-group">
+            <span class="filter-group-label">Difficulty</span>
+            {% for value, label in difficulty_choices %}
+                <label class="chip-label {% if value in current_difficulty %}chip-active{% endif %}">
+                    <input
+                        type="checkbox"
+                        name="difficulty"
+                        value="{{ value }}"
+                        {% if value in current_difficulty %}checked{% endif %}
+                    >
+                    {{ label }}
+                </label>
+            {% endfor %}
+        </div>
 
-<!-- Tag chips (multi-select) -->
-<div class="filter-group">
-    <span class="filter-group-label">Topics</span>
-    {% for tag in all_tags %}
-        <label class="chip-label {% if tag.slug in current_tag %}chip-active{% endif %}">
-            <input
-                type="checkbox"
-                name="tag"
-                value="{{ tag.slug }}"
-                {% if tag.slug in current_tag %}checked{% endif %}
-            >
-            #{{ tag.name }}
-        </label>
-    {% endfor %}
-</div>
+        <div class="filter-group">
+            <span class="filter-group-label">Topics</span>
+            {% for tag in all_tags %}
+                <label class="chip-label {% if tag.slug in current_tag %}chip-active{% endif %}">
+                    <input
+                        type="checkbox"
+                        name="tag"
+                        value="{{ tag.slug }}"
+                        {% if tag.slug in current_tag %}checked{% endif %}
+                    >
+                    #{{ tag.name }}
+                </label>
+            {% endfor %}
+        </div>
 
         <input
             type="text"
@@ -75,7 +75,6 @@
 
     </form>
 
-    <!-- Active filters summary -->
     {% if current_search or current_difficulty or current_tag or current_teacher %}
     <div class="active-filters">
         <span class="active-filters-label">Filtered by:</span>
@@ -83,30 +82,27 @@
             <span class="filter-chip">{{ current_search }}</span>
         {% endif %}
         {% for d in current_difficulty %}
-    <span class="filter-chip">{{ d|capfirst }}</span>
-{% endfor %}
-{% for t in current_tag %}
-    <span class="filter-chip">#{{ t }}</span>
-{% endfor %}
-        {% if current_tag %}
-            <span class="filter-chip">#{{ current_tag }}</span>
-        {% endif %}
+            <span class="filter-chip">{{ d|capfirst }}</span>
+        {% endfor %}
+        {% for t in current_tag %}
+            <span class="filter-chip">#{{ t }}</span>
+        {% endfor %}
         {% if current_teacher %}
             <span class="filter-chip">@{{ current_teacher }}</span>
         {% endif %}
-        <span class="result-count">{{ courses|length }} result{{ courses|length|pluralize }}</span>
+        
+        <span class="result-count">{{ courses.paginator.count }} result{{ courses.paginator.count|pluralize }}</span>
     </div>
     {% endif %}
 
     <div class="catalog-list">
         {% for course in courses %}
             <div class="catalog-item">
-                <div class="item-number">{{ forloop.counter|stringformat:"02d" }}</div>
+                <div class="item-number">{{ courses.start_index|add:forloop.counter0|stringformat:"02d" }}</div>
                 <div class="item-title-box">
                     <a href="{% url 'courses:course_detail' course.id %}" class="item-title">
                         {{ course.title }}
                     </a>
-                    <!-- Tags shown under title on mobile -->
                     <div class="item-tags d-lg-none">
                         {% for tag in course.tags.all %}
                             <span class="tag-chip">#{{ tag.name }}</span>
@@ -120,7 +116,6 @@
                     <span class="instructor-name d-none d-lg-inline">
                         {{ course.teacher.username }}
                     </span>
-                    <!-- Difficulty badge -->
                     <span class="diff-badge diff-badge--{{ course.difficulty }} d-none d-lg-inline">
                         {{ course.get_difficulty_display }}
                     </span>
@@ -147,5 +142,30 @@
             </div>
         {% endfor %}
     </div>
+
+    {% if courses.has_other_pages %}
+    <div class="pagination-container" style="margin-top: 2rem; display: flex; justify-content: space-between; align-items: center;">
+        <div class="pagination-info" style="font-size: 0.9rem; color: #666;">
+            Showing {{ courses.start_index }} to {{ courses.end_index }} of {{ courses.paginator.count }} entries
+        </div>
+        
+        <div class="pagination-controls" style="display: flex; gap: 0.5rem;">
+            {% if courses.has_previous %}
+                <a href="?page=1{% if current_search %}&search={{ current_search }}{% endif %}{% for d in current_difficulty %}&difficulty={{ d }}{% endfor %}{% for t in current_tag %}&tag={{ t }}{% endfor %}{% if current_teacher %}&teacher={{ current_teacher }}{% endif %}" class="btn-minimal btn-dark">&laquo; First</a>
+                <a href="?page={{ courses.previous_page_number }}{% if current_search %}&search={{ current_search }}{% endif %}{% for d in current_difficulty %}&difficulty={{ d }}{% endfor %}{% for t in current_tag %}&tag={{ t }}{% endfor %}{% if current_teacher %}&teacher={{ current_teacher }}{% endif %}" class="btn-minimal btn-dark">Previous</a>
+            {% endif %}
+
+            <span class="btn-minimal" style="cursor: default; border-color: transparent;">
+                Page {{ courses.number }} of {{ courses.paginator.num_pages }}
+            </span>
+
+            {% if courses.has_next %}
+                <a href="?page={{ courses.next_page_number }}{% if current_search %}&search={{ current_search }}{% endif %}{% for d in current_difficulty %}&difficulty={{ d }}{% endfor %}{% for t in current_tag %}&tag={{ t }}{% endfor %}{% if current_teacher %}&teacher={{ current_teacher }}{% endif %}" class="btn-minimal btn-dark">Next</a>
+                <a href="?page={{ courses.paginator.num_pages }}{% if current_search %}&search={{ current_search }}{% endif %}{% for d in current_difficulty %}&difficulty={{ d }}{% endfor %}{% for t in current_tag %}&tag={{ t }}{% endfor %}{% if current_teacher %}&teacher={{ current_teacher }}{% endif %}" class="btn-minimal btn-dark">Last &raquo;</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
 </div>
 {% endblock %}

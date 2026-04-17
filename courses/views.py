@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from discussion.models import Comment
 from django.utils import timezone
 import json
+from django.core.paginator import Paginator
 
 def create_course(request):
     if request.user.profile.role != "teacher":
@@ -36,13 +37,14 @@ def course_list(request):
     if request.user.is_authenticated and request.user.profile.role == "student":
         enrolled_courses = Enrollment.objects.filter(
             student=request.user
-        ).values_list("course_id",flat=True)
+        ).values_list("course_id", flat=True)
        
-    search     = request.GET.get("search", "").strip()
+    search       = request.GET.get("search", "").strip()
     difficulties = request.GET.getlist("difficulty")
-    tags = request.GET.getlist("tag")
-    teacher    = request.GET.get("teacher", "").strip()
+    tags         = request.GET.getlist("tag")
+    teacher      = request.GET.get("teacher", "").strip()
 
+    # 1. Apply all filters first
     if search:
         courses = courses.filter(
             Q(title__icontains=search) | Q(description__icontains=search)
@@ -55,10 +57,16 @@ def course_list(request):
     if teacher:
         courses = courses.filter(teacher__username__icontains=teacher)
 
+    # 2. Paginate the filtered queryset
+    items_per_page = 10  # Adjust this number to show more/less per page
+    paginator = Paginator(courses, items_per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     all_tags = Tag.objects.all()  # for the filter dropdown in the template
 
     return render(request, "courses/course_list.html", {
-        "courses": courses,
+        "courses": page_obj,  # Pass the paginated object instead of the raw queryset
         "enrolled_courses": enrolled_courses,
         "all_tags": all_tags,
         "difficulty_choices": Course.Difficulty.choices,
@@ -68,6 +76,7 @@ def course_list(request):
         "current_tag":        tags,
         "current_teacher":    teacher,
     })
+
 
 def enroll_course(request,course_id):
     if request.user.profile.role != "student":
