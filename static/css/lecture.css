@@ -545,3 +545,15 @@ nav.border-bottom {
         padding-left: 0.75rem !important;
     }
 }
+
+.btn-dir-danger {
+    background: #fff;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.btn-dir-danger:hover {
+    background: #fef2f2;
+    border-color: #dc2626;
+    transform: translateY(-1px);
+}
