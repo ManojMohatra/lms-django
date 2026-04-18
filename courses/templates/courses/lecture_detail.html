@@ -24,14 +24,25 @@
             <span class="dir-label">{% trans "Current Unit" %}</span>
             <h1 class="dir-title">{{ lecture.title }}</h1>
             
-            {% if lecture.video_url %}
-            <div class="d-flex align-items-center justify-content-between p-3 mb-4 bg-light border rounded-3">
-                <a href="{{ lecture.video_url }}" target="_blank" class="btn-dir btn-dir-dark">
-                    <i class="bi bi-play-fill"></i> {% trans "Play Instructional Video" %}
-                </a>
-            </div>
-            {% endif %}
-
+{% if lecture.video_url %}
+<div class="video-container mb-4">
+    {% if is_direct_video %}
+        <video controls class="embedded-video">
+            <source src="{{ lecture.video_url }}">
+        </video>
+    {% else %}
+        <iframe
+            src="{{ embed_url }}"
+            title="{{ lecture.title }}"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+            class="embedded-video">
+        </iframe>
+    {% endif %}
+</div>
+{% endif %}
             <div class="lecture-body">
                 <span class="dir-label">{% trans "Unit Description" %}</span>
                 {{ lecture.notes|linebreaks|default_if_none:"" }}

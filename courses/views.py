@@ -12,6 +12,7 @@ from discussion.models import Comment
 from django.utils import timezone
 import json
 from django.core.paginator import Paginator
+import re
 
 def create_course(request):
     if request.user.profile.role != "teacher":
@@ -200,46 +201,38 @@ def course_detail(request,course_id):
 
 @login_required
 def lecture_detail(request, lecture_id):
-    # Added 'quizzes' and 'assignments' to prefetch_related for efficiency
-    # This ensures that lecture.quizzes.all() in the template doesn't trigger new queries
     lecture = get_object_or_404(
-        Lecture.objects.prefetch_related('materials', 'quizzes', 'assignments'), 
+        Lecture.objects.prefetch_related('materials', 'quizzes', 'assignments'),
         id=lecture_id
     )
-    
+
     course = lecture.module.course
     is_teacher = (course.teacher == request.user)
     assignments = lecture.assignments.prefetch_related(
-    Prefetch(
-        "submissions",
-        queryset=Submission.objects.filter(student=request.user),
-        to_attr="student_submissions"
+        Prefetch(
+            "submissions",
+            queryset=Submission.objects.filter(student=request.user),
+            to_attr="student_submissions"
         )
     )
-
-
     for a in assignments:
         a.user_submission = a.student_submissions[0] if a.student_submissions else None
 
-    # Process POST actions
     if request.method == "POST":
-        # 1. Handle Student Assignment Upload
         if 'file' in request.FILES:
             assignment_id = request.POST.get('assignment_id')
             target_assignment = get_object_or_404(Assignment, id=assignment_id)
-            
             submission, created = Submission.objects.get_or_create(
-                assignment=target_assignment, 
+                assignment=target_assignment,
                 student=request.user
             )
             submission.file = request.FILES['file']
             submission.save()
             return redirect('courses:lecture_detail', lecture_id=lecture.id)
 
-        # 2. Handle Lesson Completion Toggle
         elif 'action' in request.POST:
             progress, created = LectureProgress.objects.get_or_create(
-                student=request.user, 
+                student=request.user,
                 lecture=lecture
             )
             progress.completed = (request.POST.get('action') == 'mark')
@@ -248,25 +241,26 @@ def lecture_detail(request, lecture_id):
             progress.save()
             return redirect('courses:lecture_detail', lecture_id=lecture.id)
 
-    # Prepare Data for Template
     completed = False
     if not is_teacher:
-        # Check progress
         completed = LectureProgress.objects.filter(
-            student=request.user, 
-            lecture=lecture, 
+            student=request.user,
+            lecture=lecture,
             completed=True
         ).exists()
-
-        # Attach user submissions to assignments
         user_subs = {
             s.assignment_id: s for s in Submission.objects.filter(
-                assignment__in=assignments, 
+                assignment__in=assignments,
                 student=request.user
             )
         }
         for assignment in assignments:
             assignment.user_submission = user_subs.get(assignment.id)
+
+    embed_url = get_embed_url(lecture.video_url)
+    is_direct_video = bool(lecture.video_url) and not any(
+        x in lecture.video_url for x in ['youtube', 'youtu.be', 'vimeo']
+    )
 
     return render(request, "courses/lecture_detail.html", {
         "lecture": lecture,
@@ -274,7 +268,8 @@ def lecture_detail(request, lecture_id):
         "is_teacher": is_teacher,
         "assignments": assignments,
         "completed": completed,
-        # 'quizzes' are available via 'lecture.quizzes.all' due to the prefetch
+        "embed_url": embed_url,
+        "is_direct_video": is_direct_video,
     })
 
 
@@ -567,3 +562,17 @@ def course_analytics(request, course_id):
         'page_obj': page_obj,
     }
     return render(request, "courses/course_analytics.html", context)
+
+#Embedding
+def get_embed_url(video_url):
+    if not video_url:
+        return None
+    # YouTube
+    yt = re.search(r'(?:youtube\.com/watch\?v=|youtu\.be/)([\w-]+)', video_url)
+    if yt:
+        return f"https://www.youtube.com/embed/{yt.group(1)}"
+    # Vimeo
+    vm = re.search(r'vimeo\.com/(\d+)', video_url)
+    if vm:
+        return f"https://player.vimeo.com/video/{vm.group(1)}"
+    return video_url
