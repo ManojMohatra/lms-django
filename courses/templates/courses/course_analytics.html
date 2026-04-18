@@ -69,61 +69,78 @@
         </div>
     </div>
 
-    <div class="student-progress-section">
-        <h5 class="section-title">Student Progress</h5>
+   <div class="student-progress-section">
+    <h5 class="section-title">Student Progress</h5>
 
-        <div class="filter-bar">
-            <input type="text" id="studentSearch" class="filter-input" placeholder="Search student...">
-            <div class="filter-actions">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="Completed">Completed</button>
-                <button class="filter-btn" data-filter="In Progress">In Progress</button>
-            </div>
+    <div class="filter-bar">
+        <input type="text" id="studentSearch" class="filter-input" placeholder="Search student...">
+        <div class="filter-actions">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="Completed">Completed</button>
+            <button class="filter-btn" data-filter="In Progress">In Progress</button>
         </div>
-
-        <table class="analytics-table">
-            <thead>
-                <tr>
-                    <th>Student</th>
-                    <th>Enrolled</th>
-                    <th>Progress</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in student_progress %}
-                <tr>
-                    <td>
-                        <div class="student-name">{{ item.username }}</div>
-                        <div class="student-email">{{ item.email }}</div>
-                    </td>
-
-                    <td class="mono-date">{{ item.date_joined|date:"M d, Y" }}</td>
-
-<td style="width: 30%;">
-    <div class="progress-track">
-        <div class="progress-fill" style="width: {{ item.progress }}%; background: {% if item.progress == 100 %}#1e293b{% else %}#94a3b8{% endif %};"></div>
-    </div>
-</td>
-                    <td>
-                        {% if item.progress == 100 %}
-                            <span class="badge badge-paid">Completed</span>
-                        {% elif item.progress > 0 %}
-                            <span class="badge badge-tag">In Progress</span>
-                        {% else %}
-                            <span class="badge">Not Started</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="4" class="empty-state">No students enrolled.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
     </div>
 
+    <table class="analytics-table">
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Enrolled</th>
+                <th>Progress</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in student_progress %}
+            <tr>
+                <td>
+                    <div class="student-name">{{ item.username }}</div>
+                    <div class="student-email">{{ item.email }}</div>
+                </td>
+                <td class="mono-date">{{ item.date_joined|date:"M d, Y" }}</td>
+                <td style="width: 30%;">
+                    <div class="progress-track">
+                        <div class="progress-fill" style="width: {{ item.progress }}%; background: {% if item.progress == 100 %}#1e293b{% else %}#94a3b8{% endif %};"></div>
+                    </div>
+                </td>
+                <td>
+                    {% if item.progress == 100 %}
+                        <span class="badge badge-paid">Completed</span>
+                    {% elif item.progress > 0 %}
+                        <span class="badge badge-tag">In Progress</span>
+                    {% else %}
+                        <span class="badge">Not Started</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="empty-state">No students enrolled.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div class="pagination-bar">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="page-btn">← Prev</a>
+        {% else %}
+            <span class="page-btn disabled">← Prev</span>
+        {% endif %}
+
+        <span class="page-info">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="page-btn">Next →</a>
+        {% else %}
+            <span class="page-btn disabled">Next →</span>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
 </div>
 
 <script type="application/json" id="enroll-labels">{{ enroll_dates|safe }}</script>

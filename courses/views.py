@@ -551,6 +551,10 @@ def course_analytics(request, course_id):
             'date_joined': enrollment.enrolled_at
         })
 
+    paginator = Paginator(student_progress_data, 10)  # 10 students per page
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    
     context = {
         'course': course,
         'analytics': analytics,
@@ -559,7 +563,7 @@ def course_analytics(request, course_id):
         'quiz_avg': round(avg_quiz_score, 2),
         'assignment_avg': round(avg_assignment_score, 2),
         'avg_rating': round(avg_rating, 1),
-        'student_progress': student_progress_data,
+        'student_progress': page_obj,   # now a page object
+        'page_obj': page_obj,
     }
-
     return render(request, "courses/course_analytics.html", context)
