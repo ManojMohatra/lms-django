@@ -2,7 +2,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from django.db.models import Count
 from .models import Course, Enrollment
-
+from django.db.models import Case, When
 
 def build_similarity():
     courses = list(Course.objects.all())
@@ -124,8 +124,7 @@ def recommend_for_user(user, top_n=5):
     top_ids = [cid for cid, _ in sorted_courses[:top_n]]
 
     # Preserve order
-    preserved = {cid: index for index, cid in enumerate(top_ids)}
-    return sorted(
-        Course.objects.filter(id__in=top_ids),
-        key=lambda x: preserved[x.id]
-    )
+    preserved_order = Case(
+        *[When(id=pk, then=pos) for pos, pk in enumerate(top_ids)])
+
+    return Course.objects.filter(id__in=top_ids).order_by(preserved_order)

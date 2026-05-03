@@ -1,0 +1,424 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Checkout" %} — {{ course.title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/course.css' %}">
+<style>
+/* ── Payment Page ─────────────────────────────────────────────────── */
+.payment-page-container {
+    max-width: 520px;
+    margin: 3rem auto;
+    padding: 0 1rem;
+}
+
+.payment-breadcrumb {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #cbd5e1;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.payment-breadcrumb a {
+    color: #94a3b8;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.payment-breadcrumb a:hover { color: #1e293b; }
+
+.payment-breadcrumb .sep { color: #e2e8f0; }
+
+/* ── Course Summary Card ──────────────────────────────────────────── */
+.course-summary-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem 0 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 2rem;
+}
+
+.course-summary-thumb {
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+}
+
+.course-summary-thumb-placeholder {
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #cbd5e1;
+    font-size: 1.4rem;
+}
+
+.course-summary-info { flex: 1; min-width: 0; }
+
+.course-summary-label {
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.3rem;
+}
+
+.course-summary-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.35;
+    margin-bottom: 0.4rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.course-summary-meta {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.course-summary-price {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #1e293b;
+    letter-spacing: -0.02em;
+    flex-shrink: 0;
+    align-self: center;
+}
+
+.price-currency {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    vertical-align: super;
+    margin-right: 1px;
+    letter-spacing: 0.04em;
+}
+
+/* ── Section Header ───────────────────────────────────────────────── */
+.payment-section-label {
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 1rem;
+}
+
+/* ── Payment Method List ──────────────────────────────────────────── */
+.payment-methods { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 2rem; }
+
+.payment-method-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    text-decoration: none;
+    background: #fff;
+    position: relative;
+}
+
+.payment-method-item:hover {
+    border-color: #cbd5e1;
+    background: #f8fafc;
+}
+
+.payment-method-item.selected {
+    border-color: #1e293b;
+    background: #f8fafc;
+}
+
+.payment-method-item.selected .method-check {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.method-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.method-logo.esewa { background: #d1fae5; color: #065f46; }
+.method-logo.khalti { background: #ede9fe; color: #5b21b6; }
+.method-logo.card   { background: #e0e7ff; color: #3730a3; }
+
+.method-info { flex: 1; }
+
+.method-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.15rem;
+}
+
+.method-desc {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.method-check {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #1e293b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.15s, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.method-check::after {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #fff;
+}
+
+/* ── Order Summary ────────────────────────────────────────────────── */
+.order-summary {
+    padding: 1.25rem 0;
+    border-top: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 1.75rem;
+}
+
+.order-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.82rem;
+    color: #64748b;
+    font-weight: 500;
+    margin-bottom: 0.6rem;
+}
+
+.order-row:last-child { margin-bottom: 0; }
+
+.order-row.total {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed #e2e8f0;
+}
+
+/* ── Pay Button ───────────────────────────────────────────────────── */
+.pay-btn-wrap { margin-bottom: 1.25rem; }
+
+.btn-pay {
+    width: 100%;
+    padding: 0.9rem 1.5rem;
+    background: #1e293b;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    letter-spacing: 0.01em;
+    transition: opacity 0.15s;
+}
+
+.btn-pay:hover { opacity: 0.85; color: #fff; }
+
+.btn-pay:disabled,
+.btn-pay.disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* ── Trust Footer ─────────────────────────────────────────────────── */
+.payment-trust {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.7rem;
+    color: #cbd5e1;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1.5rem;
+}
+
+.payment-trust i { font-size: 0.75rem; }
+
+.payment-cancel {
+    display: block;
+    text-align: center;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+    margin-top: 0.5rem;
+}
+
+.payment-cancel:hover { color: #1e293b; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="payment-page-container">
+
+    {# Breadcrumb #}
+    <div class="payment-breadcrumb">
+        <a href="{% url 'courses:course_list' %}">{% trans "Courses" %}</a>
+        <span class="sep">›</span>
+        <a href="{% url 'courses:course_detail' course.id %}">{{ course.title|truncatechars:30 }}</a>
+        <span class="sep">›</span>
+        <span>{% trans "Checkout" %}</span>
+    </div>
+
+    {# Course Summary #}
+    <div class="course-summary-card">
+        {% if course.thumbnail %}
+        <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="course-summary-thumb">
+        {% else %}
+        <div class="course-summary-thumb-placeholder">
+            <i class="bi bi-play-circle"></i>
+        </div>
+        {% endif %}
+
+        <div class="course-summary-info">
+            <div class="course-summary-label">{% trans "You're enrolling in" %}</div>
+            <div class="course-summary-title">{{ course.title }}</div>
+            <div class="course-summary-meta">
+                {% trans "By" %} {{ course.teacher.username }}
+                &nbsp;·&nbsp;
+                {{ course.get_difficulty_display }}
+            </div>
+        </div>
+
+        <div class="course-summary-price">
+            <span class="price-currency">Rs.</span>{{ course.price }}
+        </div>
+    </div>
+
+    {# Payment Method Selection #}
+    <div class="payment-section-label">{% trans "Payment Method" %}</div>
+
+    <div class="payment-methods">
+        {# eSewa #}
+        <a href="{% url 'courses:esewa_checkout' course.id %}" class="payment-method-item" data-method="esewa">
+            <div class="method-logo esewa">eS</div>
+            <div class="method-info">
+                <div class="method-name">eSewa</div>
+                <div class="method-desc">{% trans "Pay with your eSewa digital wallet" %}</div>
+            </div>
+            <div class="method-check"></div>
+        </a>
+
+        {# Khalti — add URL when ready #}
+        <div class="payment-method-item" data-method="khalti" style="opacity: 0.45; cursor: not-allowed;">
+            <div class="method-logo khalti">Kh</div>
+            <div class="method-info">
+                <div class="method-name">Khalti <span style="font-size:0.65rem; color:#94a3b8; font-weight:600; margin-left:6px; text-transform:uppercase; letter-spacing:0.05em;">{% trans "Coming soon" %}</span></div>
+                <div class="method-desc">{% trans "Pay with your Khalti digital wallet" %}</div>
+            </div>
+        </div>
+
+        {# Card — add URL when ready #}
+        <div class="payment-method-item" data-method="card" style="opacity: 0.45; cursor: not-allowed;">
+            <div class="method-logo card"><i class="bi bi-credit-card"></i></div>
+            <div class="method-info">
+                <div class="method-name">{% trans "Card" %} <span style="font-size:0.65rem; color:#94a3b8; font-weight:600; margin-left:6px; text-transform:uppercase; letter-spacing:0.05em;">{% trans "Coming soon" %}</span></div>
+                <div class="method-desc">{% trans "Visa, Mastercard, or any debit card" %}</div>
+            </div>
+        </div>
+    </div>
+
+    {# Order Summary #}
+    <div class="order-summary">
+        <div class="order-row">
+            <span>{{ course.title|truncatechars:36 }}</span>
+            <span>Rs. {{ course.price }}</span>
+        </div>
+        <div class="order-row">
+            <span>{% trans "Platform fee" %}</span>
+            <span>Rs. 0</span>
+        </div>
+        <div class="order-row total">
+            <span>{% trans "Total" %}</span>
+            <span>Rs. {{ course.price }}</span>
+        </div>
+    </div>
+
+    {# Pay CTA — links to eSewa as primary method #}
+    <div class="pay-btn-wrap">
+        <a href="{% url 'courses:esewa_checkout' course.id %}" class="btn-pay" id="payBtn">
+            <i class="bi bi-shield-check"></i>
+            {% trans "Pay with eSewa" %}
+        </a>
+    </div>
+
+    <div class="payment-trust">
+        <i class="bi bi-lock-fill"></i>
+        {% trans "Secured payment" %}
+    </div>
+
+    <a href="{% url 'courses:course_detail' course.id %}" class="payment-cancel">
+        {% trans "Cancel and go back" %}
+    </a>
+
+</div>
+
+{% block extra_js %}
+<script>
+    // Highlight selected method on click (only for active ones)
+    document.querySelectorAll('.payment-method-item[data-method]').forEach(item => {
+        if (item.tagName === 'A') {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.payment-method-item').forEach(i => i.classList.remove('selected'));
+                item.classList.add('selected');
+            });
+        }
+    });
+</script>
+{% endblock %}
+
+{% endblock %}

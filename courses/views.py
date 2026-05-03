@@ -6,13 +6,21 @@ from django.db.models import Avg,Count, F, FloatField, ExpressionWrapper
 from quiz.models import QuizSubmission
 from .models import Assignment,Submission
 from django.db.models.functions import Round,TruncDate
-from .models import Course, Enrollment,Module,Lecture,LectureProgress,Assignment,Submission,Review,Tag
+from .models import Course, Enrollment,Module,Lecture,LectureProgress,Assignment,Submission,Review,Tag,CourseOrder
 from django.contrib.auth.decorators import login_required
 from discussion.models import Comment
 from django.utils import timezone
 import json
 from django.core.paginator import Paginator
 import re
+import uuid
+import hmac
+import base64
+import hashlib
+import requests
+
+from django.conf import settings
+from django.urls import reverse
 
 def create_course(request):
     if request.user.profile.role != "teacher":
@@ -79,19 +87,26 @@ def course_list(request):
     })
 
 
-def enroll_course(request,course_id):
+def enroll_course(request, course_id):
     if request.user.profile.role != "student":
         return HttpResponseForbidden("Only students can enroll.")
 
     course = get_object_or_404(Course, id=course_id)
 
-    Enrollment.objects.get_or_create(
-        student = request.user,
-        course = course
-    )
-    #This is to make sure that they are redirected to the page that they were previously on instead of just a single hardcoded page
-    next_page = request.GET.get("next") or "courses:course_list"
-    return redirect(next_page)
+    # Already enrolled?
+    existing = Enrollment.objects.filter(student=request.user, course=course).first()
+    if existing and (course.is_free or existing.is_paid):
+        return redirect("courses:course_detail", pk=course_id)
+
+    # Free course — enroll immediately
+    if course.is_free:
+        Enrollment.objects.get_or_create(student=request.user, course=course)
+        next_page = request.GET.get("next") or "courses:course_list"
+        return redirect(next_page)
+
+    # Paid course — go to payment selection page
+    return redirect("courses:payment_select", course_id=course_id)
+
 
 @login_required
 def unenroll_course(request, course_id):
@@ -576,3 +591,80 @@ def get_embed_url(video_url):
     if vm:
         return f"https://player.vimeo.com/video/{vm.group(1)}"
     return video_url
+
+def payment_select(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    return render(request, "courses/payment_select.html", {"course": course})
+
+
+# --- eSewa ---
+
+def generate_esewa_signature(amount, transaction_uuid):
+    secret_key = settings.ESEWA_SECRET_KEY
+    message = f"total_amount={amount},transaction_uuid={transaction_uuid},product_code={settings.ESEWA_PRODUCT_CODE}"
+    signature = hmac.new(
+        secret_key.encode(),
+        message.encode(),
+        hashlib.sha256
+    ).digest()
+    return base64.b64encode(signature).decode()
+
+
+def esewa_checkout(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    order = CourseOrder.objects.create(
+        student=request.user,
+        course=course,
+        amount=course.price,
+        transaction_id=f"order-{uuid.uuid4().hex[:10]}"
+    )
+    context = {
+        "amount": course.price,
+        "tax_amount": 0,
+        "total_amount": course.price,
+        "transaction_uuid": order.transaction_id,
+        "product_code": settings.ESEWA_PRODUCT_CODE,
+        "product_service_charge": 0,
+        "product_delivery_charge": 0,
+        "success_url": request.build_absolute_uri(reverse("courses:esewa_success")),
+        "failure_url": request.build_absolute_uri(reverse("courses:esewa_failure")),
+        "signed_field_names": "total_amount,transaction_uuid,product_code",
+        "signature": generate_esewa_signature(course.price, order.transaction_id),
+        "ESEWA_URL": settings.ESEWA_PAYMENT_URL,
+    }
+    return render(request, "courses/esewa_checkout.html", context)
+
+
+def esewa_success(request):
+    data_encoded = request.GET.get("data")
+    decoded = json.loads(base64.b64decode(data_encoded).decode("utf-8"))
+    transaction_uuid = decoded.get("transaction_uuid")
+    status = decoded.get("status")
+
+    if status == "COMPLETE":
+        order = get_object_or_404(CourseOrder, transaction_id=transaction_uuid)
+        order.status = CourseOrder.Status.COMPLETED
+        order.save()
+        enrollment, _ = Enrollment.objects.get_or_create(
+            student=order.student, course=order.course
+        )
+        enrollment.is_paid = True
+        enrollment.save()
+        return redirect("courses:payment_success", course_id=order.course.id)
+
+    return redirect("courses:payment_cancel", course_id=order.course.id)
+
+
+def esewa_failure(request):
+    return render(request, "courses/payment_cancel.html")
+
+
+
+def payment_success(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    return render(request, "courses/payment_success.html", {"course": course})
+
+
+def payment_cancel(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    return render(request, "courses/payment_cancel.html", {"course": course})
