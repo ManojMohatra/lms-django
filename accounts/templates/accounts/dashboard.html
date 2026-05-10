@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %} Dashboard {% endblock %}
+{% load i18n %}
+{% block title %} {% trans "Dashboard" %} {% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 {% endblock %}
@@ -12,18 +13,18 @@
     
     <div class="dash-header">
         <div class="user-info">
-            <h2>Dashboard</h2>
+            <h2>{% trans "Dashboard" %}</h2>
             <span class="role-text">{{ user.profile.get_role_display }} • {{ user.username }}</span>
         </div>
         <div class="header-links">
-            <a href="{% url 'courses:course_list' %}">Explore Catalog <i class="bi bi-arrow-right"></i></a>
+            <a href="{% url 'courses:course_list' %}">{% trans "Explore Catalog " %}<i class="bi bi-arrow-right"></i></a>
         </div>
     </div>
 
     {% if user.profile.role == 'teacher' %}
     <div class="section-title">
-        My Created Courses
-        <a href="{% url 'courses:create_course' %}" class="btn-action btn-dark">+ New Course</a>
+        {% trans "My Created Courses" %}
+        <a href="{% url 'courses:create_course' %}" class="btn-action btn-dark">{% trans "+ New Course" %}</a>
     </div>
 
     <div class="dash-list">
@@ -34,17 +35,17 @@
                     <span class="text-muted small">{{ course.students.count }} students enrolled</span>
                 </div>
                 <div class="item-actions">
-                    <a href="{% url 'courses:edit_course' course.id %}" class="btn-action btn-yellow me-2">Edit</a>
-                    <a href="{% url 'courses:course_detail' course.id %}" class="btn-action btn-blue">Manage</a>
+                    <a href="{% url 'courses:edit_course' course.id %}" class="btn-action btn-yellow me-2">{% trans "Edit" %}</a>
+                    <a href="{% url 'courses:course_detail' course.id %}" class="btn-action btn-blue">{% trans "Manage" %}</a>
                 </div>
             </div>
         {% empty %}
-            <p class="text-muted small">No courses created yet.</p>
+            <p class="text-muted small">{% trans "No courses created yet." %}</p>
         {% endfor %}
     </div>
 
     {% elif user.profile.role == 'student' %}
-    <div class="section-title">Enrolled Courses</div>
+    <div class="section-title">{% trans "Enrolled Courses" %}</div>
 
     <div class="dash-list">
         {% for item in course_data %}
@@ -56,7 +57,7 @@
                 
                 <div class="progress-container d-none d-md-block">
                     <div class="d-flex justify-content-between small mb-1">
-                        <span class="text-muted">Progress</span>
+                        <span class="text-muted">{% trans "Progress" %}</span>
                         <span class="fw-bold">{{ item.progress_percent }}%</span>
                     </div>
                     <div class="progress-bar-bg">
@@ -66,15 +67,15 @@
 
                 <div class="item-actions">
                     {% if item.progress_percent == 100 %}
-                        <span class="text-success small fw-bold me-2"><i class="bi bi-check2-circle"></i> Done</span>
+                        <span class="text-success small fw-bold me-2"><i class="bi bi-check2-circle"></i>{% trans " Done" %}</span>
                     {% elif item.next_lecture %}
-                        <a href="{% url 'courses:lecture_detail' item.next_lecture.id %}" class="btn-action btn-dark me-2">Resume</a>
+                        <a href="{% url 'courses:lecture_detail' item.next_lecture.id %}" class="btn-action btn-dark me-2">{% trans "Resume" %}</a>
                     {% endif %}
-                    <a href="{% url 'courses:course_detail' item.course.id %}" class="btn-action btn-blue">Details</a>
+                    <a href="{% url 'courses:course_detail' item.course.id %}" class="btn-action btn-blue">{% trans "Details" %}</a>
                 </div>
             </div>
         {% empty %}
-            <p class="text-muted small">You haven't enrolled in any courses yet.</p>
+            <p class="text-muted small">{% trans "You haven't enrolled in any courses yet." %}</p>
         {% endfor %}
     </div>
     {% endif %}
@@ -82,7 +83,7 @@
     <div class="mt-5 pt-4 border-top">
         <form action="{% url 'accounts:logout' %}" method="post">
             {% csrf_token %}
-            <button type="submit" class="logout-btn">Logout from session</button>
+            <button type="submit" class="logout-btn">{% trans "Logout from session" %}</button>
         </form>
     </div>
 </div>

@@ -3,6 +3,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
+from django.views.i18n import JavaScriptCatalog
 
 # Language switch endpoint (IMPORTANT)
 urlpatterns = [
@@ -17,6 +18,7 @@ urlpatterns += i18n_patterns(
     path('materials/', include('materials.urls')),
     path("discussion/", include("discussion.urls")),
     path('quiz/', include('quiz.urls')),
+    path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 )
 
 # Media 

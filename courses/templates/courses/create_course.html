@@ -1,36 +1,43 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %} Create New Course {% endblock %}
+{% load i18n %}
+
+{% block title %} {% trans "Create New Course" %} {% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/add_course.css' %}">
 {% endblock %}
+
 {% block content %}
 <div class="form-wrapper">
     <div class="form-header">
-        <span class="section-label">Academy Creation</span>
-        <h2>Create Course</h2>
-        <p class="text-muted small">Establish the foundation for your students learning experience</p>
+        <span class="section-label">{% trans "Academy Creation" %}</span>
+        <h2>{% trans "Create New Course" %}</h2>
+        <p class="text-muted small">{% trans "Establish the foundation for your students learning experience" %}</p>
     </div>
+
     <div class="form-card">
         <form method="post" enctype="multipart/form-data" novalidate>
             {% csrf_token %}
 
             {% if form.non_field_errors %}
-                <div class="errorlist">
-                    {{ form.non_field_errors }}
-                </div>
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
             {% endif %}
 
+            {# Manual rendering is often cleaner for styling, but sticking to your logic #}
             {{ form.as_p }}
 
             <button type="submit" class="btn-launch-main">
-                <i class="bi bi-rocket-takeoff me-2"></i> Launch Course
+                <i class="bi bi-rocket-takeoff me-2"></i> {% trans "Launch Course" %}
             </button>
         </form>
     </div>
+
     <div class="action-footer">
         <a href="{% url 'accounts:dashboard' %}" class="btn-cancel">
-            Cancel and Return
+            {% trans "Cancel and Return" %}
         </a>
     </div>
 </div>
@@ -40,13 +47,17 @@
 <script>
     // Show/hide price field based on is_free checkbox
     const isFreeCheckbox = document.getElementById("id_is_free");
-    const priceRow       = document.getElementById("id_price").closest("p");
+    const priceField = document.getElementById("id_price");
 
-    function togglePrice() {
-        priceRow.style.display = isFreeCheckbox.checked ? "none" : "block";
+    if (isFreeCheckbox && priceField) {
+        const priceRow = priceField.closest("p");
+
+        function togglePrice() {
+            priceRow.style.display = isFreeCheckbox.checked ? "none" : "block";
+        }
+
+        isFreeCheckbox.addEventListener("change", togglePrice);
+        togglePrice(); // run on page load
     }
-
-    isFreeCheckbox.addEventListener("change", togglePrice);
-    togglePrice(); // run on page load
 </script>
 {% endblock %}

@@ -1,5 +1,7 @@
 {% extends "base.html" %}
-{% block title %} Unenroll | {{ course.title }} {% endblock %}
+{% load i18n %}
+
+{% block title %}{% trans " Unenroll" %} | {{ course.title }} {% endblock %}
 
 {% block content %}
 <style>
@@ -67,32 +69,32 @@
 <div class="delete-container">
     <div class="delete-header">
         <i class="bi bi-person-x text-danger fs-1 mb-2"></i>
-        <h2 class="h4 fw-bold mb-0" style="color: #991b1b;">Unenroll from Course</h2>
+        <h2 class="h4 fw-bold mb-0" style="color: #991b1b;">{% trans "Unenroll from Course" %}</h2>
     </div>
 
     <div class="delete-body">
-        <p class="text-muted mb-1 small text-uppercase fw-bold">Student Action</p>
+        <p class="text-muted mb-1 small text-uppercase fw-bold">{% trans "Student Action" %}</p>
         <h4 class="fw-bold mb-3">{{ course.title }}</h4>
         
-        <p class="text-secondary small">Are you sure you want to leave this course?</p>
+        <p class="text-secondary small">{% trans "Are you sure you want to leave this course?" %}</p>
 
         <div class="impact-box">
-            <h6 class="small fw-bold text-dark mb-2">Note for students:</h6>
+            <h6 class="small fw-bold text-dark mb-2">{% trans "Note for students:" %}</h6>
             <ul class="list-unstyled mb-0 small text-muted">
-                <li><i class="bi bi-info-circle me-2 text-primary"></i> Your progress is saved, but you'll lose access to content.</li>
-                <li><i class="bi bi-info-circle me-2 text-primary"></i> You can re-enroll at any time from the catalog.</li>
+                <li><i class="bi bi-info-circle me-2 text-primary"></i> {% trans "Your progress is saved, but you'll lose access to content." %}</li>
+                <li><i class="bi bi-info-circle me-2 text-primary"></i> {% trans "You can re-enroll at any time from the catalog." %}</li>
             </ul>
         </div>
 
         <form method="POST">
             {% csrf_token %}
             <button type="submit" class="btn-danger-confirm shadow-sm">
-                Confirm Unenrollment
+               {% trans " Confirm Unenrollment" %}
             </button>
         </form>
 
         <a href="{% url next %}" class="btn-cancel">
-            Cancel and Return
+          {% trans "  Cancel and Return" %}
         </a>
     </div>
 </div>

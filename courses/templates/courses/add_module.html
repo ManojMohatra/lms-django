@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %} Add Module | {{ course.title }} {% endblock %}
+{% load i18n %}
+
+{% block title %} {% trans "Add Module" %}| {{ course.title }} {% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/add_lcm.css' %}">
 {% endblock %}
@@ -8,14 +10,21 @@
 
 <div class="form-wrapper">
     <div class="form-header">
-        <span class="section-label">Curriculum Architect</span>
-        <h2>Add New Module</h2>
-        <p class="text-muted small">Organizing content for: <strong>{{ course.title }}</strong></p>
+        <span class="section-label">{% trans "Curriculum Architect" %}</span>
+        <h2>{% trans "Add New Module" %}</h2>
+     <p class="text-muted small">
+            {% blocktrans with title=course.title %}
+            Organizing content for: <strong>{{ title }}</strong>
+            {% endblocktrans %}
+        </p>   
     </div>
 
     <div class="info-strip">
         <i class="bi bi-info-circle-fill text-primary"></i>
-        <span><strong>Pro Tip:</strong> Use the "Order" field to rank modules. (e.g., 1 for Chapter 1).</span>
+    <span>
+            <strong>{% trans "Pro Tip:" %}</strong>
+            {% trans 'Use the "Order" field to rank modules. (e.g., 1 for Chapter 1).' %}
+        </span> 
     </div>
 
     <div class="form-card">
@@ -23,17 +32,17 @@
             {% csrf_token %}
             
             <div class="form-group">
-                <label for="id_title">Module Title</label>
+                <label for="id_title">{% trans "Module Title" %}</label>
                 <input type="text" 
                        name="title" 
                        id="id_title" 
                        class="form-control" 
-                       placeholder="e.g. Fundamental Concepts" 
+                       placeholder="" {% trans "e.g. Fundamental Concepts" %}
                        required>
             </div>
 
             <div class="form-group">
-                <label for="id_order">Sequence Position</label>
+                <label for="id_order">{% trans "Sequence Position" %}</label>
                 <input type="number" 
                        name="order" 
                        id="id_order" 
@@ -43,14 +52,14 @@
             </div>
 
             <button type="submit" class="btn-submit-main">
-                <i class="bi bi-plus-lg me-1"></i> Create Module
+                <i class="bi bi-plus-lg me-1"></i> {% trans "Create Module" %}
             </button>
         </form>
     </div>
 
     <div class="action-footer">
         <a href="{% url 'courses:course_detail' course.id %}" class="btn-cancel">
-            Cancel and Return
+         {% trans "Cancel and Return" %}
         </a>
     </div>
 </div>

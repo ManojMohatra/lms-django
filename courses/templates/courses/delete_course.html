@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %} Delete Course | {{ course.title }} {% endblock %}
+{% load i18n %}
+{% block title %}{% trans " Delete Course " %}| {{ course.title }} {% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/destruct.css' %}">
 {% endblock %}
@@ -9,9 +10,9 @@
 
 <div class="delete-wrapper">
     <div class="delete-header">
-        <span class="section-label-red">Critical Action</span>
-        <h2>Confirm Deletion</h2>
-        <p class="text-muted small">This action is permanent and cannot be reversed.</p>
+        <span class="section-label-red">{% trans "Critical Action" %}</span>
+        <h2>{% trans "Confirm Deletion" %}</h2>
+        <p class="text-muted small">{% trans "This action is permanent and cannot be reversed." %}</p>
     </div>
 
     <div class="delete-card">
@@ -20,27 +21,27 @@
             {{ course.title }}
         </div>
 
-        <span class="section-label-red" style="font-size: 0.65rem; margin-bottom: 10px;">Immediate Impact:</span>
+        <span class="section-label-red" style="font-size: 0.65rem; margin-bottom: 10px;">{% trans "Immediate Impact:" %}</span>
         <div class="impact-box">
             <ul>
-                <li>All curriculum modules & structure</li>
-                <li>All instructional video content</li>
-                <li>Student enrollment & progress data</li>
-                <li>Discussion history and comments</li>
+                <li>{% trans "All curriculum modules & structure" %}</li>
+                <li>{% trans "All instructional video content" %}</li>
+                <li>{% trans "Student enrollment & progress data" %}</li>
+                <li>{% trans "Discussion history and comments" %}</li>
             </ul>
         </div>
 
         <form method="POST">
             {% csrf_token %}
             <button type="submit" class="btn-delete-confirm">
-                Permanently Delete Course
+               {% trans "Permanently Delete Course" %}
             </button>
         </form>
     </div>
 
     <div class="action-footer">
         <a href="{% url 'courses:course_detail' course.id %}" class="btn-cancel">
-            Cancel and Keep Course
+            {% trans "Cancel and Keep Course" %}
         </a>
     </div>
 </div>

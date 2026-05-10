@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %} {% if editing %}Edit{% else %}Create{% endif %} Assignment | {{ lecture.title }} {% endblock %}
+{% load i18n %}
+{% block title %} {% if editing %}{% trans "Edit" %}{% else %}{% trans "Create" %}{% endif %} {% trans "Assignment" %} |
+{{ lecture.title }} {% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/edit.css' %}">
 {% endblock %}
@@ -8,11 +10,11 @@
 <div class="form-wrapper">
     <div class="form-header">
         <span class="context-tag">{{ lecture.title }}</span>
-        <span class="section-label">Curriculum Requirement</span>
-        <h2>{% if editing %}Edit Assignment{% else %}New Assignment{% endif %}</h2>
+        <span class="section-label">{% trans "Curriculum Requirement" %}</span>
+        <h2>{% if editing %}{% trans "Edit Assignment" %}{% else %}{% trans "New Assignment" %}{% endif %}</h2>
         <p class="text-muted small">
-            {% if editing %}Update instructions and deadlines for this assignment.
-            {% else %}Set instructions and deadlines for your students.{% endif %}
+            {% if editing %}{% trans "Update instructions and deadlines for this assignment." %}
+            {% else %}{% trans "Set instructions and deadlines for your students." %}{% endif %}
         </p>
     </div>
     <div class="form-card">
@@ -21,13 +23,13 @@
             {{ form.as_p }}
             <button type="submit" class="btn-save-main">
                 <i class="bi bi-journal-{% if editing %}check{% else %}plus{% endif %} me-2"></i>
-                {% if editing %}Save Changes{% else %}Create Assignment{% endif %}
+                {% if editing %}{% trans "Save Changes" %}{% else %}{% trans "Create Assignment" %}{% endif %}
             </button>
         </form>
     </div>
     <div class="action-footer">
         <a href="{% url 'courses:lecture_detail' lecture.id %}" class="btn-cancel">
-            Cancel and Return to Lecture
+            {% trans " Cancel and Return to Lecture" %}
         </a>
     </div>
 </div>

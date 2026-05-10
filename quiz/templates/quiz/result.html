@@ -1,138 +1,125 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Quiz Result - {{ quiz.title }}{% endblock %}
+{% load i18n %}
+
+{% block title %}{% trans "Quiz Result" %} - {{ quiz.title }}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/lecture.css' %}">
 {% endblock %}
+
 {% block content %}
 <div class="lecture-wrapper">
     <div class="quiz-result-container">
 
-        <span class="dir-label">Assessment Complete</span>
+        <span class="dir-label">{% trans "Assessment Complete" %}</span>
+        
         <h1 class="dir-title" style="text-align: center; margin-bottom: 1rem;">
-            {% if submission.is_graded %}Quiz Results{% else %}Submission Received{% endif %}
+            {% if submission.is_graded %}
+                {% trans "Quiz Results" %}
+            {% else %}
+                {% trans "Submission Received" %}
+            {% endif %}
         </h1>
 
         <p class="result-description">
-            You have successfully completed <strong>{{ submission.quiz.title }}</strong>.
+            {% trans "You have successfully completed" %} <strong>{{ submission.quiz.title }}</strong>.
         </p>
 
         <div class="score-display">
             {% if submission.is_graded %}
-            <span class="score-label">Your Score</span>
-            <div class="score-value">
-                <span class="score-earned text-success">{{ submission.score }}</span>
-                <span class="score-divider">/</span>
-                <span class="score-total">{{ submission.quiz.total_points }}</span>
-            </div>
+                <span class="score-label">{% trans "Your Score" %}</span>
+                <div class="score-value">
+                    <span class="score-earned text-success">{{ submission.score }}</span>
+                    <span class="score-divider">/</span>
+                    <span class="score-total">{{ submission.quiz.total_points }}</span>
+                </div>
             {% else %}
-            <div class="alert alert-info border-0 shadow-sm text-start mb-0">
-                <i class="bi bi-info-circle-fill me-2 fs-5 text-primary"></i>
-                <strong>Pending Review:</strong> Your MCQ answers are recorded, but your final score will be updated
-                once your teacher grades the open-ended questions.
-            </div>
+                <div class="alert alert-info border-0 shadow-sm text-start mb-0">
+                    <i class="bi bi-info-circle-fill me-2 fs-5 text-primary"></i>
+                    <strong>{% trans "Pending Review" %}:</strong> 
+                    {% trans "Your MCQ answers are recorded, but your final score will be updated once your teacher grades the open-ended questions." %}
+                </div>
             {% endif %}
         </div>
 
         <div class="result-actions mb-5 pb-4 border-bottom">
             <a href="{% url 'courses:lecture_detail' submission.quiz.lecture.id %}" class="btn-dir btn-dir-dark">
-                <i class="bi bi-arrow-left me-1"></i> Back to Unit
+                <i class="bi bi-arrow-left me-1"></i> {% trans "Back to Unit" %}
             </a>
+            
             {% if request.user.profile.role == "student" %}
-            <a href="{% url 'accounts:dashboard' %}" class="btn-dir">
-                View Dashboard <i class="bi bi-arrow-right ms-1"></i>
-            </a>
+                <a href="{% url 'accounts:dashboard' %}" class="btn-dir">
+                    {% trans "View Dashboard" %} <i class="bi bi-arrow-right ms-1"></i>
+                </a>
             {% endif %}
-            <button onclick="toggleReview()" class="btn-dir"
-                style="background-color: #f8f9fa; color: #0d6efd; border: 1px solid #0d6efd;" id="reviewBtn">
-                <i class="bi bi-journal-text me-1"></i> Show Detailed Review
+            
+            <button onclick="toggleReview()" class="btn-dir" id="reviewBtn" style="background-color: #f8f9fa; color: #0d6efd; border: 1px solid #0d6efd;">
+                <i class="bi bi-journal-text me-1"></i> {% trans "Show Detailed Review" %}
             </button>
         </div>
-    </div>
-
-    <div id="detailedReviewSection" class="detailed-review text-start mt-5" style="display: none;">
+    </div> <div id="detailedReviewSection" class="detailed-review text-start mt-5" style="display: none;">
         <h3 class="mb-4 pb-2 fs-5 fw-bold text-secondary text-uppercase letter-spacing-1">
-            <i class="bi bi-journal-text me-2"></i>Detailed Review
+            <i class="bi bi-journal-text me-2"></i>{% trans "Detailed Review" %}
         </h3>
 
         {% for ans in answers %}
-        <div class="answer-card mb-4 p-4 border rounded shadow-sm bg-white">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-                <h5 class="question-text fw-bold mb-0 text-dark" style="font-size: 1.05rem;">
-                    <span class="text-primary me-2">Q{{ forloop.counter }}.</span>
-                    {{ ans.question.text }}
-                </h5>
-            </div>
+            <div class="answer-card mb-4 p-4 border rounded shadow-sm bg-white">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h5 class="question-text fw-bold mb-0 text-dark" style="font-size: 1.05rem;">
+                        <span class="text-primary me-2">{% trans "Q" %}{{ forloop.counter }}.</span>
+                        {{ ans.question.text }}
+                    </h5>
+                </div>
 
-            <div class="student-response mt-3 pt-3 border-top">
-                <span class="text-muted small text-uppercase fw-bold">
-                    <i class="bi bi-pencil me-1"></i>Your Answer:
-                    {% if submission.is_graded %}
-                    <span
-                        class="badge {% if ans.points_earned == ans.question.max_points %}bg-success{% elif ans.points_earned > 0 %}bg-warning text-dark{% else %}bg-danger{% endif %} fs-6 px-3 py-2 ms-3 flex-shrink-0">
-                        {{ ans.points_earned }} / {{ ans.question.max_points }}
+                <div class="student-response mt-3 pt-3 border-top">
+                    <span class="text-muted small text-uppercase fw-bold">
+                        <i class="bi bi-pencil me-1"></i>{% trans "Your Answer" %}:
+                        
+                        {% if submission.is_graded %}
+                            <span class="badge {% if ans.points_earned == ans.question.max_points %}bg-success{% elif ans.points_earned > 0 %}bg-warning text-dark{% else %}bg-danger{% endif %} fs-6 px-3 py-2 ms-3 flex-shrink-0">
+                                {{ ans.points_earned }} / {{ ans.question.max_points }}
+                            </span>
+                        {% else %}
+                            <span class="badge bg-secondary fs-6 px-3 py-2 ms-3 flex-shrink-0">
+                                <i class="bi bi-hourglass-split"></i>
+                            </span>
+                        {% endif %}
                     </span>
-                    {% else %}
-                    <span class="badge bg-secondary fs-6 px-3 py-2 ms-3 flex-shrink-0">
-                        <i class="bi bi-hourglass-split"></i>
-                    </span>
-                    {% endif %}
-                </span>
-                <div class="p-3 bg-light border rounded mt-2 text-dark"
-                    style="white-space: pre-wrap; font-size: 0.95rem;">
-         
-{% if ans.question.question_type == "MCQ" %}
 
-    <!-- Student Answer -->
-    <div class="p-3 border rounded mt-2 
-        {% if ans.answer_text == ans.question.correct_answer %}
-            bg-success-subtle border-success
-        {% else %}
-            bg-danger-subtle border-danger
-        {% endif %}
-    ">
-        <strong>Your Answer:</strong><br>
+                    <div class="mt-2">
+                        {% if ans.question.question_type == "MCQ" %}
+                            <div class="p-3 border rounded {% if ans.answer_text == ans.question.correct_answer %}bg-success-subtle border-success{% else %}bg-danger-subtle border-danger{% endif %}">
+                                <strong>{% trans "Your Selection" %}:</strong><br>
+                                {% if ans.answer_text == "1" %}{{ ans.question.option_1 }}
+                                {% elif ans.answer_text == "2" %}{{ ans.question.option_2 }}
+                                {% elif ans.answer_text == "3" %}{{ ans.question.option_3 }}
+                                {% elif ans.answer_text == "4" %}{{ ans.question.option_4 }}
+                                {% else %}{% trans "No answer provided." %}{% endif %}
+                            </div>
 
-        {% if ans.answer_text == "1" %} {{ ans.question.option_1 }}
-        {% elif ans.answer_text == "2" %} {{ ans.question.option_2 }}
-        {% elif ans.answer_text == "3" %} {{ ans.question.option_3 }}
-        {% elif ans.answer_text == "4" %} {{ ans.question.option_4 }}
-        {% else %}
-            No answer provided.
-        {% endif %}
-    </div>
-
-    <!-- Show correct answer ONLY if wrong -->
-    {% if ans.answer_text != ans.question.correct_answer %}
-    <div class="mt-2 p-3 bg-success-subtle border border-success rounded">
-        <strong>Correct Answer:</strong><br>
-
-        {% if ans.question.correct_answer == "1" %} {{ ans.question.option_1 }}
-        {% elif ans.question.correct_answer == "2" %} {{ ans.question.option_2 }}
-        {% elif ans.question.correct_answer == "3" %} {{ ans.question.option_3 }}
-        {% elif ans.question.correct_answer == "4" %} {{ ans.question.option_4 }}
-        {% endif %}
-    </div>
-    {% endif %}
-
-{% else %}
-    <!-- Paragraph Answer -->
-    <div class="p-3 bg-light border rounded mt-2 text-dark">
-        {{ ans.answer_text|default_if_none:"No answer provided." }}
-    </div>
-
-{% endif %}
-
-
+                            {% if ans.answer_text != ans.question.correct_answer %}
+                                <div class="mt-2 p-3 bg-success-subtle border border-success rounded">
+                                    <strong>{% trans "Correct Answer" %}:</strong><br>
+                                    {% if ans.question.correct_answer == "1" %}{{ ans.question.option_1 }}
+                                    {% elif ans.question.correct_answer == "2" %}{{ ans.question.option_2 }}
+                                    {% elif ans.question.correct_answer == "3" %}{{ ans.question.option_3 }}
+                                    {% elif ans.question.correct_answer == "4" %}{{ ans.question.option_4 }}
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="p-3 bg-light border rounded mt-2 text-dark">
+                                {{ ans.answer_text|default:_("No answer provided.") }}
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
-        </div>
         {% empty %}
-        <div class="alert alert-warning">No answers found for this submission.</div>
+            <div class="alert alert-warning">{% trans "No answers found for this submission." %}</div>
         {% endfor %}
-    </div>
-</div>
+    </div> 
 </div>
 <script>
     function toggleReview() {
@@ -153,8 +140,8 @@
         }
     }
 </script>
-<style>
 
+<style>
     /* Container widened slightly to accommodate long text answers */
     .quiz-result-container {
         max-width: 800px;
@@ -283,8 +270,5 @@
             transform: translateY(0);
         }
     }
-
-
-    
 </style>
 {% endblock %}

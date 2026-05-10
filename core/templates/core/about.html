@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}About{% endblock %}
+{% load i18n %}
+
+{% block title %}{% trans "About" %}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/static_pages.css' %}">
@@ -10,44 +12,42 @@
 <div class="static-wrapper">
 
     <div class="static-header">
-        <h1 class="static-title">A Better Way to Learn</h1>
+        <h1 class="static-title">{% trans "A Better Way to Learn" %}</h1>
         <p class="static-subtext">
-            Our platform is built to simplify learning, track progress, and provide a structured environment for both students and instructors.
+            {% trans "Our platform is built to simplify learning, track progress, and provide a structured environment for both students and instructors." %}
         </p>
     </div>
 
     <div class="static-section">
-        <h3>What We Do</h3>
-        <p>
-            We provide a unified learning system where students can explore courses,
-            complete assignments, take quizzes, and track their progress — all in one place.
-        </p>
+        <h3>{% trans "What We Do" %}</h3>
+        
+        <p>{% trans "We provide a unified learning system where students can explore courses, complete assignments,take quizzes, and track their progress all in one place." %}</p>
     </div>
 
     <div class="static-section">
-        <h3>For Students</h3>
+        <h3>{% trans "For Students" %}</h3>
         <ul>
-            <li>Structured course content</li>
-            <li>Track learning progress</li>
-            <li>Submit assignments and quizzes</li>
-            <li>Get performance insights</li>
+            <li>{% trans "Structured course content" %}</li>
+            <li>{% trans "Track learning progress" %}</li>
+            <li>{% trans "Submit assignments and quizzes" %}</li>
+            <li>{% trans "Get performance insights" %}</li>
         </ul>
     </div>
 
     <div class="static-section">
-        <h3>For Instructors</h3>
+        <h3>{% trans "For Instructors" %}</h3>
         <ul>
-            <li>Create and manage courses</li>
-            <li>Upload lectures and materials</li>
-            <li>Monitor student performance</li>
-            <li>Access analytics dashboard</li>
+            <li>{% trans "Create and manage courses" %}</li>
+            <li>{% trans "Upload lectures and materials" %}</li>
+            <li>{% trans "Monitor student performance" %}</li>
+            <li>{% trans "Access analytics dashboard" %}</li>
         </ul>
     </div>
 
     <div class="static-section">
-        <h3>Our Goal</h3>
+        <h3>{% trans "Our Goal" %}</h3>
         <p>
-            To make learning simple, structured, and effective — without unnecessary complexity.
+            {% trans "To make learning simple, structured, and effective — without unnecessary complexity." %}
         </p>
     </div>
 

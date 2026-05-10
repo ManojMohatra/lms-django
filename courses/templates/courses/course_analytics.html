@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
-
-{% block title %}Analytics | {{ course.title }}{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Analytics" %} | {{ course.title }}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/course.css' %}">
@@ -12,135 +12,150 @@
 
     <div class="management-bar">
         <a href="{% url 'courses:course_detail' course.id %}" class="btn-minimal btn-blue">
-            ← Back to Course
+            ←{% trans "Back to Course" %}
         </a>
     </div>
 
     <header class="course-header">
-        <h1>Course Performance</h1>
-        <p class="course-desc">Analytics for {{ course.title }}</p>
+        <h1>{% trans "Course Performance" %}</h1>
+        <p class="course-desc">
+            {% blocktrans with title=course.title %}
+            Analytics for {{ title }}
+            {% endblocktrans %}
+        </p>
     </header>
 
     <div class="analytics-grid">
         <div class="analytics-stat-card">
-            <span class="stat-label">Students</span>
+            <span class="stat-label">{% trans "Students" %}</span>
             <span class="stat-value">{{ analytics.total_students }}</span>
         </div>
 
         <div class="analytics-stat-card">
-            <span class="stat-label">Completion</span>
+            <span class="stat-label">{% trans "Completion" %}</span>
             <span class="stat-value">{{ analytics.completion_rate }}%</span>
         </div>
 
         <div class="analytics-stat-card">
-            <span class="stat-label">Rating</span>
+            <span class="stat-label">{% trans "Rating" %}</span>
             <span class="stat-value">{{ analytics.avg_rating|default:"0.0" }}</span>
         </div>
 
         <div class="analytics-stat-card">
-            <span class="stat-label">Discussions</span>
+            <span class="stat-label">{% trans "Discussions" %}</span>
             <span class="stat-value">{{ analytics.total_comments }}</span>
         </div>
 
         <div class="analytics-stat-card">
-            <span class="stat-label">Quiz Avg</span>
+            <span class="stat-label">{% trans "Quiz Avg" %}</span>
             <span class="stat-value">{{ analytics.avg_quiz_score }}%</span>
         </div>
 
         <div class="analytics-stat-card">
-            <span class="stat-label">Assign. Avg</span>
+            <span class="stat-label">{% trans "Assign. Avg" %}</span>
             <span class="stat-value">{{ analytics.avg_assignment_score }}%</span>
         </div>
     </div>
 
     <div class="analytics-charts-wrapper">
         <div class="chart-section">
-            <h5 class="section-title">Enrollment Growth</h5>
+            <h5 class="section-title">{% trans "Enrollment Growth" %}</h5>
             <div class="chart-canvas-container">
                 <canvas id="enrollmentChart"></canvas>
             </div>
         </div>
 
         <div class="chart-section">
-            <h5 class="section-title">Performance Overview</h5>
+            <h5 class="section-title">{% trans "Enrollment Growth" %}</h5>
             <div class="chart-canvas-container">
                 <canvas id="performanceChart"></canvas>
             </div>
         </div>
     </div>
 
-   <div class="student-progress-section">
-    <h5 class="section-title">Student Progress</h5>
+    <div class="student-progress-section">
+        <h5 class="section-title">{% trans "Student Progress" %}</h5>
 
-    <div class="filter-bar">
-        <input type="text" id="studentSearch" class="filter-input" placeholder="Search student...">
-        <div class="filter-actions">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="Completed">Completed</button>
-            <button class="filter-btn" data-filter="In Progress">In Progress</button>
+        <div class="filter-bar">
+            <input type="text" id="studentSearch" class="filter-input" placeholder="{% trans 'Search student...' %}">
+
+            <div class="filter-actions">
+                <button class="filter-btn active" data-filter="all">
+                    {% trans "All" %}
+                </button>
+
+                <button class="filter-btn" data-filter="Completed">
+                    {% trans "Completed" %}
+                </button>
+
+                <button class="filter-btn" data-filter="In Progress">
+                    {% trans "In Progress" %}
+                </button>
+            </div>
         </div>
-    </div>
 
-    <table class="analytics-table">
-        <thead>
-            <tr>
-                <th>Student</th>
-                <th>Enrolled</th>
-                <th>Progress</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in student_progress %}
-            <tr>
-                <td>
-                    <div class="student-name">{{ item.username }}</div>
-                    <div class="student-email">{{ item.email }}</div>
-                </td>
-                <td class="mono-date">{{ item.date_joined|date:"M d, Y" }}</td>
-                <td style="width: 30%;">
-                    <div class="progress-track">
-                        <div class="progress-fill" style="width: {{ item.progress }}%; background: {% if item.progress == 100 %}#1e293b{% else %}#94a3b8{% endif %};"></div>
-                    </div>
-                </td>
-                <td>
-                    {% if item.progress == 100 %}
+        <table class="analytics-table">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Enrolled</th>
+                    <th>Progress</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in student_progress %}
+                <tr>
+                    <td>
+                        <div class="student-name">{{ item.username }}</div>
+                        <div class="student-email">{{ item.email }}</div>
+                    </td>
+                    <td class="mono-date">{{ item.date_joined|date:"M d, Y" }}</td>
+                    <td style="width: 30%;">
+                        <div class="progress-track">
+                            <div class="progress-fill"
+                                style="width: {{ item.progress }}%; background: {% if item.progress == 100 %}#1e293b{% else %}#94a3b8{% endif %};">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        {% if item.progress == 100 %}
                         <span class="badge badge-paid">Completed</span>
-                    {% elif item.progress > 0 %}
+                        {% elif item.progress > 0 %}
                         <span class="badge badge-tag">In Progress</span>
-                    {% else %}
+                        {% else %}
                         <span class="badge">Not Started</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4" class="empty-state">No students enrolled.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="empty-state">No students enrolled.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-    {% if page_obj.paginator.num_pages > 1 %}
-    <div class="pagination-bar">
-        {% if page_obj.has_previous %}
+        {% if page_obj.paginator.num_pages > 1 %}
+        <div class="pagination-bar">
+            {% if page_obj.has_previous %}
             <a href="?page={{ page_obj.previous_page_number }}" class="page-btn">← Prev</a>
-        {% else %}
+            {% else %}
             <span class="page-btn disabled">← Prev</span>
-        {% endif %}
+            {% endif %}
 
-        <span class="page-info">
-            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-        </span>
+            <span class="page-info">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
 
-        {% if page_obj.has_next %}
+            {% if page_obj.has_next %}
             <a href="?page={{ page_obj.next_page_number }}" class="page-btn">Next →</a>
-        {% else %}
+            {% else %}
             <span class="page-btn disabled">Next →</span>
+            {% endif %}
+        </div>
         {% endif %}
     </div>
-    {% endif %}
-</div>
 </div>
 
 <script type="application/json" id="enroll-labels">{{ enroll_dates|safe }}</script>
@@ -154,92 +169,91 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-// Charts Configurations
-Chart.defaults.font.family = "inherit";
-Chart.defaults.color = "#94a3b8";
+    // Charts Configurations
+    Chart.defaults.font.family = "inherit";
+    Chart.defaults.color = "#94a3b8";
 
-const enrollLabels = JSON.parse(document.getElementById('enroll-labels').textContent);
-const enrollData = JSON.parse(document.getElementById('enroll-data').textContent);
+    const enrollLabels = JSON.parse(document.getElementById('enroll-labels').textContent);
+    const enrollData = JSON.parse(document.getElementById('enroll-data').textContent);
 
-new Chart(document.getElementById('enrollmentChart'), {
-    type: 'line',
-    data: {
-        labels: enrollLabels,
-        datasets: [{
-            data: enrollData,
-            borderColor: '#1e293b',
-            backgroundColor: 'rgba(30, 41, 59, 0.05)',
-            borderWidth: 2,
-            tension: 0.1,
-            fill: true,
-            pointBackgroundColor: '#1e293b',
-            pointRadius: 3
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-            x: { grid: { display: false } },
-            y: { grid: { color: '#f1f5f9', drawBorder: false }, beginAtZero: true }
+    new Chart(document.getElementById('enrollmentChart'), {
+        type: 'line',
+        data: {
+            labels: enrollLabels,
+            datasets: [{
+                data: enrollData,
+                borderColor: '#1e293b',
+                backgroundColor: 'rgba(30, 41, 59, 0.05)',
+                borderWidth: 2,
+                tension: 0.1,
+                fill: true,
+                pointBackgroundColor: '#1e293b',
+                pointRadius: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { display: false } },
+                y: { grid: { color: '#f1f5f9', drawBorder: false }, beginAtZero: true }
+            }
         }
-    }
-});
+    });
 
-const quizAvg = JSON.parse(document.getElementById('quiz-avg').textContent);
-const assignAvg = JSON.parse(document.getElementById('assignment-avg').textContent);
+    const quizAvg = JSON.parse(document.getElementById('quiz-avg').textContent);
+    const assignAvg = JSON.parse(document.getElementById('assignment-avg').textContent);
 
-new Chart(document.getElementById('performanceChart'), {
-    type: 'bar',
-    data: {
-        labels: ['Quiz', 'Assignment'],
-        datasets: [{
-            data: [quizAvg, assignAvg],
-            backgroundColor: ['#334155', '#94a3b8'],
-            borderRadius: 4,
-            barThickness: 40
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-            x: { grid: { display: false } },
-            y: { grid: { color: '#f1f5f9', drawBorder: false }, beginAtZero: true, max: 100 }
+    new Chart(document.getElementById('performanceChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Quiz', 'Assignment'],
+            datasets: [{
+                data: [quizAvg, assignAvg],
+                backgroundColor: ['#334155', '#94a3b8'],
+                borderRadius: 4,
+                barThickness: 40
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { display: false } },
+                y: { grid: { color: '#f1f5f9', drawBorder: false }, beginAtZero: true, max: 100 }
+            }
         }
+    });
+
+    // Filter + search
+    const searchInput = document.getElementById('studentSearch');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const rows = document.querySelectorAll('tbody tr');
+
+    function filterTable() {
+        const search = searchInput.value.toLowerCase();
+        const filter = document.querySelector('.filter-btn.active').dataset.filter;
+
+        rows.forEach(row => {
+            const name = row.querySelector('.student-name').textContent.toLowerCase();
+            const status = row.querySelector('.badge').dataset.status;
+            const matchSearch = name.includes(search);
+            const matchFilter = filter === 'all' || status === filter;
+
+            row.style.display = (matchSearch && matchFilter) ? '' : 'none';
+        });
     }
-});
 
-// Filter + search
-const searchInput = document.getElementById('studentSearch');
-const filterButtons = document.querySelectorAll('.filter-btn');
-const rows = document.querySelectorAll('tbody tr');
+    searchInput.addEventListener('input', filterTable);
 
-function filterTable() {
-    const search = searchInput.value.toLowerCase();
-    const filter = document.querySelector('.filter-btn.active').dataset.filter;
-
-    rows.forEach(row => {
-        const name = row.querySelector('.student-name').textContent.toLowerCase();
-        const status = row.querySelector('.badge').textContent.trim();
-
-        const matchSearch = name.includes(search);
-        const matchFilter = filter === 'all' || status === filter;
-
-        row.style.display = (matchSearch && matchFilter) ? '' : 'none';
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            filterTable();
+        });
     });
-}
-
-searchInput.addEventListener('input', filterTable);
-
-filterButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-        filterButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        filterTable();
-    });
-});
 </script>
 {% endblock %}

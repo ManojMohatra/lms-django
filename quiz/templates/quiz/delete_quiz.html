@@ -1,38 +1,40 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %} Delete Quiz | {{ quiz.title }} {% endblock %}
+{% load i18n %}
+
+{% block title %} {% trans "Delete Quiz" %} | {{ quiz.title }} {% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/destruct.css' %}">
 {% endblock %}
-{% block content %}
 
+{% block content %}
 <div class="delete-wrapper">
     <div class="delete-header">
-        <span class="section-label-red">Quiz Removal</span>
-        <h2>Delete Quiz</h2>
-        <p class="text-muted small">You are removing a structural component of this course.</p>
+        <span class="section-label-red">{% trans "Quiz Removal" %}</span>
+        <h2>{% trans "Delete Quiz" %}</h2>
+        <p class="text-muted small">{% trans "You are removing a structural component of this course." %}</p>
     </div>
 
-
-        <span class="section-label-red" style="font-size: 0.65rem; margin-bottom: 10px;">Immediate Impact:</span>
+    <div class="delete-card"> <span class="section-label-red" style="font-size: 0.65rem; margin-bottom: 10px;">{% trans "Immediate Impact" %}:</span>
         <div class="impact-box">
             <ul>
-                <li>All submissions will be gone.</li>
+                <li>{% trans "All submissions will be gone." %}</li>
             </ul>
         </div>
 
         <form method="POST">
             {% csrf_token %}
             <button type="submit" class="btn-delete-confirm">
-                Permanently Delete Quiz
+                {% trans "Permanently Delete Quiz" %}
             </button>
         </form>
     </div>
 
     <div class="action-footer">
-     <a href="{% url 'courses:lecture_detail' quiz.lecture.id %}" class="btn-cancel">
-    Cancel and Return
-</a>
+        <a href="{% url 'courses:lecture_detail' quiz.lecture.id %}" class="btn-cancel">
+            {% trans "Cancel and Return" %}
+        </a>
     </div>
 </div>
 {% endblock %}

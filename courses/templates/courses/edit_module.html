@@ -1,50 +1,50 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %} Edit Module | {{ module.title }} {% endblock %}
+{% load i18n %}
+
+{% block title %}{% trans "Edit Module" %} | {{ module.title }}{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/edit.css' %}">
 {% endblock %}
+
 {% block content %}
 <div class="form-wrapper">
     <div class="form-header">
-        <span class="section-label">Curriculum Management</span>
-        <h2>Edit Module</h2>
-        <p class="text-muted small">Updating structure for: <strong>{{ module.course.title }}</strong></p>
+        <span class="section-label">{% trans "Curriculum Management" %}</span>
+
+        <h2>{% trans "Edit Module" %}</h2>
+
+        <p class="text-muted small">
+            {% blocktrans with course=module.course.title %}
+            Updating structure for: <strong>{{ course }}</strong>
+            {% endblocktrans %}
+        </p>
     </div>
 
     <div class="form-card">
         <form method="post">
             {% csrf_token %}
-            
+
             <div class="form-group">
-                <label for="title">Module Title</label>
-                <input type="text" 
-                       name="title" 
-                       id="title" 
-                       class="form-control" 
-                       value="{{ module.title }}" 
-                       required>
+                <label for="title">{% trans "Module Title" %}</label>
+                <input type="text" name="title" id="title" class="form-control" value="{{ module.title }}" required>
             </div>
 
             <div class="form-group">
-                <label for="order">Sequence Position</label>
-                <input type="number" 
-                       name="order" 
-                       id="order" 
-                       class="form-control" 
-                       value="{{ module.order }}" 
-                       required>
+                <label for="order">{% trans "Sequence Position" %}</label>
+                <input type="number" name="order" id="order" class="form-control" value="{{ module.order }}" required>
             </div>
 
             <button type="submit" class="btn-save-main">
-                <i class="bi bi-check2-circle me-1"></i> Save Changes
+                <i class="bi bi-check2-circle me-1"></i> {% trans "Save Changes" %}
             </button>
         </form>
     </div>
 
     <div class="action-footer">
         <a href="{% url 'courses:course_detail' module.course.id %}" class="btn-cancel">
-            Cancel and Return
+            {% trans "Cancel and Return" %}
         </a>
     </div>
 </div>

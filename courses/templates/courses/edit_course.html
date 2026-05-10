@@ -1,49 +1,64 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %} Edit Course | {{ course.title }} {% endblock %}
+{% load i18n %}
+{% block title %} {% trans "Edit Course " %}| {{ course.title }} {% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/edit.css' %}">
 {% endblock %}
 {% block content %}
 <div class="form-wrapper">
     <div class="form-header">
-        <span class="section-label">Course Management</span>
-        <h2>Edit Course</h2>
-        <p class="text-muted small">You are currently editing <strong>{{ course.title }}</strong></p>
+        <span class="section-label">{% trans "Course Management" %}</span>
+        <h2>{% trans "Edit Course" %}</h2>
+        <p class="text-muted small">
+            {% blocktrans with title=course.title %}
+            You are currently editing <strong>{{ title }}</strong>
+            {% endblocktrans %}
+        </p>
     </div>
     <div class="form-card">
         <form method="post" enctype="multipart/form-data" novalidate>
             {% csrf_token %}
 
-            {% if form.non_field_errors %}
-                <div class="errorlist">
-                    {{ form.non_field_errors }}
-                </div>
-            {% endif %}
+            {% for field in form %}
+            <p class="form-field-wrapper">
+                {{ field.label_tag }}
+                {{ field }}
 
-            {{ form.as_p }}
+                {% if field.errors %}
+                {% for error in field.errors %}
+                <span class="text-danger small d-block">{{ error }}</span>
+                {% endfor %}
+                {% endif %}
+
+                {% if field.help_text %}
+                <small class="text-muted d-block">{{ field.help_text }}</small>
+                {% endif %}
+            </p>
+            {% endfor %}
 
             <button type="submit" class="btn-save-main">
-                Save Changes
+                {% trans "Save Changes" %}
             </button>
         </form>
     </div>
     <div class="action-footer">
         <a href="{% url 'courses:course_detail' course.id %}" class="btn-back">
-            <i class="bi bi-arrow-left"></i> Cancel
+            <i class="bi bi-arrow-left"></i>{% trans " Cancel" %}
         </a>
         <a href="{% url 'courses:delete_course' course.id %}" class="btn-delete-text"
-           onclick="return confirm('Permanently delete this entire course and all its contents?')">
-            <i class="bi bi-trash3 me-1"></i> Delete Course
+            onclick="return confirm(gettext('Permanently delete this entire course and all its contents?'))">
+            <i class="bi bi-trash3 me-1"></i> {% trans "Delete Course" %}
         </a>
     </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
+<script src="{% url 'javascript-catalog' %}"></script>
 <script>
     const isFreeCheckbox = document.getElementById("id_is_free");
-    const priceRow       = document.getElementById("id_price").closest("p");
+    const priceRow = document.getElementById("id_price").closest("p");
 
     function togglePrice() {
         priceRow.style.display = isFreeCheckbox.checked ? "none" : "block";

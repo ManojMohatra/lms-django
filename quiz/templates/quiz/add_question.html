@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Add Questions - {{ quiz.title }}{% endblock %}
+{% load i18n %}
+
+{% block title %}{% trans "Add Questions" %} - {{ quiz.title }}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/lecture.css' %}">
@@ -10,20 +12,20 @@
 <div class="lecture-wrapper">
     <nav class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
         <a href="{% url 'courses:lecture_detail' quiz.lecture.id %}" class="btn-dir">
-            <i class="bi bi-arrow-left"></i> Back to Unit
+            <i class="bi bi-arrow-left"></i> {% trans "Back to Unit" %}
         </a>
         <span class="question-count-badge">
             <i class="bi bi-list-check me-1"></i>
-            {{ quiz.questions.count }} Questions Added
+            {{ quiz.questions.count }} {% trans "Questions Added" %}
         </span>
     </nav>
 
     <div class="quiz-questions-container">
         <div class="quiz-questions-header">
-            <span class="dir-label">Question Builder</span>
-            <h1 class="dir-title">Add Questions</h1>
+            <span class="dir-label">{% trans "Question Builder" %}</span>
+            <h1 class="dir-title">{% trans "Add Questions" %}</h1>
             <p class="quiz-questions-subtitle">
-                Quiz: <strong>{{ quiz.title }}</strong>
+                {% trans "Quiz" %}: <strong>{{ quiz.title }}</strong>
             </p>
         </div>
 
@@ -31,56 +33,54 @@
             {% csrf_token %}
 
             <div class="form-group">
-                <label class="form-label">Question Type</label>
+                <label class="form-label">{% trans "Question Type" %}</label>
                 <select name="type" id="qType" class="form-select" onchange="toggleFields()">
-                    <option value="MCQ">Multiple Choice (4 Options)</option>
-                    <option value="PARA">Paragraph / Open Ended</option>
+                    <option value="MCQ">{% trans "Multiple Choice (4 Options)" %}</option>
+                    <option value="PARA">{% trans "Paragraph / Open Ended" %}</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Question Text</label>
-                <textarea name="text" class="form-textarea" rows="3" placeholder="Enter your question here..."
-                    required></textarea>
+                <label class="form-label">{% trans "Question Text" %}</label>
+                <textarea name="text" class="form-textarea" rows="3" placeholder="{% trans 'Enter your question here...' %}" required></textarea>
             </div>
+
             <div class="form-group mb-4">
-                <label class="form-label">Points for this Question</label>
+                <label class="form-label">{% trans "Points for this Question" %}</label>
                 <div class="d-flex align-items-center">
-                    <input type="number" name="max_points" class="form-input-small" value="1" min="1"
-                        style="width: 100px;" required>
-                    <span class="ms-2 text-muted small">Points awarded for a correct answer.</span>
+                    <input type="number" name="max_points" class="form-input-small" value="1" min="1" style="width: 100px;" required>
+                    <span class="ms-2 text-muted small">{% trans "Points awarded for a correct answer." %}</span>
                 </div>
             </div>
 
             <div id="mcq-section" class="mcq-section">
-                <label class="form-label">Answer Options</label>
+                <label class="form-label">{% trans "Answer Options" %}</label>
                 <div class="options-grid">
-                    <input type="text" name="opt1" class="form-input" placeholder="Option 1">
-                    <input type="text" name="opt2" class="form-input" placeholder="Option 2">
-                    <input type="text" name="opt3" class="form-input" placeholder="Option 3">
-                    <input type="text" name="opt4" class="form-input" placeholder="Option 4">
+                    <input type="text" name="opt1" class="form-input" placeholder="{% trans 'Option 1' %}">
+                    <input type="text" name="opt2" class="form-input" placeholder="{% trans 'Option 2' %}">
+                    <input type="text" name="opt3" class="form-input" placeholder="{% trans 'Option 3' %}">
+                    <input type="text" name="opt4" class="form-input" placeholder="{% trans 'Option 4' %}">
                 </div>
 
                 <div class="form-group" style="margin-top: 1.5rem;">
-                    <label class="form-label">Correct Option Number</label>
+                    <label class="form-label">{% trans "Correct Option Number" %}</label>
                     <input type="number" name="correct" min="1" max="4" class="form-input-small" placeholder="1-4">
                 </div>
             </div>
 
             <div id="para-section" class="para-section" style="display: none;">
                 <div class="form-group">
-                    <label class="form-label">Answer Key / Reference</label>
-                    <textarea name="correct" class="form-textarea" rows="4"
-                        placeholder="Enter keywords or a model answer for reference..."></textarea>
+                    <label class="form-label">{% trans "Answer Key / Reference" %}</label>
+                    <textarea name="correct" class="form-textarea" rows="4" placeholder="{% trans 'Enter keywords or a model answer for reference...' %}"></textarea>
                 </div>
             </div>
 
             <div class="form-actions">
                 <button type="submit" name="another" class="btn-dir btn-dir-dark">
-                    <i class="bi bi-plus-lg me-1"></i> Save & Add Another
+                    <i class="bi bi-plus-lg me-1"></i> {% trans "Save & Add Another" %}
                 </button>
                 <button type="submit" class="btn-dir">
-                    <i class="bi bi-check-lg me-1"></i> Save & Finish
+                    <i class="bi bi-check-lg me-1"></i> {% trans "Save & Finish" %}
                 </button>
             </div>
         </form>

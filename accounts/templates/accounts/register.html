@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}Register{% endblock %}
+{% block title %}{% trans "Register" %}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/auth.css' %}">
@@ -10,56 +11,56 @@
 {% block content %}
 <div class="auth-wrapper">
     <div class="auth-header">
-        <span class="section-label">Create Account</span>
-        <h2>Get Started</h2>
+        <span class="section-label">{% trans "Create Account" %}</span>
+        <h2>{% trans "Get Started" %}</h2>
     </div>
-    
+
     <div class="auth-card">
         <form method="post" id="registerForm">
             {% csrf_token %}
-            
-            <span class="section-label">Select Role</span>
+
+            <span class="section-label">{% trans "Select Role" %}</span>
             <div class="role-selection-group">
                 <div class="role-tile" data-role="student">
                     <i class="bi bi-mortarboard"></i>
-                    <span>Student</span>
+                    <span>{% trans "Student" %}</span>
                 </div>
                 <div class="role-tile" data-role="teacher">
                     <i class="bi bi-person-workspace"></i>
-                    <span>Teacher</span>
+                    <span>{% trans "Teacher" %}</span>
                 </div>
             </div>
 
             <input type="hidden" name="role" id="selected-role" value="{{ form.role.value|default:'' }}">
 
             {% if form.role.errors %}
-                <div class="text-danger mb-3">{{ form.role.errors }}</div>
+            <div class="text-danger mb-3">{{ form.role.errors }}</div>
             {% endif %}
 
             {% for field in form %}
-                {% if field.name != 'role' %}
-                    <div class="form-group mb-3">
-                        {{ field.label_tag }}
-                        {{ field }}
-                        {% if field.errors %}
-                            <div class="text-danger small">{{ field.errors }}</div>
-                        {% endif %}
-                        {% if field.help_text %}
-                            <small class="text-muted">{{ field.help_text }}</small>
-                        {% endif %}
-                    </div>
+            {% if field.name != 'role' %}
+            <div class="form-group mb-3">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                <div class="text-danger small">{{ field.errors }}</div>
                 {% endif %}
+                {% if field.help_text %}
+                <small class="text-muted">{{ field.help_text }}</small>
+                {% endif %}
+            </div>
+            {% endif %}
             {% endfor %}
 
             <button type="submit" class="btn-auth-primary">
-                Create Account
+                {% trans "Create Account" %}
             </button>
         </form>
     </div>
-    
+
     <div class="auth-footer">
-        Already have an account?
-        <a href="{% url 'accounts:login' %}">Login</a>
+        {% trans "Already have an account?" %}
+        <a href="{% url 'accounts:login' %}">{% trans "Login" %}</a>
     </div>
 </div>
 
@@ -69,7 +70,6 @@
         const hiddenInput = document.getElementById('selected-role');
 
         tiles.forEach(tile => {
-            // Highlight tile if it was already selected (e.g., after a validation error)
             if (tile.dataset.role === hiddenInput.value) {
                 tile.classList.add('active');
             }
