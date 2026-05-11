@@ -1,3 +1,10 @@
-<h2>🎉 Enrollment Successful!</h2>
-<p>You are now enrolled in <strong>{{ course.title }}</strong>.</p>
-<a href="{% url 'courses:course_list' %}">Browse Courses</a>
+<h2>🎉 {% trans "Enrollment Successful!" %}</h2>
+<p>
+    {% blocktrans with course=course.title %}
+    You are now enrolled in <strong>{{ course }}</strong>.
+    {% endblocktrans %}
+</p>
+
+<a href="{% url 'courses:course_list' %}">
+    {% trans "Browse Courses" %}
+</a>

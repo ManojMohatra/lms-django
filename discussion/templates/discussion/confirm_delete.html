@@ -1,37 +1,58 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %} Delete Comment | {{ course.title }} {% endblock %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Delete Comment" %} | {{ course.title }}
+{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/destruct.css' %}">
 {% endblock %}
+
 {% block content %}
 <div class="delete-wrapper">
+
     <div class="delete-header">
-        <span class="section-label-red">Discussion Moderation</span>
-        <h2>Delete Comment</h2>
-        <p class="text-muted small">This will permanently remove the contribution from the thread.</p>
+        <span class="section-label-red">
+            {% trans "Discussion Moderation" %}
+        </span>
+
+        <h2>{% trans "Delete Comment" %}</h2>
+
+        <p class="text-muted small">
+            {% trans "This will permanently remove the contribution from the thread." %}
+        </p>
     </div>
 
     <div class="delete-card">
+
         <div class="comment-preview">
             <div class="preview-meta">
                 <span class="preview-user">{{ comment.user.username }}</span>
-                <span class="preview-date">{{ comment.created_at|date:"M d, Y" }}</span>
+
+                <span class="preview-date">
+                    {{ comment.created_at|date:"M d, Y" }}
+                </span>
             </div>
-            <p class="comment-text">"{{ comment.content|truncatechars:150 }}"</p>
+
+            <p class="comment-text">
+                "{{ comment.content|truncatechars:150 }}"
+            </p>
         </div>
 
         <form method="post">
             {% csrf_token %}
+
             <button type="submit" class="btn-delete-confirm">
-                Confirm Deletion
+                {% trans "Confirm Deletion" %}
             </button>
         </form>
     </div>
 
     <div class="action-footer">
         <a href="{% url 'discussion:course_discussion' course.id %}" class="btn-cancel">
-            Cancel and Return
+            {% trans "Cancel and Return" %}
         </a>
     </div>
 </div>

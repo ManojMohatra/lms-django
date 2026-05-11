@@ -1,36 +1,61 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %} Edit Comment | {{ course.title }} {% endblock %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Edit Comment" %} | {{ course.title }}
+{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/edit.css' %}">
 {% endblock %}
+
 {% block content %}
 
-
 <div class="form-wrapper">
+
     <div class="form-header">
-        <h2>Edit Comment</h2>
-        <p>Modify your message in the <strong>{{ course.title }}</strong> discussion.</p>
+        <h2>{% trans "Edit Comment" %}</h2>
+
+        <p>
+            {% trans "Modify your message in the" %}
+            <strong>{{ course.title }}</strong>
+            {% trans "discussion." %}
+        </p>
     </div>
 
     <div class="original-context">
-        <i class="bi bi-info-circle me-1"></i> 
-        Original post: <span class="text-truncate d-inline-block align-bottom" style="max-width: 300px;">"{{ comment.content }}"</span>
+        <i class="bi bi-info-circle me-1"></i>
+
+        {% trans "Original post:" %}
+
+        <span class="text-truncate d-inline-block align-bottom"
+              style="max-width: 300px;">
+            "{{ comment.content }}"
+        </span>
     </div>
 
     <form method="post" class="edit-form">
         {% csrf_token %}
-        
-        <textarea name="content" required placeholder="Update your thoughts...">{{ comment.content }}</textarea>
-        
+
+        <textarea name="content"
+                  required
+                  placeholder="{% trans 'Update your thoughts...' %}">
+{{ comment.content }}</textarea>
+
         <div class="action-group">
+
             <button type="submit" class="btn-save-main shadow-sm">
-                Save Changes
+                {% trans "Save Changes" %}
             </button>
-            <a href="{% url 'discussion:course_discussion' course.id %}" class="btn-cancel">
-                Discard Changes
+
+            <a href="{% url 'discussion:course_discussion' course.id %}"
+               class="btn-cancel">
+                {% trans "Discard Changes" %}
             </a>
+
         </div>
     </form>
 </div>
+
 {% endblock %}

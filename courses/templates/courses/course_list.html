@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
-{% load i18n %}
 
-{% block title %}{% trans "All Courses" %}{% endblock %}
+{% block title %} All Courses {% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/catalog.css' %}">
@@ -13,16 +12,13 @@
 
     <div class="catalog-header">
         <div class="catalog-info">
-            <h2>{% trans "Course Catalog" %}</h2>
-            <span class="catalog-subtext">
-                {% trans "Unified Learning Directory" %}
-            </span>
+            <h2>Course Catalog</h2>
+            <span class="catalog-subtext">Unified Learning Directory</span>
         </div>
-
         {% if request.user.profile.role == "teacher" %}
-        <a href="{% url 'courses:create_course' %}" class="btn-minimal btn-dark">
-            +{% trans "New Entry" %}
-        </a>
+            <a href="{% url 'courses:create_course' %}" class="btn-minimal btn-dark">
+                + New Entry
+            </a>
         {% endif %}
     </div>
 
@@ -32,43 +28,37 @@
             type="text"
             name="search"
             value="{{ current_search }}"
-            placeholder="{% trans 'Search courses...' %}"
+            placeholder="Search courses..."
             class="search-input search-input--wide"
         >
 
         <div class="filter-group">
-            <span class="filter-group-label">
-                {% trans "Difficulty" %}
-            </span>
-
+            <span class="filter-group-label">Difficulty</span>
             {% for value, label in difficulty_choices %}
-            <label class="chip-label {% if value in current_difficulty %}chip-active{% endif %}">
-                <input
-                    type="checkbox"
-                    name="difficulty"
-                    value="{{ value }}"
-                    {% if value in current_difficulty %}checked{% endif %}
-                >
-                {{ label }}
-            </label>
+                <label class="chip-label {% if value in current_difficulty %}chip-active{% endif %}">
+                    <input
+                        type="checkbox"
+                        name="difficulty"
+                        value="{{ value }}"
+                        {% if value in current_difficulty %}checked{% endif %}
+                    >
+                    {{ label }}
+                </label>
             {% endfor %}
         </div>
 
         <div class="filter-group">
-            <span class="filter-group-label">
-                {% trans "Topics" %}
-            </span>
-
+            <span class="filter-group-label">Topics</span>
             {% for tag in all_tags %}
-            <label class="chip-label {% if tag.slug in current_tag %}chip-active{% endif %}">
-                <input
-                    type="checkbox"
-                    name="tag"
-                    value="{{ tag.slug }}"
-                    {% if tag.slug in current_tag %}checked{% endif %}
-                >
-                #{{ tag.name }}
-            </label>
+                <label class="chip-label {% if tag.slug in current_tag %}chip-active{% endif %}">
+                    <input
+                        type="checkbox"
+                        name="tag"
+                        value="{{ tag.slug }}"
+                        {% if tag.slug in current_tag %}checked{% endif %}
+                    >
+                    #{{ tag.name }}
+                </label>
             {% endfor %}
         </div>
 
@@ -76,155 +66,106 @@
             type="text"
             name="teacher"
             value="{{ current_teacher }}"
-            placeholder="{% trans 'Instructor...' %}"
+            placeholder="Instructor..."
             class="search-input"
         >
 
-        <button type="submit" class="btn-minimal btn-dark">
-            {% trans "Search" %}
-        </button>
-
-        <a href="{% url 'courses:course_list' %}" class="search-clear">
-            {% trans "Clear" %}
-        </a>
+        <button type="submit" class="btn-minimal btn-dark">Search</button>
+        <a href="{% url 'courses:course_list' %}" class="search-clear">Clear</a>
 
     </form>
 
     {% if current_search or current_difficulty or current_tag or current_teacher %}
     <div class="active-filters">
-
-        <span class="active-filters-label">
-            {% trans "Filtered by:" %}
-        </span>
-
+        <span class="active-filters-label">Filtered by:</span>
         {% if current_search %}
-        <span class="filter-chip">{{ current_search }}</span>
+            <span class="filter-chip">{{ current_search }}</span>
         {% endif %}
-
         {% for d in current_difficulty %}
-        <span class="filter-chip">{{ d|capfirst }}</span>
+            <span class="filter-chip">{{ d|capfirst }}</span>
         {% endfor %}
-
         {% for t in current_tag %}
-        <span class="filter-chip">#{{ t }}</span>
+            <span class="filter-chip">#{{ t }}</span>
         {% endfor %}
-
         {% if current_teacher %}
-        <span class="filter-chip">@{{ current_teacher }}</span>
+            <span class="filter-chip">@{{ current_teacher }}</span>
         {% endif %}
-
-        <span class="result-count">
-            {% blocktrans count total=courses.paginator.count %}
-            {{ total }} result
-            {% plural %}
-            {{ total }} results
-            {% endblocktrans %}
-        </span>
-
+        
+        <span class="result-count">{{ courses.paginator.count }} result{{ courses.paginator.count|pluralize }}</span>
     </div>
     {% endif %}
 
     <div class="catalog-list">
-
         {% for course in courses %}
-        <div class="catalog-item">
-
-            <div class="item-number">
-                {{ courses.start_index|add:forloop.counter0|stringformat:"02d" }}
-            </div>
-
-            <div class="item-title-box">
-
-                <a href="{% url 'courses:course_detail' course.id %}" class="item-title">
-                    {{ course.title }}
-                </a>
-
-                <div class="item-tags d-lg-none">
-                    {% for tag in course.tags.all %}
-                    <span class="tag-chip">#{{ tag.name }}</span>
-                    {% endfor %}
-                </div>
-
-            </div>
-
-            <p class="item-desc d-none d-md-block">
-                {{ course.description }}
-            </p>
-
-            <div class="item-actions">
-
-                <span class="instructor-name d-none d-lg-inline">
-                    {{ course.teacher.username }}
-                </span>
-
-                <span class="diff-badge diff-badge--{{ course.difficulty }} d-none d-lg-inline">
-                    {{ course.get_difficulty_display }}
-                </span>
-
-                {% if request.user.profile.role == "student" %}
-
-                    {% if course.id in enrolled_courses %}
-
-                        <span class="status-enrolled">
-                            {% trans "Joined" %}
-                        </span>
-
-                        <a
-                            href="{% url 'courses:unenroll_course' course.id %}?next={{ request.path }}"
-                            class="unenroll-text"
-                        >
-                            {% trans "Leave" %}
-                        </a>
-
-                    {% else %}
-
-                        <a
-                            href="{% url 'courses:enroll_course' course.id %}?next={{ request.path }}"
-                            class="btn-minimal btn-blue"
-                        >
-                            {% trans "Enroll" %}
-                        </a>
-
-                    {% endif %}
-
-                {% else %}
-
-                    <a
-                        href="{% url 'courses:course_detail' course.id %}"
-                        class="btn-minimal btn-blue"
-                    >
-                        {% trans "View" %}
+            <div class="catalog-item">
+                <div class="item-number">{{ courses.start_index|add:forloop.counter0|stringformat:"02d" }}</div>
+                <div class="item-title-box">
+                    <a href="{% url 'courses:course_detail' course.id %}" class="item-title">
+                        {{ course.title }}
                     </a>
-
-                {% endif %}
-
+                    <div class="item-tags d-lg-none">
+                        {% for tag in course.tags.all %}
+                            <span class="tag-chip">#{{ tag.name }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <p class="item-desc d-none d-md-block">
+                    {{ course.description }}
+                </p>
+                <div class="item-actions">
+                    <span class="instructor-name d-none d-lg-inline">
+                        {{ course.teacher.username }}
+                    </span>
+                    <span class="diff-badge diff-badge--{{ course.difficulty }} d-none d-lg-inline">
+                        {{ course.get_difficulty_display }}
+                    </span>
+                    {% if request.user.profile.role == "student" %}
+                        {% if course.id in enrolled_courses %}
+                            <span class="status-enrolled">Joined</span>
+                            <a href="{% url 'courses:unenroll_course' course.id %}?next={{ request.path }}" class="unenroll-text">Leave</a>
+                        {% else %}
+                            <a href="{% url 'courses:enroll_course' course.id %}?next={{ request.path }}" class="btn-minimal btn-blue">Enroll</a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'courses:course_detail' course.id %}" class="btn-minimal btn-blue">View</a>
+                    {% endif %}
+                </div>
             </div>
-
-        </div>
-
         {% empty %}
+            <div class="py-4 text-center text-muted small">
+                {% if current_search or current_difficulty or current_tag or current_teacher %}
+                    No courses match your search.
+                    <a href="{% url 'courses:course_list' %}" class="search-clear">Clear filters</a>
+                {% else %}
+                    The catalog is currently empty.
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
 
-        <div class="py-4 text-center text-muted small">
-
-            {% if current_search or current_difficulty or current_tag or current_teacher %}
-
-                {% trans "No courses match your search." %}
-
-                <a href="{% url 'courses:course_list' %}" class="search-clear">
-                    {% trans "Clear filters" %}
-                </a>
-
-            {% else %}
-
-                {% trans "The catalog is currently empty." %}
-
+    {% if courses.has_other_pages %}
+    <div class="pagination-container" style="margin-top: 2rem; display: flex; justify-content: space-between; align-items: center;">
+        <div class="pagination-info" style="font-size: 0.9rem; color: #666;">
+            Showing {{ courses.start_index }} to {{ courses.end_index }} of {{ courses.paginator.count }} entries
+        </div>
+        
+        <div class="pagination-controls" style="display: flex; gap: 0.5rem;">
+            {% if courses.has_previous %}
+                <a href="?page=1{% if current_search %}&search={{ current_search }}{% endif %}{% for d in current_difficulty %}&difficulty={{ d }}{% endfor %}{% for t in current_tag %}&tag={{ t }}{% endfor %}{% if current_teacher %}&teacher={{ current_teacher }}{% endif %}" class="btn-minimal btn-dark">&laquo; First</a>
+                <a href="?page={{ courses.previous_page_number }}{% if current_search %}&search={{ current_search }}{% endif %}{% for d in current_difficulty %}&difficulty={{ d }}{% endfor %}{% for t in current_tag %}&tag={{ t }}{% endfor %}{% if current_teacher %}&teacher={{ current_teacher }}{% endif %}" class="btn-minimal btn-dark">Previous</a>
             {% endif %}
 
+            <span class="btn-minimal" style="cursor: default; border-color: transparent;">
+                Page {{ courses.number }} of {{ courses.paginator.num_pages }}
+            </span>
+
+            {% if courses.has_next %}
+                <a href="?page={{ courses.next_page_number }}{% if current_search %}&search={{ current_search }}{% endif %}{% for d in current_difficulty %}&difficulty={{ d }}{% endfor %}{% for t in current_tag %}&tag={{ t }}{% endfor %}{% if current_teacher %}&teacher={{ current_teacher }}{% endif %}" class="btn-minimal btn-dark">Next</a>
+                <a href="?page={{ courses.paginator.num_pages }}{% if current_search %}&search={{ current_search }}{% endif %}{% for d in current_difficulty %}&difficulty={{ d }}{% endfor %}{% for t in current_tag %}&tag={{ t }}{% endfor %}{% if current_teacher %}&teacher={{ current_teacher }}{% endif %}" class="btn-minimal btn-dark">Last &raquo;</a>
+            {% endif %}
         </div>
-
-        {% endfor %}
-
     </div>
+    {% endif %}
 
 </div>
 {% endblock %}

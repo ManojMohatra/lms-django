@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LMS 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-18 16:14+0545\n"
+"POT-Creation-Date: 2026-05-11 14:46+0545\n"
 "PO-Revision-Date: 2026-04-16 06:45+0000\n"
 "Last-Translator: LMS Team\n"
 "Language-Team: Nepali\n"
@@ -37,7 +37,8 @@ msgstr "+ नयाँ कोर्स"
 #: .\courses\templates\courses\assignment_form.html:4
 #: .\courses\templates\courses\course_detail.html:123
 #: .\courses\templates\courses\course_detail.html:138
-#: .\courses\templates\courses\lecture_detail.html:157
+#: .\courses\templates\courses\lecture_detail.html:165
+#: .\discussion\templates\discussion\comment_block.html:40
 msgid "Edit"
 msgstr "सम्पादन गर्नुस्"
 
@@ -54,7 +55,7 @@ msgid "Enrolled Courses"
 msgstr "भर्ना भएका कोर्सहरू"
 
 #: .\accounts\templates\accounts\dashboard.html:60
-#: .\courses\templates\courses\course_analytics.html:93
+#: .\courses\templates\courses\course_analytics.html:95
 msgid "Progress"
 msgstr "प्रगति"
 
@@ -91,7 +92,7 @@ msgid "Welcome Back"
 msgstr "स्वागत छ"
 
 #: .\accounts\templates\accounts\login.html:14
-#: .\core\templates\core\home.html:24
+#: .\core\templates\core\home.html:26
 msgid "Sign In"
 msgstr "साइन इन गर्नुस्"
 
@@ -106,12 +107,12 @@ msgstr "दर्ता गर्नुहोस्"
 
 #: .\accounts\templates\accounts\register.html:14
 #: .\accounts\templates\accounts\register.html:56
-#: .\core\templates\core\home.html:21
+#: .\core\templates\core\home.html:23
 msgid "Create Account"
 msgstr "खाता बनाउनुस्"
 
 #: .\accounts\templates\accounts\register.html:15
-#: .\core\templates\core\home.html:90 .\templates\base.html:37
+#: .\core\templates\core\home.html:103 .\templates\base.html:37
 msgid "Get Started"
 msgstr "सुरु गर्नुस्"
 
@@ -120,7 +121,7 @@ msgid "Select Role"
 msgstr ""
 
 #: .\accounts\templates\accounts\register.html:26
-#: .\courses\templates\courses\course_analytics.html:91
+#: .\courses\templates\courses\course_analytics.html:93
 #: .\quiz\templates\quiz\grade_submission.html:17
 #: .\quiz\templates\quiz\manage_results.html:35
 msgid "Student"
@@ -155,11 +156,6 @@ msgid "What We Do"
 msgstr "हामी के गर्छौं"
 
 #: .\core\templates\core\about.html:24
-#, fuzzy
-#| msgid ""
-#| "We provide a unified learning system where students can explore courses, "
-#| "complete assignments, take quizzes, and track their progress — all in one "
-#| "place."
 msgid ""
 "We provide a unified learning system where students can explore courses, "
 "complete assignments,take quizzes, and track their progress all in one place."
@@ -265,19 +261,19 @@ msgstr "इमेल ठेगाना"
 msgid "Your Message"
 msgstr "तपाईंको सन्देश"
 
-#: .\core\templates\core\home.html:4
+#: .\core\templates\core\home.html:5
 msgid "Home"
 msgstr "गृहपृष्ठ"
 
-#: .\core\templates\core\home.html:13
+#: .\core\templates\core\home.html:15
 msgid "Education Platform"
 msgstr "शिक्षा मञ्च"
 
-#: .\core\templates\core\home.html:14
+#: .\core\templates\core\home.html:16
 msgid "Learn. Grow. Succeed."
 msgstr "सिक्नुस्। बढ्नुस्। सफल हुनुस्।"
 
-#: .\core\templates\core\home.html:16
+#: .\core\templates\core\home.html:18
 msgid ""
 "Access high-quality modules, track your progress, and master new skills with "
 "our unified Learning Management System."
@@ -285,45 +281,66 @@ msgstr ""
 "उच्च गुणस्तरका पाठ्यसामग्रीहरू पहुँच गर्नुस्, आफ्नो प्रगति ट्र्याक गर्नुस्, र हाम्रो एकीकृत "
 "शिक्षण व्यवस्थापन प्रणालीद्वारा नयाँ सीपहरू हासिल गर्नुस्।"
 
-#: .\core\templates\core\home.html:28
+#: .\core\templates\core\home.html:30
 msgid "Explore All Courses"
 msgstr "सबै पाठ्यक्रमहरू हेर्नुस्"
 
-#: .\core\templates\core\home.html:40
+#: .\core\templates\core\home.html:43
+
+msgid "Explore Courses"
+msgstr "सबै पाठ्यक्रमहरू हेर्नुस्"
+
+#: .\core\templates\core\home.html:45
 msgid "Recommended for You"
 msgstr "तपाईंका लागि सिफारिस गरिएका"
 
-#: .\core\templates\core\home.html:83 .\core\templates\core\home.html:130
+#: .\core\templates\core\home.html:92 .\core\templates\core\home.html:179
 msgid "View Course"
 msgstr "पाठ्यक्रम हेर्नुस्"
 
-#: .\core\templates\core\home.html:91
-msgid "Browse our course catalog to begin your learning journey"
+#: .\core\templates\core\home.html:101
+#, fuzzy
+#| msgid "Critical Action"
+msgid "Quick Actions"
+msgstr "महत्त्वपूर्ण कार्य"
+
+#: .\core\templates\core\home.html:108
+msgid "Manage your curriculum or explore other teaching materials."
+msgstr ""
+
+#: .\core\templates\core\home.html:110
+#, fuzzy
+#| msgid "Browse our course catalog to begin your learning journey"
+msgid "Browse our course catalog to begin your learning journey."
 msgstr "आफ्नो सिकाइ यात्रा सुरु गर्न हाम्रो पाठ्यक्रम सूची हेर्नुस्"
 
-#: .\core\templates\core\home.html:98
+#: .\core\templates\core\home.html:121
+#, fuzzy
+#| msgid "No files indexed in directory."
+msgid "No courses found in the directory."
+msgstr "निर्देशिकामा कुनै फाइलहरू सूचीकृत छैनन्।"
+
+#: .\core\templates\core\home.html:123
 msgid ""
 "No recommendations yet. Start exploring courses to get personalized "
 "suggestions!"
 msgstr "अहिलेसम्म कुनै सिफारिस छैन। व्यक्तिगत सुझावहरू पाउन पाठ्यक्रमहरू हेर्न सुरु गर्नुस्!"
 
-#: .\core\templates\core\home.html:100
-msgid "Browse Courses"
-msgstr "पाठ्यक्रमहरू हेर्नुस्"
+#: .\core\templates\core\home.html:127
+#, fuzzy
+#| msgid "Course Catalog"
+msgid "Browse Catalog"
+msgstr "पाठ्यक्रम सूची"
 
-#: .\core\templates\core\home.html:106
+#: .\core\templates\core\home.html:133
 msgid "Featured Courses"
 msgstr "विशेष पाठ्यक्रमहरू"
 
-#: .\core\templates\core\home.html:107
-msgid "Explore our most popular courses and start learning today"
-msgstr "हाम्रा सबैभन्दा लोकप्रिय पाठ्यक्रमहरू हेर्नुस् र आज नै सिक्न सुरु गर्नुस्"
-
-#: .\core\templates\core\home.html:141
+#: .\core\templates\core\home.html:190
 msgid "No featured courses available yet. Check back soon!"
 msgstr "अहिलेसम्म कुनै विशेष पाठ्यक्रम उपलब्ध छैन। चाँडै फेरि हेर्नुस्!"
 
-#: .\courses\forms.py:10 .\courses\templates\courses\course_list.html:42
+#: .\courses\forms.py:10
 msgid "Topics"
 msgstr " शीर्षकहरू "
 
@@ -461,6 +478,7 @@ msgstr "पाठ सिर्जना गर्नुहोस्"
 #: .\courses\templates\courses\delete_module.html:53
 #: .\courses\templates\courses\edit_lecture.html:64
 #: .\courses\templates\courses\edit_module.html:47
+#: .\discussion\templates\discussion\confirm_delete.html:55
 #: .\quiz\templates\quiz\delete_quiz.html:36
 msgid "Cancel and Return"
 msgstr "रद्द गरेर फर्कनुहोस्"
@@ -552,6 +570,7 @@ msgstr "आफ्ना विद्यार्थीहरूका लाग�
 #: .\courses\templates\courses\edit_course.html:41
 #: .\courses\templates\courses\edit_lecture.html:57
 #: .\courses\templates\courses\edit_module.html:40
+#: .\discussion\templates\discussion\edit_comment.html:49
 msgid "Save Changes"
 msgstr "परिवर्तन सुरक्षित गर्नुहोस्"
 
@@ -607,19 +626,19 @@ msgstr "नाम हटाउने पुष्टि गर्नुहोस
 msgid "  Cancel and Return"
 msgstr "रद्द गरेर फर्कनुहोस्"
 
-#: .\courses\templates\courses\course_analytics.html:4
+#: .\courses\templates\courses\course_analytics.html:5
 msgid "Analytics"
 msgstr "विश्लेषण"
 
-#: .\courses\templates\courses\course_analytics.html:15
+#: .\courses\templates\courses\course_analytics.html:16
 msgid "Back to Course"
 msgstr "पाठ्यक्रममा फर्कनुहोस्"
 
-#: .\courses\templates\courses\course_analytics.html:20
+#: .\courses\templates\courses\course_analytics.html:21
 msgid "Course Performance"
 msgstr "पाठ्यक्रम प्रदर्शन"
 
-#: .\courses\templates\courses\course_analytics.html:22
+#: .\courses\templates\courses\course_analytics.html:23
 #, fuzzy, python-format
 #| msgid ""
 #| "\n"
@@ -634,63 +653,66 @@ msgstr ""
 "                <span>प्रशिक्षक: <strong>%(teacher)s</strong></span>\n"
 "            "
 
-#: .\courses\templates\courses\course_analytics.html:30
+#: .\courses\templates\courses\course_analytics.html:31
 msgid "Students"
 msgstr "विद्यार्थीहरू"
 
-#: .\courses\templates\courses\course_analytics.html:35
+#: .\courses\templates\courses\course_analytics.html:36
 #: .\courses\templates\courses\course_detail.html:98
 msgid "Completion"
 msgstr "पूर्णता"
 
-#: .\courses\templates\courses\course_analytics.html:40
+#: .\courses\templates\courses\course_analytics.html:41
 msgid "Rating"
 msgstr "रेटिङ"
 
-#: .\courses\templates\courses\course_analytics.html:45
+#: .\courses\templates\courses\course_analytics.html:46
 msgid "Discussions"
 msgstr "छलफलहरू"
 
-#: .\courses\templates\courses\course_analytics.html:50
+#: .\courses\templates\courses\course_analytics.html:51
 msgid "Quiz Avg"
 msgstr "क्विज औसत"
 
-#: .\courses\templates\courses\course_analytics.html:55
+#: .\courses\templates\courses\course_analytics.html:56
 msgid "Assign. Avg"
 msgstr "असाइनमेन्ट औसत"
 
-#: .\courses\templates\courses\course_analytics.html:62
-#: .\courses\templates\courses\course_analytics.html:69
+#: .\courses\templates\courses\course_analytics.html:63
 msgid "Enrollment Growth"
 msgstr "भर्ना वृद्धि"
 
-#: .\courses\templates\courses\course_analytics.html:77
+#: .\courses\templates\courses\course_analytics.html:70
+msgid "Performance Overview"
+msgstr "प्रदर्शन अवलोकन"
+
+#: .\courses\templates\courses\course_analytics.html:78
 msgid "Student Progress"
 msgstr "विद्यार्थी प्रगति"
 
-#: .\courses\templates\courses\course_analytics.html:80
+#: .\courses\templates\courses\course_analytics.html:81
 msgid "Search student..."
 msgstr "विद्यार्थी खोज्नुहोस्..."
 
-#: .\courses\templates\courses\course_analytics.html:82
+#: .\courses\templates\courses\course_analytics.html:84
 msgid "All"
 msgstr "सबै"
 
-#: .\courses\templates\courses\course_analytics.html:83
+#: .\courses\templates\courses\course_analytics.html:85
 #: .\courses\templates\courses\course_analytics.html:116
 msgid "Completed"
 msgstr "पूरा"
 
-#: .\courses\templates\courses\course_analytics.html:84
+#: .\courses\templates\courses\course_analytics.html:86
 #: .\courses\templates\courses\course_analytics.html:118
 msgid "In Progress"
 msgstr "प्रगतिमा"
 
-#: .\courses\templates\courses\course_analytics.html:92
+#: .\courses\templates\courses\course_analytics.html:94
 msgid "Enrolled"
 msgstr "भर्ना"
 
-#: .\courses\templates\courses\course_analytics.html:94
+#: .\courses\templates\courses\course_analytics.html:96
 #: .\quiz\templates\quiz\manage_results.html:37
 msgid "Status"
 msgstr "स्थिति"
@@ -702,6 +724,33 @@ msgstr "सुरु भएको छैन"
 #: .\courses\templates\courses\course_analytics.html:126
 msgid "No students enrolled."
 msgstr "कुनै विद्यार्थी भर्ना भएका छैनन्।"
+
+#: .\courses\templates\courses\course_analytics.html:135
+#: .\courses\templates\courses\course_analytics.html:137
+#, fuzzy
+#| msgid "Preview"
+msgid "Prev"
+msgstr "पूर्वावलोकन"
+
+#: .\courses\templates\courses\course_analytics.html:141
+#, fuzzy, python-format
+#| msgid ""
+#| "\n"
+#| "                <span>Instructor: <strong>%(teacher)s</strong></span>\n"
+#| "            "
+msgid ""
+"\n"
+"                Page %(current)s of %(total)s\n"
+"                "
+msgstr ""
+"\n"
+"                <span>प्रशिक्षक: <strong>%(teacher)s</strong></span>\n"
+"            "
+
+#: .\courses\templates\courses\course_analytics.html:147
+#: .\courses\templates\courses\course_analytics.html:149
+msgid "Next"
+msgstr ""
 
 #: .\courses\templates\courses\course_detail.html:17
 msgid "Instructor Mode"
@@ -774,7 +823,8 @@ msgid "Delete Module"
 msgstr "मोड्युल हटाउनुस्"
 
 #: .\courses\templates\courses\course_detail.html:139
-#: .\courses\templates\courses\lecture_detail.html:90
+#: .\courses\templates\courses\lecture_detail.html:102
+#: .\discussion\templates\discussion\comment_block.html:44
 msgid "Delete"
 msgstr "हटाउनुस्"
 
@@ -865,103 +915,6 @@ msgstr ""
 msgid "No reviews yet. Be the first to share your thoughts!"
 msgstr "अहिलेसम्म कुनै समीक्षा छैन। आफ्नो विचार साझा गर्ने पहिलो व्यक्ति बन्नुहोस्!"
 
-#: .\courses\templates\courses\course_list.html:5
-#, fuzzy
-#| msgid "Explore All Courses"
-msgid "All Courses"
-msgstr "सबै पाठ्यक्रमहरू हेर्नुस्"
-
-#: .\courses\templates\courses\course_list.html:16
-msgid "Course Catalog"
-msgstr "पाठ्यक्रम सूची"
-
-#: .\courses\templates\courses\course_list.html:17
-msgid "Unified Learning Directory"
-msgstr "एकिकृत सिकाई निर्देशिका"
-
-#: .\courses\templates\courses\course_list.html:21
-msgid "New Entry"
-msgstr ""
-
-#: .\courses\templates\courses\course_list.html:28
-msgid "Search courses..."
-msgstr "विद्यार्थी खोज्नुहोस्..."
-
-#: .\courses\templates\courses\course_list.html:32
-msgid "Difficulty"
-msgstr "कठिनाई "
-
-#: .\courses\templates\courses\course_list.html:51
-msgid "Instructor..."
-msgstr "प्रशिक्षक मोड"
-
-#: .\courses\templates\courses\course_list.html:54
-msgid "Search"
-msgstr ""
-
-#: .\courses\templates\courses\course_list.html:55
-msgid "Clear"
-msgstr ""
-
-#: .\courses\templates\courses\course_list.html:61
-msgid "Filtered by:"
-msgstr ""
-
-#: .\courses\templates\courses\course_list.html:75
-#, fuzzy, python-format
-#| msgid ""
-#| "\n"
-#| "                <span>Instructor: <strong>%(teacher)s</strong></span>\n"
-#| "            "
-msgid ""
-"\n"
-"            %(total)s result\n"
-"            "
-msgid_plural ""
-"\n"
-"            %(total)s results\n"
-"            "
-msgstr[0] ""
-"\n"
-"                <span>प्रशिक्षक: <strong>%(teacher)s</strong></span>\n"
-"            "
-msgstr[1] ""
-"\n"
-"                <span>प्रशिक्षक: <strong>%(teacher)s</strong></span>\n"
-"            "
-
-#: .\courses\templates\courses\course_list.html:110
-msgid "Joined"
-msgstr ""
-
-#: .\courses\templates\courses\course_list.html:112
-msgid "Leave"
-msgstr ""
-
-#: .\courses\templates\courses\course_list.html:116
-#, fuzzy
-#| msgid "Enrolled"
-msgid "Enroll"
-msgstr "भर्ना"
-
-#: .\courses\templates\courses\course_list.html:119
-msgid "View"
-msgstr ""
-
-#: .\courses\templates\courses\course_list.html:126
-msgid "No courses match your search."
-msgstr ""
-
-#: .\courses\templates\courses\course_list.html:127
-msgid "Clear filters"
-msgstr ""
-
-#: .\courses\templates\courses\course_list.html:129
-#, fuzzy
-#| msgid "This course curriculum is currently empty."
-msgid "The catalog is currently empty."
-msgstr "यो पाठ्यक्रमको पाठ्यचर्या हाल खाली छ।"
-
 #: .\courses\templates\courses\create_course.html:5
 #: .\courses\templates\courses\create_course.html:15
 msgid "Create New Course"
@@ -990,6 +943,7 @@ msgid "Critical Action"
 msgstr "महत्त्वपूर्ण कार्य"
 
 #: .\courses\templates\courses\delete_course.html:14
+#: .\discussion\templates\discussion\confirm_delete.html:48
 msgid "Confirm Deletion"
 msgstr "हटाउने पुष्टि गर्नुहोस्"
 
@@ -1212,122 +1166,202 @@ msgstr "एकाइ सम्पादन गर्नुस्"
 msgid "Current Unit"
 msgstr "हालको एकाइ"
 
-#: .\courses\templates\courses\lecture_detail.html:30
-msgid "Play Instructional Video"
-msgstr "शिक्षण भिडियो चलाउनुस्"
-
-#: .\courses\templates\courses\lecture_detail.html:36
+#: .\courses\templates\courses\lecture_detail.html:47
 msgid "Unit Description"
 msgstr "एकाइ विवरण"
 
-#: .\courses\templates\courses\lecture_detail.html:39
+#: .\courses\templates\courses\lecture_detail.html:50
 msgid "System: No instructional notes provided for this module."
 msgstr "प्रणाली: यस मोड्युलको लागि कुनै शिक्षण नोटहरू उपलब्ध छैनन्।"
 
-#: .\courses\templates\courses\lecture_detail.html:45
+#: .\courses\templates\courses\lecture_detail.html:56
 msgid "Supplementary Files"
 msgstr "पूरक फाइलहरू"
 
-#: .\courses\templates\courses\lecture_detail.html:60
+#: .\courses\templates\courses\lecture_detail.html:71
 msgid "No files indexed in directory."
 msgstr "निर्देशिकामा कुनै फाइलहरू सूचीकृत छैनन्।"
 
-#: .\courses\templates\courses\lecture_detail.html:66
+#: .\courses\templates\courses\lecture_detail.html:77
 msgid "Material Indexing"
 msgstr "सामग्री अनुक्रमण"
 
-#: .\courses\templates\courses\lecture_detail.html:69
+#: .\courses\templates\courses\lecture_detail.html:80
 msgid "Resource Title"
 msgstr "स्रोतको शीर्षक"
 
-#: .\courses\templates\courses\lecture_detail.html:71
+#: .\courses\templates\courses\lecture_detail.html:82
 msgid "URL"
 msgstr "यूआरएल (URL)"
 
-#: .\courses\templates\courses\lecture_detail.html:72
-#: .\courses\templates\courses\lecture_detail.html:164
+#: .\courses\templates\courses\lecture_detail.html:83
+#: .\courses\templates\courses\lecture_detail.html:172
 msgid "Upload"
 msgstr "अपलोड गर्नुस्"
 
-#: .\courses\templates\courses\lecture_detail.html:78
+#: .\courses\templates\courses\lecture_detail.html:89
 #: .\quiz\templates\quiz\take_quiz.html:20
 msgid "Unit Assessment"
 msgstr "एकाइ मूल्याङ्कन"
 
-#: .\courses\templates\courses\lecture_detail.html:89
-#: .\quiz\templates\quiz\delete_quiz.html:5
-#: .\quiz\templates\quiz\delete_quiz.html:15
-msgid "Delete Quiz"
-msgstr "क्विज हटाउनुस्"
+#: .\courses\templates\courses\lecture_detail.html:99
+#: .\quiz\templates\quiz\manage_results.html:5
+msgid "Results"
+msgstr "नतिजाहरू"
 
-#: .\courses\templates\courses\lecture_detail.html:94
-#, fuzzy
-#| msgid "Check Results"
-msgid "View Results"
-msgstr "नतिजा जाँच गर्नुस्"
-
-#: .\courses\templates\courses\lecture_detail.html:95
-msgid "Check Results"
-msgstr "नतिजा जाँच गर्नुस्"
-
-#: .\courses\templates\courses\lecture_detail.html:101
+#: .\courses\templates\courses\lecture_detail.html:108
 msgid "No automated quiz indexed."
 msgstr "कुनै पनि स्वचालित क्विज सूचीकृत छैन।"
 
-#: .\courses\templates\courses\lecture_detail.html:107
-msgid "+ Initialize Quiz"
+#: .\courses\templates\courses\lecture_detail.html:114
+#, fuzzy
+#| msgid "+ Initialize Quiz"
+msgid "Initialize Quiz"
 msgstr "+ क्विज सुरु गर्नुस्"
 
-#: .\courses\templates\courses\lecture_detail.html:117
+#: .\courses\templates\courses\lecture_detail.html:125
 msgid "Assignments"
 msgstr "असाइनमेन्टहरू"
 
-#: .\courses\templates\courses\lecture_detail.html:131
+#: .\courses\templates\courses\lecture_detail.html:139
 #, python-format
 msgid "Logged: %(file_name)s"
 msgstr "दर्ता भएको: %(file_name)s"
 
-#: .\courses\templates\courses\lecture_detail.html:137
+#: .\courses\templates\courses\lecture_detail.html:145
 #, python-format
 msgid "Due %(due_date)s"
 msgstr "बुझाउने मिति: %(due_date)s"
 
-#: .\courses\templates\courses\lecture_detail.html:145
+#: .\courses\templates\courses\lecture_detail.html:153
 #, python-format
 msgid "Grade: %(grade)s / %(max)s"
 msgstr "अङ्क: %(grade)s / %(max)s"
 
-#: .\courses\templates\courses\lecture_detail.html:158
+#: .\courses\templates\courses\lecture_detail.html:166
 msgid "Review Log"
 msgstr "समीक्षा लग"
 
-#: .\courses\templates\courses\lecture_detail.html:164
+#: .\courses\templates\courses\lecture_detail.html:172
 msgid "Replace"
 msgstr "बदल्नुस्"
 
-#: .\courses\templates\courses\lecture_detail.html:172
+#: .\courses\templates\courses\lecture_detail.html:180
 msgid "No active assignments found."
 msgstr "कुनै सक्रिय असाइनमेन्टहरू भेटिएनन्।"
 
-#: .\courses\templates\courses\lecture_detail.html:178
+#: .\courses\templates\courses\lecture_detail.html:186
 msgid "Initialize New Assignment"
 msgstr "नयाँ असाइनमेन्ट सुरु गर्नुस्"
 
-#: .\courses\templates\courses\lecture_detail.html:187
+#: .\courses\templates\courses\lecture_detail.html:195
 msgid "Registry Status: Completed"
 msgstr "दर्ता स्थिति: पूरा भएको"
 
-#: .\courses\templates\courses\lecture_detail.html:189
+#: .\courses\templates\courses\lecture_detail.html:197
 msgid "Registry Status: Pending"
 msgstr "दर्ता स्थिति: बाँकी"
 
-#: .\courses\templates\courses\lecture_detail.html:196
+#: .\courses\templates\courses\lecture_detail.html:204
 msgid "Reset Progress"
 msgstr "प्रगति रिसेट गर्नुस्"
 
-#: .\courses\templates\courses\lecture_detail.html:196
+#: .\courses\templates\courses\lecture_detail.html:204
 msgid "Mark Complete"
 msgstr "पूरा भएको चिन्ह लगाउनुस्"
+
+#: .\courses\templates\courses\payment_cancel.html:1
+msgid "Payment Cancelled"
+msgstr "भुक्तानी रद्द गरियो"
+
+#: .\courses\templates\courses\payment_cancel.html:3
+msgid "Your payment was not completed."
+msgstr "तपाईंको भुक्तानी पूरा भएन।"
+
+#: .\courses\templates\courses\payment_cancel.html:6
+msgid "Go Back"
+msgstr "फिर्ता जानुहोस्"
+
+#: .\courses\templates\courses\payment_select.html:5
+#: .\courses\templates\courses\payment_select.html:359
+msgid "Checkout"
+msgstr "भुक्तानी प्रक्रिया"
+
+#: .\courses\templates\courses\payment_select.html:348
+#, fuzzy
+#| msgid "Explore All Courses"
+msgid "Courses"
+msgstr "सबै पाठ्यक्रमहरू हेर्नुस्"
+
+#: .\courses\templates\courses\payment_select.html:376
+msgid "You're enrolling in"
+msgstr "तपाईं यसमा भर्ना हुँदै हुनुहुन्छ"
+
+#: .\courses\templates\courses\payment_select.html:384
+msgid "By"
+msgstr "द्वारा"
+
+#: .\courses\templates\courses\payment_select.html:397
+msgid "Payment Method"
+msgstr "भुक्तानी विधि"
+
+#: .\courses\templates\courses\payment_select.html:411
+msgid "Pay with your eSewa digital wallet"
+msgstr "तपाईंको eSewa डिजिटल वालेटबाट भुक्तानी गर्नुहोस्"
+
+#: .\courses\templates\courses\payment_select.html:430
+#: .\courses\templates\courses\payment_select.html:454
+msgid "Coming soon"
+msgstr "छिट्टै आउँदैछ"
+
+#: .\courses\templates\courses\payment_select.html:435
+msgid "Pay with your Khalti digital wallet"
+msgstr "तपाईंको Khalti डिजिटल वालेटबाट भुक्तानी गर्नुहोस्"
+
+#: .\courses\templates\courses\payment_select.html:450
+msgid "Card"
+msgstr "कार्ड"
+
+#: .\courses\templates\courses\payment_select.html:459
+msgid "Visa, Mastercard, or any debit card"
+msgstr "भिसा, मास्टरकार्ड वा कुनै पनि डेबिट कार्ड"
+
+#: .\courses\templates\courses\payment_select.html:474
+msgid "Platform fee"
+msgstr "प्लेटफर्म शुल्क"
+
+#: .\courses\templates\courses\payment_select.html:479
+msgid "Total"
+msgstr "जम्मा"
+
+#: .\courses\templates\courses\payment_select.html:490
+msgid "Pay with eSewa"
+msgstr "eSewa मार्फत भुक्तानी गर्नुहोस्"
+
+#: .\courses\templates\courses\payment_select.html:496
+msgid "Secured payment"
+msgstr "सुरक्षित भुक्तानी"
+
+#: .\courses\templates\courses\payment_select.html:501
+msgid "Cancel and go back"
+msgstr "रद्द गरेर फर्कनुहोस्"
+
+#: .\courses\templates\courses\payment_success.html:1
+msgid "Enrollment Successful!"
+msgstr "🎉 भर्ना सफल भयो!"
+
+#: .\courses\templates\courses\payment_success.html:3
+#, fuzzy, python-format
+#| msgid "You are now enrolled in <strong>%(course)s</strong>."
+msgid ""
+"\n"
+"    You are now enrolled in <strong>%(course)s</strong>.\n"
+"    "
+msgstr "तपाईं अहिले <strong>%(course)s</strong> मा भर्ना हुनुभएको छ।"
+
+#: .\courses\templates\courses\payment_success.html:9
+msgid "Browse Courses"
+msgstr "पाठ्यक्रमहरू हेर्नुस्"
 
 #: .\courses\templates\courses\review_assignment.html:5
 #: .\quiz\templates\quiz\manage_results.html:83
@@ -1421,6 +1455,111 @@ msgstr ""
 msgid "Return to Lecture"
 msgstr "रद्द गरेर पाठमा फर्कनुहोस्"
 
+#: .\discussion\templates\discussion\comment_block.html:19
+msgid "ago"
+msgstr "अघि"
+
+#: .\discussion\templates\discussion\comment_block.html:24
+msgid "edited"
+msgstr "सम्पादन गरिएको"
+
+#: .\discussion\templates\discussion\comment_block.html:35
+msgid "Reply"
+msgstr "जवाफ दिनुहोस्"
+
+#: .\discussion\templates\discussion\comment_block.html:56
+msgid "Type your reply..."
+msgstr "आफ्नो जवाफ लेख्नुहोस्..."
+
+#: .\discussion\templates\discussion\comment_block.html:63
+#: .\quiz\templates\quiz\create_quiz.html:53
+#: .\quiz\templates\quiz\grade_submission.html:82
+#: .\quiz\templates\quiz\take_quiz.html:89
+msgid "Cancel"
+msgstr "रद्द गर्नुहोस्"
+
+#: .\discussion\templates\discussion\comment_block.html:69
+msgid "Post Reply"
+msgstr "जवाफ पोस्ट गर्नुहोस्"
+
+#: .\discussion\templates\discussion\confirm_delete.html:6
+#: .\discussion\templates\discussion\confirm_delete.html:21
+msgid "Delete Comment"
+msgstr "टिप्पणी मेटाउनुहोस्"
+
+#: .\discussion\templates\discussion\confirm_delete.html:18
+msgid "Discussion Moderation"
+msgstr "छलफल व्यवस्थापन"
+
+#: .\discussion\templates\discussion\confirm_delete.html:24
+msgid "This will permanently remove the contribution from the thread."
+msgstr "यसले यो टिप्पणीलाई स्थायी रूपमा हटाउनेछ।"
+
+#: .\discussion\templates\discussion\course_discussion.html:6
+msgid "Discussion"
+msgstr "छलफल"
+
+#: .\discussion\templates\discussion\course_discussion.html:19
+msgid "Return to"
+msgstr "फर्कनुहोस्"
+
+#: .\discussion\templates\discussion\course_discussion.html:24
+msgid "Knowledge Exchange"
+msgstr "ज्ञान आदानप्रदान"
+
+#: .\discussion\templates\discussion\course_discussion.html:27
+msgid "Community Discussion"
+msgstr "सामुदायिक छलफल"
+
+#: .\discussion\templates\discussion\course_discussion.html:30
+msgid "Post questions, share insights, and collaborate with other students."
+msgstr "प्रश्न सोध्नुहोस्, विचार साझा गर्नुहोस्, र अन्य विद्यार्थीहरूसँग सहकार्य गर्नुहोस्।"
+
+#: .\discussion\templates\discussion\course_discussion.html:39
+msgid "Share a thought or ask a question..."
+msgstr "आफ्नो विचार साझा गर्नुहोस् वा प्रश्न सोध्नुहोस्..."
+
+#: .\discussion\templates\discussion\course_discussion.html:45
+msgid "Post to Thread"
+msgstr "छलफलमा पोस्ट गर्नुहोस्"
+
+#: .\discussion\templates\discussion\course_discussion.html:53
+msgid "Discussion Thread"
+msgstr "छलफल थ्रेड"
+
+#: .\discussion\templates\discussion\course_discussion.html:64
+msgid "The conversation hasn't started yet."
+msgstr "छलफल अझै सुरु भएको छैन।"
+
+#: .\discussion\templates\discussion\course_discussion.html:66
+msgid "Be the first to contribute."
+msgstr "योगदान गर्ने पहिलो व्यक्ति बन्नुहोस्।"
+
+#: .\discussion\templates\discussion\edit_comment.html:6
+#: .\discussion\templates\discussion\edit_comment.html:18
+msgid "Edit Comment"
+msgstr "टिप्पणी सम्पादन गर्नुहोस्"
+
+#: .\discussion\templates\discussion\edit_comment.html:21
+msgid "Modify your message in the"
+msgstr "यस पाठ्यक्रमको"
+
+#: .\discussion\templates\discussion\edit_comment.html:23
+msgid "discussion."
+msgstr "छलफलमा आफ्नो सन्देश परिवर्तन गर्नुहोस्।"
+
+#: .\discussion\templates\discussion\edit_comment.html:30
+msgid "Original post:"
+msgstr "मूल पोस्ट:"
+
+#: .\discussion\templates\discussion\edit_comment.html:43
+msgid "Update your thoughts..."
+msgstr "आफ्नो विचार अद्यावधिक गर्नुहोस्..."
+
+#: .\discussion\templates\discussion\edit_comment.html:54
+msgid "Discard Changes"
+msgstr "परिवर्तन रद्द गर्नुहोस्"
+
 #: .\quiz\templates\quiz\add_question.html:5
 #: .\quiz\templates\quiz\add_question.html:26
 msgid "Add Questions"
@@ -1429,7 +1568,7 @@ msgstr "प्रश्नहरू थप्नुहोस्"
 #: .\quiz\templates\quiz\add_question.html:15
 #: .\quiz\templates\quiz\create_quiz.html:15
 #: .\quiz\templates\quiz\manage_results.html:15
-#: .\quiz\templates\quiz\result.html:44 .\quiz\templates\quiz\take_quiz.html:15
+#: .\quiz\templates\quiz\result.html:48 .\quiz\templates\quiz\take_quiz.html:15
 msgid "Back to Unit"
 msgstr "एकाइमा फर्कनुहोस्"
 
@@ -1550,10 +1689,10 @@ msgstr "विद्यार्थीहरूका लागि निर्�
 msgid "Continue to Questions"
 msgstr "प्रश्नहरूमा जानुहोस्"
 
-#: .\quiz\templates\quiz\create_quiz.html:53
-#: .\quiz\templates\quiz\take_quiz.html:89
-msgid "Cancel"
-msgstr "रद्द गर्नुहोस्"
+#: .\quiz\templates\quiz\delete_quiz.html:5
+#: .\quiz\templates\quiz\delete_quiz.html:15
+msgid "Delete Quiz"
+msgstr "क्विज हटाउनुस्"
 
 #: .\quiz\templates\quiz\delete_quiz.html:14
 msgid "Quiz Removal"
@@ -1587,38 +1726,38 @@ msgstr "नतिजाहरूमा फर्कनुहोस्"
 msgid "Question"
 msgstr "प्रश्न"
 
-#: .\quiz\templates\quiz\grade_submission.html:42
+#: .\quiz\templates\quiz\grade_submission.html:38
+msgid "Student's Response"
+msgstr "विद्यार्थीको प्रतिक्रिया"
+
+#: .\quiz\templates\quiz\grade_submission.html:41
 msgid "[No answer provided]"
 msgstr "[कुनै उत्तर प्रदान गरिएको छैन]"
 
-#: .\quiz\templates\quiz\grade_submission.html:58
+#: .\quiz\templates\quiz\grade_submission.html:57
 msgid "Assign Score"
 msgstr "अंक दिनुहोस्"
 
-#: .\quiz\templates\quiz\grade_submission.html:66
+#: .\quiz\templates\quiz\grade_submission.html:65
 msgid "Max allowed"
 msgstr "अधिकतम अनुमति"
 
-#: .\quiz\templates\quiz\grade_submission.html:67
+#: .\quiz\templates\quiz\grade_submission.html:66
 msgid "points"
 msgstr "अंक"
 
-#: .\quiz\templates\quiz\grade_submission.html:76
+#: .\quiz\templates\quiz\grade_submission.html:75
 msgid "This quiz only contained MCQs, which have been automatically graded."
 msgstr ""
 "यस हाजिरीजवाफमा केवल बहु-विकल्प प्रश्नहरू थिए, जुन स्वचालित रूपमा ग्रेड गरिएका छन्।"
 
-#: .\quiz\templates\quiz\grade_submission.html:78
+#: .\quiz\templates\quiz\grade_submission.html:77
 msgid "Current Score"
 msgstr "हालको अंक"
 
-#: .\quiz\templates\quiz\grade_submission.html:86
+#: .\quiz\templates\quiz\grade_submission.html:84
 msgid "Save & Finalize Grade"
 msgstr "बचत गर्नुहोस् र ग्रेड फाइनल गर्नुहोस्"
-
-#: .\quiz\templates\quiz\manage_results.html:5
-msgid "Results"
-msgstr "नतिजाहरू"
 
 #: .\quiz\templates\quiz\manage_results.html:20
 msgid "Assessment Results"
@@ -1649,7 +1788,7 @@ msgid "Graded"
 msgstr "ग्रेड गरिएको"
 
 #: .\quiz\templates\quiz\manage_results.html:68
-#: .\quiz\templates\quiz\result.html:36
+#: .\quiz\templates\quiz\result.html:40
 msgid "Pending Review"
 msgstr "समीक्षा बाँकी"
 
@@ -1669,51 +1808,59 @@ msgstr "हाजिरीजवाफको नतिजा"
 msgid "Assessment Complete"
 msgstr "मूल्याङ्कन पूरा भयो"
 
-#: .\quiz\templates\quiz\result.html:17
+#: .\quiz\templates\quiz\result.html:19
 msgid "Quiz Results"
 msgstr "हाजिरीजवाफका नतिजाहरू"
 
-#: .\quiz\templates\quiz\result.html:17
+#: .\quiz\templates\quiz\result.html:21
 msgid "Submission Received"
 msgstr "सबमिशन प्राप्त भयो"
 
-#: .\quiz\templates\quiz\result.html:22
+#: .\quiz\templates\quiz\result.html:26
 msgid "You have successfully completed"
 msgstr "तपाईंले सफलतापूर्वक पूरा गर्नुभयो"
 
-#: .\quiz\templates\quiz\result.html:27
+#: .\quiz\templates\quiz\result.html:31
 msgid "Your Score"
 msgstr "तपाईंको अंक"
 
-#: .\quiz\templates\quiz\result.html:48
+#: .\quiz\templates\quiz\result.html:41
+msgid ""
+"Your MCQ answers are recorded, but your final score will be updated once "
+"your teacher grades the open-ended questions."
+msgstr ""
+"तपाईंका बहु-विकल्प प्रश्नका उत्तरहरू रेकर्ड गरिएका छन्, तर तपाईंको शिक्षकले खुल्ला प्रश्नहरूको "
+"ग्रेडिङ गरेपछि अन्तिम अंक अपडेट हुनेछ।"
+
+#: .\quiz\templates\quiz\result.html:53
 msgid "View Dashboard"
 msgstr "ड्यासबोर्ड हेर्नुहोस्"
 
-#: .\quiz\templates\quiz\result.html:53
+#: .\quiz\templates\quiz\result.html:58
 msgid "Show Detailed Review"
 msgstr "विस्तृत समीक्षा हेर्नुहोस्"
 
-#: .\quiz\templates\quiz\result.html:60
+#: .\quiz\templates\quiz\result.html:63
 msgid "Detailed Review"
 msgstr "विस्तृत समीक्षा"
 
-#: .\quiz\templates\quiz\result.html:67
+#: .\quiz\templates\quiz\result.html:70
 msgid "Q"
 msgstr "प्रश्न "
 
-#: .\quiz\templates\quiz\result.html:74
+#: .\quiz\templates\quiz\result.html:77
 msgid "Your Answer"
 msgstr "तपाईंको उत्तर"
 
-#: .\quiz\templates\quiz\result.html:92
+#: .\quiz\templates\quiz\result.html:93
 msgid "Your Selection"
 msgstr "तपाईंको छनोट"
 
-#: .\quiz\templates\quiz\result.html:97 .\quiz\templates\quiz\result.html:113
+#: .\quiz\templates\quiz\result.html:98 .\quiz\templates\quiz\result.html:113
 msgid "No answer provided."
 msgstr "कुनै उत्तर प्रदान गरिएको छैन।"
 
-#: .\quiz\templates\quiz\result.html:102
+#: .\quiz\templates\quiz\result.html:103
 msgid "Correct Answer"
 msgstr "सही उत्तर"
 
@@ -1778,6 +1925,64 @@ msgstr "लिंक्डइन"
 msgid "Twitter"
 msgstr "ट्विटर"
 
+#~ msgid "Explore our most popular courses and start learning today"
+#~ msgstr "हाम्रा सबैभन्दा लोकप्रिय पाठ्यक्रमहरू हेर्नुस् र आज नै सिक्न सुरु गर्नुस्"
+
+#~ msgid "Unified Learning Directory"
+#~ msgstr "एकिकृत सिकाई निर्देशिका"
+
+#~ msgid "Search courses..."
+#~ msgstr "विद्यार्थी खोज्नुहोस्..."
+
+#~ msgid "Difficulty"
+#~ msgstr "कठिनाई "
+
+#~ msgid "Instructor..."
+#~ msgstr "प्रशिक्षक मोड"
+
+#, fuzzy, python-format
+#~| msgid ""
+#~| "\n"
+#~| "                <span>Instructor: <strong>%(teacher)s</strong></span>\n"
+#~| "            "
+#~ msgid ""
+#~ "\n"
+#~ "            %(total)s result\n"
+#~ "            "
+#~ msgid_plural ""
+#~ "\n"
+#~ "            %(total)s results\n"
+#~ "            "
+#~ msgstr[0] ""
+#~ "\n"
+#~ "                <span>प्रशिक्षक: <strong>%(teacher)s</strong></span>\n"
+#~ "            "
+#~ msgstr[1] ""
+#~ "\n"
+#~ "                <span>प्रशिक्षक: <strong>%(teacher)s</strong></span>\n"
+#~ "            "
+
+#, fuzzy
+#~| msgid "Enrolled"
+#~ msgid "Enroll"
+#~ msgstr "भर्ना"
+
+#, fuzzy
+#~| msgid "This course curriculum is currently empty."
+#~ msgid "The catalog is currently empty."
+#~ msgstr "यो पाठ्यक्रमको पाठ्यचर्या हाल खाली छ।"
+
+#~ msgid "Play Instructional Video"
+#~ msgstr "शिक्षण भिडियो चलाउनुस्"
+
+#, fuzzy
+#~| msgid "Check Results"
+#~ msgid "View Results"
+#~ msgstr "नतिजा जाँच गर्नुस्"
+
+#~ msgid "Check Results"
+#~ msgstr "नतिजा जाँच गर्नुस्"
+
 #~ msgid "Add Lecture"
 #~ msgstr "पाठ थप्नुहोस्"
 
@@ -1789,9 +1994,6 @@ msgstr "ट्विटर"
 
 #~ msgid "Analytics for %(title)s"
 #~ msgstr "%(title)s का लागि विश्लेषण"
-
-#~ msgid "Performance Overview"
-#~ msgstr "प्रदर्शन अवलोकन"
 
 #~ msgid "Create Course"
 #~ msgstr "पाठ्यक्रम सिर्जना गर्नुहोस्"
@@ -1817,9 +2019,6 @@ msgstr "ट्विटर"
 #~ msgid "students enrolled"
 #~ msgstr "विद्यार्थीहरू भर्ना भएका"
 
-#~ msgid "By"
-#~ msgstr "द्वारा"
-
 # Common form fields (if translated via gettext_lazy in forms.py)
 #~ msgid "Username"
 #~ msgstr "प्रयोगकर्ता नाम"
@@ -1830,18 +2029,8 @@ msgstr "ट्विटर"
 #~ msgid "Full name"
 #~ msgstr "पूरा नाम"
 
-#~ msgid "Student's Response"
-#~ msgstr "विद्यार्थीको प्रतिक्रिया"
-
 #~ msgid "Reference / Model Answer"
 #~ msgstr "सन्दर्भ / नमुना उत्तर"
-
-#~ msgid ""
-#~ "Your MCQ answers are recorded, but your final score will be updated once "
-#~ "your teacher grades the open-ended questions."
-#~ msgstr ""
-#~ "तपाईंका बहु-विकल्प प्रश्नका उत्तरहरू रेकर्ड गरिएका छन्, तर तपाईंको शिक्षकले खुल्ला "
-#~ "प्रश्नहरूको ग्रेडिङ गरेपछि अन्तिम अंक अपडेट हुनेछ।"
 
 #~ msgid "Hide Detailed Review"
 #~ msgstr "विस्तृत समीक्षा लुकाउनुहोस्"

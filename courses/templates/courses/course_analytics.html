@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
+
 {% block title %}{% trans "Analytics" %} | {{ course.title }}{% endblock %}
 
 {% block extra_css %}
@@ -12,7 +13,7 @@
 
     <div class="management-bar">
         <a href="{% url 'courses:course_detail' course.id %}" class="btn-minimal btn-blue">
-            ←{% trans "Back to Course" %}
+            ← {% trans "Back to Course" %}
         </a>
     </div>
 
@@ -66,7 +67,7 @@
         </div>
 
         <div class="chart-section">
-            <h5 class="section-title">{% trans "Enrollment Growth" %}</h5>
+            <h5 class="section-title">{% trans "Performance Overview" %}</h5>
             <div class="chart-canvas-container">
                 <canvas id="performanceChart"></canvas>
             </div>
@@ -80,27 +81,19 @@
             <input type="text" id="studentSearch" class="filter-input" placeholder="{% trans 'Search student...' %}">
 
             <div class="filter-actions">
-                <button class="filter-btn active" data-filter="all">
-                    {% trans "All" %}
-                </button>
-
-                <button class="filter-btn" data-filter="Completed">
-                    {% trans "Completed" %}
-                </button>
-
-                <button class="filter-btn" data-filter="In Progress">
-                    {% trans "In Progress" %}
-                </button>
+                <button class="filter-btn active" data-filter="all">{% trans "All" %}</button>
+                <button class="filter-btn" data-filter="Completed">{% trans "Completed" %}</button>
+                <button class="filter-btn" data-filter="In Progress">{% trans "In Progress" %}</button>
             </div>
         </div>
 
         <table class="analytics-table">
             <thead>
                 <tr>
-                    <th>Student</th>
-                    <th>Enrolled</th>
-                    <th>Progress</th>
-                    <th>Status</th>
+                    <th>{% trans "Student" %}</th>
+                    <th>{% trans "Enrolled" %}</th>
+                    <th>{% trans "Progress" %}</th>
+                    <th>{% trans "Status" %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -120,17 +113,17 @@
                     </td>
                     <td>
                         {% if item.progress == 100 %}
-                        <span class="badge badge-paid">Completed</span>
+                        <span class="badge badge-paid" data-status="Completed">{% trans "Completed" %}</span>
                         {% elif item.progress > 0 %}
-                        <span class="badge badge-tag">In Progress</span>
+                        <span class="badge badge-tag" data-status="In Progress">{% trans "In Progress" %}</span>
                         {% else %}
-                        <span class="badge">Not Started</span>
+                        <span class="badge" data-status="Not Started">{% trans "Not Started" %}</span>
                         {% endif %}
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4" class="empty-state">No students enrolled.</td>
+                    <td colspan="4" class="empty-state">{% trans "No students enrolled." %}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -139,19 +132,21 @@
         {% if page_obj.paginator.num_pages > 1 %}
         <div class="pagination-bar">
             {% if page_obj.has_previous %}
-            <a href="?page={{ page_obj.previous_page_number }}" class="page-btn">← Prev</a>
+            <a href="?page={{ page_obj.previous_page_number }}" class="page-btn">← {% trans "Prev" %}</a>
             {% else %}
-            <span class="page-btn disabled">← Prev</span>
+            <span class="page-btn disabled">← {% trans "Prev" %}</span>
             {% endif %}
 
             <span class="page-info">
-                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                {% blocktrans with current=page_obj.number total=page_obj.paginator.num_pages %}
+                Page {{ current }} of {{ total }}
+                {% endblocktrans %}
             </span>
 
             {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}" class="page-btn">Next →</a>
+            <a href="?page={{ page_obj.next_page_number }}" class="page-btn">{% trans "Next" %} →</a>
             {% else %}
-            <span class="page-btn disabled">Next →</span>
+            <span class="page-btn disabled">{% trans "Next" %} →</span>
             {% endif %}
         </div>
         {% endif %}
@@ -230,17 +225,20 @@
     // Filter + search
     const searchInput = document.getElementById('studentSearch');
     const filterButtons = document.querySelectorAll('.filter-btn');
-    const rows = document.querySelectorAll('tbody tr');
+    const rows = document.querySelectorAll('tbody tr:not(.empty-state)');
 
     function filterTable() {
         const search = searchInput.value.toLowerCase();
-        const filter = document.querySelector('.filter-btn.active').dataset.filter;
+        const activeBtn = document.querySelector('.filter-btn.active');
+        const filterValue = activeBtn ? activeBtn.dataset.filter : 'all';
 
         rows.forEach(row => {
             const name = row.querySelector('.student-name').textContent.toLowerCase();
-            const status = row.querySelector('.badge').dataset.status;
+            const badge = row.querySelector('.badge');
+            const status = badge ? badge.dataset.status : '';
+            
             const matchSearch = name.includes(search);
-            const matchFilter = filter === 'all' || status === filter;
+            const matchFilter = filterValue === 'all' || status === filterValue;
 
             row.style.display = (matchSearch && matchFilter) ? '' : 'none';
         });
