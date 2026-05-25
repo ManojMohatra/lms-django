@@ -23,14 +23,26 @@
         <div class="col-lg-8">
             <span class="dir-label">{% trans "Current Unit" %}</span>
             <h1 class="dir-title">{{ lecture.title }}</h1>
-            
-{% if lecture.video_url %}
+
+	    {% if lecture.video_url or lecture.video_file %}
 <div class="video-container mb-4">
-    {% if is_direct_video %}
+
+    {% if lecture.video_file %}
+
+        <video controls class="embedded-video">
+            <source src="{{ lecture.video_file.url }}">
+            Your browser does not support video playback.
+        </video>
+
+    {% elif is_direct_video %}
+
         <video controls class="embedded-video">
             <source src="{{ lecture.video_url }}">
+            Your browser does not support video playback.
         </video>
+
     {% else %}
+
         <iframe
             src="{{ embed_url }}"
             title="{{ lecture.title }}"
@@ -40,7 +52,9 @@
             allowfullscreen
             class="embedded-video">
         </iframe>
+
     {% endif %}
+
 </div>
 {% endif %}
             <div class="lecture-body">

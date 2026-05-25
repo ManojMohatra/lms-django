@@ -105,13 +105,22 @@ class Lecture(models.Model):
 
     title = models.CharField(max_length=255)
     notes = models.TextField(blank=True)
+
+    # External videos
     video_url = models.URLField(blank=True)
+
+    # Uploaded/local videos
+    video_file = models.FileField(
+        upload_to="lecture_videos/",
+        blank=True,
+        null=True
+    )
+
     order = models.PositiveIntegerField(default=1)
 
     class Meta:
         ordering = ["order"]
 
-        
     def __str__(self):
         return f"{self.title} ({self.module.title})"
 

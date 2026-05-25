@@ -272,11 +272,16 @@ def lecture_detail(request, lecture_id):
         for assignment in assignments:
             assignment.user_submission = user_subs.get(assignment.id)
 
-    embed_url = get_embed_url(lecture.video_url)
-    is_direct_video = bool(lecture.video_url) and not any(
-        x in lecture.video_url for x in ['youtube', 'youtu.be', 'vimeo']
-    )
+    embed_url = None
+    is_direct_video = False
 
+    if lecture.video_url:
+        embed_url = get_embed_url(lecture.video_url)
+
+        is_direct_video = not any(
+            x in lecture.video_url
+            for x in ['youtube', 'youtu.be', 'vimeo']
+        )
     return render(request, "courses/lecture_detail.html", {
         "lecture": lecture,
         "course": course,
@@ -315,17 +320,28 @@ def add_lecture(request,module_id):
 
     if request.user != course.teacher:
           return HttpResponseForbidden("You are not the teacher of this course.")
-
     if request.method == "POST":
-        Lecture.objects.create(
+
+        video_type = request.POST.get("video_type")
+
+        lecture = Lecture(
             module=module,
             title=request.POST.get("title"),
             notes=request.POST.get("notes"),
-            video_url=request.POST.get("video_url"),
-            order = request.POST.get("order")
+            order=request.POST.get("order")
         )
 
-        return redirect("courses:course_detail",course.id)
+    # External URL
+        if video_type == "url":
+            lecture.video_url = request.POST.get("video_url")
+
+    # Uploaded file
+        elif video_type == "file":
+            lecture.video_file = request.FILES.get("video_file")
+
+        lecture.save()
+
+        return redirect("courses:course_detail", course.id)
 
     return render(request,"courses/add_lecture.html",{"module":module})
 

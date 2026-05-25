@@ -1,60 +1,226 @@
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
+
 {% block title %} Add Lecture | {{ module.title }} {% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/add_lcm.css' %}">
 {% endblock %}
+
 {% block content %}
 
-
 <div class="form-wrapper">
+
     <div class="form-header">
-         <div class="module-badge">
-            {% blocktrans with title=module.title %}Module: {{ title }}{% endblocktrans %}
+
+        <div class="module-badge">
+            {% blocktrans with title=module.title %}
+            Module: {{ title }}
+            {% endblocktrans %}
         </div>
-        <span class="section-label">{% trans "Content Creation" %}</span>
-         <h2>{% trans "Add New Lecture" %}</h2>
-        <p class="text-muted small">{% trans "Configure video and description for this lesson." %}</p>
+
+        <span class="section-label">
+            {% trans "Content Creation" %}
+        </span>
+
+        <h2>{% trans "Add New Lecture" %}</h2>
+
+        <p class="text-muted small">
+            {% trans "Configure video and description for this lesson." %}
+        </p>
+
     </div>
 
     <div class="form-card">
-        <form method="post">
+
+        <form method="post" enctype="multipart/form-data">
+
             {% csrf_token %}
-            
+
             <div class="form-group">
-                    <label for="title">{% trans "Lecture Title" %}</label>
-               <input type="text" name="title" id="title" class="form-control"
-                       placeholder="{% trans 'e.g. Getting Started with the Basics' %}" required>
+                <label for="title">
+                    {% trans "Lecture Title" %}
+                </label>
+
+                <input
+                    type="text"
+                    name="title"
+                    id="title"
+                    class="form-control"
+                    placeholder="{% trans 'e.g. Getting Started with the Basics' %}"
+                    required
+                >
+            </div>
+
+            <!-- VIDEO SOURCE TYPE -->
+
+            <div class="form-group">
+                <label class="mb-2 d-block">
+                    {% trans "Video Source" %}
+                </label>
+
+                <div class="d-flex gap-4">
+
+                    <label>
+                        <input
+                            type="radio"
+                            name="video_type"
+                            value="url"
+                            checked
+                        >
+                        {% trans "External URL" %}
+                    </label>
+
+                    <label>
+                        <input
+                            type="radio"
+                            name="video_type"
+                            value="file"
+                        >
+                        {% trans "Upload Video" %}
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- URL FIELD -->
+
+            <div class="form-group" id="video-url-group">
+
+                <label for="video_url">
+                    {% trans "Video URL" %}
+                </label>
+
+                <input
+                    type="url"
+                    name="video_url"
+                    id="video_url"
+                    class="form-control"
+                    placeholder="https://youtube.com/watch?v=..."
+                >
+
+            </div>
+
+            <!-- FILE FIELD -->
+
+            <div
+                class="form-group"
+                id="video-file-group"
+                style="display:none;"
+            >
+
+                <label for="video_file">
+                    {% trans "Upload Video File" %}
+                </label>
+
+                <input
+                    type="file"
+                    name="video_file"
+                    id="video_file"
+                    class="form-control"
+                    accept="video/*"
+                >
+
+                <small class="text-muted">
+                    MP4 recommended
+                </small>
 
             </div>
 
             <div class="form-group">
-                <label for="video_url">{% trans "Video Player URL" %}</label>
-                <input type="url" name="video_url" id="video_url" class="form-control" placeholder="https://youtube.com/watch?v=...">
+
+                <label for="notes">
+                    {% trans "Lesson Description / Notes" %}
+                </label>
+
+                <textarea
+                    name="notes"
+                    id="notes"
+                    class="form-control"
+                    placeholder="{% trans 'Add lecture description or textual content here...' %}"
+                ></textarea>
+
             </div>
 
             <div class="form-group">
-                <label for="notes">{% trans "Lesson Description / Notes" %} </label>
-                <textarea name="notes" id="notes" class="form-control" placeholder="{% trans 'Add lecture description or textual content here...' %}"></textarea>
-            </div>
 
-            <div class="form-group">
-                <label for="order">{% trans "Sequence Position" %}</label>
-                <input type="number" name="order" id="order" class="form-control" placeholder="e.g. 1" required>
+                <label for="order">
+                    {% trans "Sequence Position" %}
+                </label>
+
+                <input
+                    type="number"
+                    name="order"
+                    id="order"
+                    class="form-control"
+                    placeholder="e.g. 1"
+                    required
+                >
+
             </div>
 
             <button type="submit" class="btn-submit-main">
-                <i class="bi bi-plus-circle me-1"></i> {% trans "Create Lecture" %}
+
+                <i class="bi bi-plus-circle me-1"></i>
+
+                {% trans "Create Lecture" %}
+
             </button>
+
         </form>
+
     </div>
 
     <div class="action-footer">
-        <a href="{% url 'courses:course_detail' module.course.id %}" class="btn-cancel">
+
+        <a
+            href="{% url 'courses:course_detail' module.course.id %}"
+            class="btn-cancel"
+        >
             {% trans "Cancel and Return" %}
         </a>
+
     </div>
+
 </div>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+
+const urlGroup = document.getElementById("video-url-group");
+const fileGroup = document.getElementById("video-file-group");
+
+const radios = document.querySelectorAll(
+    'input[name="video_type"]'
+);
+
+function toggleVideoInputs() {
+
+    const selected = document.querySelector(
+        'input[name="video_type"]:checked'
+    ).value;
+
+    if (selected === "url") {
+
+        urlGroup.style.display = "block";
+        fileGroup.style.display = "none";
+
+    } else {
+
+        urlGroup.style.display = "none";
+        fileGroup.style.display = "block";
+
+    }
+}
+
+radios.forEach(radio => {
+    radio.addEventListener("change", toggleVideoInputs);
+});
+
+toggleVideoInputs();
+
+</script>
 {% endblock %}
